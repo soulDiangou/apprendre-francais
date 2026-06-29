@@ -1,4 +1,4 @@
-const CACHE = 'apprendre-fr-v7';
+const CACHE = 'apprendre-fr-v8';
 const ASSETS = [
   '/',
   '/index.html',
