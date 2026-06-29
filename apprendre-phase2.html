@@ -221,19 +221,36 @@ h3{font-size:20px;font-weight:700;margin:24px 0 12px}
 .reward-text{font-size:22px;font-weight:800;color:var(--orange)}
 .reward-sub{font-size:14px;color:var(--muted);margin-top:4px}
 
+/* Overlay sidebar */
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:98;-webkit-tap-highlight-color:transparent}
+.overlay.show{display:block}
+
+/* Touch targets */
+.ni{min-height:48px;touch-action:manipulation}
+.btn,.btn-orange{min-height:44px;touch-action:manipulation}
+.qopt{min-height:48px;touch-action:manipulation}
+
 /* Responsive */
 @media(max-width:900px){
   .nav{transform:translateX(-100%);box-shadow:var(--shadow-lg)}
   .nav.open{transform:translateX(0)}
-  .main{margin-left:0;width:100%;padding:20px 16px 80px}
+  .main{margin-left:0;width:100%;padding:72px 16px 100px}
   .menu-btn{display:flex;align-items:center;justify-content:center}
-  h1{font-size:28px}.hero h1{font-size:32px}
-  .karaoke-text{font-size:26px}
-  .trace-big{font-size:90px}.trace-small{font-size:60px}
+  h1{font-size:24px}
+  h2{font-size:20px}
+  .karaoke-text{font-size:24px;line-height:1.5}
+  .trace-big{font-size:80px}.trace-small{font-size:54px}
+  .lnav{flex-direction:column;gap:8px}
+  .lnav a,.lnav button{width:100%;text-align:center;justify-content:center}
 }
 @media(max-width:500px){
-  .num-grid{grid-template-columns:repeat(auto-fill,minmax(80px,1fr))}
+  .main{padding:64px 12px 90px}
+  .num-grid{grid-template-columns:repeat(auto-fill,minmax(72px,1fr))}
   .body-list{grid-template-columns:1fr}
+  .karaoke-text{font-size:20px}
+  .trace-big{font-size:70px}.trace-small{font-size:46px}
+  .quiz-block{padding:14px}
+  .quiz-opts{grid-template-columns:1fr 1fr}
 }
 /* DARK MODE */
 body.dark{
@@ -251,6 +268,7 @@ body.dark{
 <body>
 
 <button class="menu-btn" onclick="toggleNav()" aria-label="Menu">☰</button>
+<div class="overlay" id="overlay" onclick="closeNav()"></div>
 
 <div class="shell">
 
@@ -639,7 +657,7 @@ function go(id) {
   if (s) s.classList.add('on');
   if (n) { n.classList.remove('done'); n.classList.add('on'); }
   window.scrollTo(0, 0);
-  document.getElementById('sidenav').classList.remove('open');
+  closeNav();
   // lazy init
   var inits = {trace: initTrace, karaoke: initKaraoke, dictee: initDictee, nombres: initNombres, couleurs: initCouleurs, corps: initCorps, formules: initFormules};
   if (inits[id] && !window['_init_' + id]) { window['_init_' + id] = true; inits[id](); }
@@ -683,6 +701,11 @@ function showReward(emoji, text, sub) {
 
 function toggleNav() {
   document.getElementById('sidenav').classList.toggle('open');
+  document.getElementById('overlay').classList.toggle('show');
+}
+function closeNav() {
+  closeNav();
+  document.getElementById('overlay').classList.remove('show');
 }
 
 function finishPhase2() {

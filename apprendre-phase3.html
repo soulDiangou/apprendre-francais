@@ -272,20 +272,69 @@ h3{font-size:20px;font-weight:700;color:var(--ink);margin:24px 0 12px}
 @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
 
 /* Responsive */
+/* Overlay sidebar */
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:98;-webkit-tap-highlight-color:transparent}
+.overlay.show{display:block}
+
+/* Touch targets minimum 44px */
+.ni{min-height:48px}
+.btn,.nav-btn{min-height:44px;touch-action:manipulation}
+.qopt{min-height:52px;touch-action:manipulation}
+.art-pill{min-height:44px;padding:10px 16px}
+.dark-toggle{touch-action:manipulation}
+
+/* Table scrollable */
+.table-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:16px 0;border-radius:16px}
+.table-scroll .conj-table{margin:0}
+
 @media(max-width:900px){
   .sidebar{transform:translateX(-100%);box-shadow:var(--shadow-lg)}
   .sidebar.open{transform:translateX(0)}
-  .main{margin-left:0;padding:20px 16px 80px}
+  .main{margin-left:0;padding:72px 16px 100px}
   .menu-btn{display:flex}
-  h1{font-size:26px} h2{font-size:22px}
-  .genre-grid{grid-template-columns:1fr}
+  h1{font-size:24px;line-height:1.2}
+  h2{font-size:20px}
+  h3{font-size:17px}
+  .hero{padding:28px 18px;border-radius:16px}
+  .hero-emoji{font-size:52px}
+  .hero h1{font-size:22px}
+  .hero p{font-size:15px}
+  .lesson-nav{flex-direction:column;gap:10px}
+  .lesson-nav .nav-btn,.lesson-nav .nav-btn.primary{width:100%;justify-content:center;text-align:center;padding:14px 20px}
+  .genre-grid{grid-template-columns:1fr;gap:12px}
   .art-grid{grid-template-columns:1fr}
   .calendar-grid{grid-template-columns:repeat(4,1fr)}
+  .home-grid{grid-template-columns:1fr}
+  .home-card{padding:16px;border-radius:16px}
+  .home-card-emoji{font-size:32px}
+  .pres-line{flex-direction:column;align-items:flex-start;gap:6px}
+  .pres-input{width:100%;flex:none}
+  .famille-grid{grid-template-columns:repeat(3,1fr);gap:8px}
+  .fam-card{padding:10px 6px}
+  .tip{padding:10px 12px;gap:8px}
+  .tip-icon{font-size:18px}
+  .quiz-block{padding:16px}
+  .dial-tabs{gap:6px}
+  .dial-tab{font-size:12px;padding:8px 10px;flex:1;text-align:center}
+  .expr-grid{grid-template-columns:1fr}
+  .nav-count{display:none}
 }
+
 @media(max-width:500px){
-  .months-grid{grid-template-columns:repeat(3,1fr)}
-  .dial-bubble{font-size:14px;max-width:85%}
-  .num-grid{grid-template-columns:repeat(auto-fill,minmax(72px,1fr))}
+  .main{padding:64px 12px 90px}
+  .months-grid{grid-template-columns:repeat(2,1fr)}
+  .calendar-grid{grid-template-columns:repeat(3,1fr);gap:5px}
+  .dial-bubble{font-size:14px;max-width:88%;padding:10px 13px}
+  .num-grid{grid-template-columns:repeat(auto-fill,minmax(64px,1fr));gap:6px}
+  .art-pill{font-size:18px;padding:9px 12px}
+  .genre-word{padding:8px 10px;font-size:14px}
+  .famille-grid{grid-template-columns:repeat(3,1fr)}
+  .quiz-opts{grid-template-columns:1fr 1fr}
+  .reward-pop{padding:24px 20px;width:90%}
+  .reward-emoji{font-size:52px}
+  .pres-preview{font-size:14px}
+  h1{font-size:21px}
+  h2{font-size:18px}
 }
 /* DARK MODE */
 body.dark{
@@ -303,6 +352,7 @@ body.dark{
 <body>
 
 <button class="menu-btn" id="menuBtn" onclick="toggleSidebar()">☰</button>
+<div class="overlay" id="overlay" onclick="closeSidebar()"></div>
 
 <div class="shell">
 
@@ -514,7 +564,7 @@ body.dark{
   <h2>Le verbe ÊTRE</h2>
   <p class="intro" id="p3-m3-intro">ÊTRE est le verbe le plus important en français. Il sert à dire qui tu es, comment tu vas, où tu es. Clique sur chaque ligne pour l'entendre.</p>
 
-  <table class="conj-table blue">
+  <div class="table-scroll"><table class="conj-table blue">
     <tr><th>Pronom</th><th>Forme</th><th>Exemple</th></tr>
     <tr onclick="speak('Je suis français')"><td class="pronom">Je</td><td class="forme">suis</td><td class="exemple">Je suis français.</td></tr>
     <tr onclick="speak('Tu es à Paris ?')"><td class="pronom">Tu</td><td class="forme">es</td><td class="exemple">Tu es à Paris ?</td></tr>
@@ -522,7 +572,7 @@ body.dark{
     <tr onclick="speak('Nous sommes amis')"><td class="pronom">Nous</td><td class="forme">sommes</td><td class="exemple">Nous sommes amis.</td></tr>
     <tr onclick="speak('Vous êtes prêts ?')"><td class="pronom">Vous</td><td class="forme">êtes</td><td class="exemple">Vous êtes prêts ?</td></tr>
     <tr onclick="speak('Ils sont contents')"><td class="pronom">Ils / Elles</td><td class="forme">sont</td><td class="exemple">Ils sont contents.</td></tr>
-  </table>
+  </table></div>
 
   <div class="tip"><div class="tip-icon">🎯</div><div class="tip-body"><strong>Astuce :</strong> Clique sur chaque ligne et répète à voix haute. Apprends d'abord <strong>je suis, tu es, il est</strong> — c'est les plus utilisés.</div></div>
 
@@ -559,7 +609,7 @@ body.dark{
   <h2>Le verbe AVOIR</h2>
   <p class="intro" id="p3-m4-intro">AVOIR = to have. Il sert à dire ce que tu possèdes et à exprimer des sensations. Clique sur chaque ligne pour l'entendre.</p>
 
-  <table class="conj-table">
+  <div class="table-scroll"><table class="conj-table">
     <tr><th>Pronom</th><th>Forme</th><th>Exemple</th></tr>
     <tr onclick="speak('J apostrophe ai un chat')"><td class="pronom">Je</td><td class="forme">j'ai</td><td class="exemple">J'ai un chat.</td></tr>
     <tr onclick="speak('Tu as quel âge ?')"><td class="pronom">Tu</td><td class="forme">as</td><td class="exemple">Tu as quel âge ?</td></tr>
@@ -567,7 +617,7 @@ body.dark{
     <tr onclick="speak('Nous avons deux enfants')"><td class="pronom">Nous</td><td class="forme">avons</td><td class="exemple">Nous avons deux enfants.</td></tr>
     <tr onclick="speak('Vous avez un rendez-vous ?')"><td class="pronom">Vous</td><td class="forme">avez</td><td class="exemple">Vous avez un rendez-vous ?</td></tr>
     <tr onclick="speak('Ils ont une grande maison')"><td class="pronom">Ils / Elles</td><td class="forme">ont</td><td class="exemple">Ils ont une grande maison.</td></tr>
-  </table>
+  </table></div>
 
   <h3>💡 Expressions avec AVOIR — L'âge et les sensations</h3>
   <div class="expr-grid">
@@ -877,8 +927,14 @@ function showFinish(){
 
 function resetProgress(){if(!confirm('Réinitialiser toute la progression ?'))return;done={};localStorage.removeItem('p3done');updateProgress();document.querySelectorAll('.ni').forEach(n=>n.classList.remove('done'));document.querySelectorAll('.home-card-badge').forEach(b=>b.remove());document.querySelectorAll('.done-card').forEach(c=>c.classList.remove('done-card'));}
 
-function toggleSidebar(){document.getElementById('sidebar').classList.toggle('open')}
-function closeSidebar(){document.getElementById('sidebar').classList.remove('open')}
+function toggleSidebar(){
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('overlay').classList.toggle('show');
+}
+function closeSidebar(){
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('overlay').classList.remove('show');
+}
 
 // ===== LANG =====
 const LANGS={

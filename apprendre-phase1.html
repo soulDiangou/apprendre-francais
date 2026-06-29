@@ -852,6 +852,10 @@ h3 { font-size: 20px; font-weight: 700; color: var(--ink); margin: 24px 0 12px; 
 .form-success-msg-text { font-size: 18px; font-weight: 700; color: var(--green); margin-top: 6px; }
 
 /* ===== RESPONSIVE ===== */
+/* Touch targets */
+.nav-item { min-height: 48px; touch-action: manipulation; }
+button { touch-action: manipulation; }
+
 @media (max-width: 900px) {
   .sidebar {
     transform: translateX(-100%);
@@ -859,20 +863,23 @@ h3 { font-size: 20px; font-weight: 700; color: var(--ink); margin: 24px 0 12px; 
     box-shadow: var(--shadow-lg);
   }
   .sidebar.open { transform: translateX(0); }
-  .main { margin-left: 0; padding: 20px 16px 80px; }
+  .main { margin-left: 0; padding: 72px 16px 100px; }
   .menu-btn { display: flex; }
-  h1 { font-size: 28px; }
-  h2 { font-size: 24px; }
-  .hero { padding: 28px 20px; }
-  .hero h1 { font-size: 30px; }
+  h1 { font-size: 24px; line-height: 1.2; }
+  h2 { font-size: 20px; }
+  .hero { padding: 24px 16px; }
+  .hero h1 { font-size: 26px; }
   .tracing-layout { grid-template-columns: 1fr; }
-  .letter-picker-grid { width: auto; grid-template-columns: repeat(7, 1fr); }
-  .alpha-grid { grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); gap: 8px; }
+  .letter-picker-grid { width: auto; grid-template-columns: repeat(6, 1fr); }
+  .alpha-grid { grid-template-columns: repeat(auto-fill, minmax(72px, 1fr)); gap: 8px; }
   .memory-board { grid-template-columns: repeat(4, 1fr); }
+  .lesson-nav { flex-direction: column; gap: 10px; }
+  .lesson-nav .nav-btn, .lesson-nav .nav-btn.primary { width: 100%; text-align: center; padding: 14px; }
 }
 @media (max-width: 500px) {
-  .sentence-text { font-size: 22px; }
-  .word-grid { grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); }
+  .main { padding: 64px 12px 90px; }
+  .sentence-text { font-size: 20px; }
+  .word-grid { grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); }
   .memory-board { grid-template-columns: repeat(4, 1fr); gap: 6px; }
   .mem-card { min-height: 64px; font-size: 22px; }
   .mem-card.word-type { font-size: 12px; }
