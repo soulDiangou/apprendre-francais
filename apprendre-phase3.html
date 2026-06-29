@@ -999,14 +999,15 @@ const P3_TRANSLATIONS = {
 
 function setLang(l){
   localStorage.setItem('p3lang', l);
-  localStorage.setItem('app-lang', l);
   const t = P3_TRANSLATIONS[l] || P3_TRANSLATIONS['fr'];
+  const isRtl = l === 'ar';
   Object.keys(t).forEach(function(id){
     const el = document.getElementById(id);
-    if(el) el.textContent = t[id];
+    if(el){
+      el.textContent = t[id];
+      el.setAttribute('dir', isRtl ? 'rtl' : 'ltr');
+    }
   });
-  // RTL pour l'arabe
-  document.body.setAttribute('dir', l === 'ar' ? 'rtl' : 'ltr');
 }
 
 // ===== M1 : GENRE QUIZ =====
@@ -1484,9 +1485,10 @@ window.addEventListener('DOMContentLoaded',()=>{
   buildJours();buildMois();buildHeures();
   initDayQuiz();
   buildDial('cafe');
-  const lang=localStorage.getItem('p3lang')||localStorage.getItem('app-lang');
+  const lang=localStorage.getItem('p3lang');
   if(lang){
-    document.getElementById('langSelect').value=lang;
+    const sel=document.getElementById('langSelect');
+    if(sel) sel.value=lang;
     setLang(lang);
   }
   const dark=document.body.classList.contains('dark');

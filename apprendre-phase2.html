@@ -768,13 +768,15 @@ var TRANSLATIONS = {
 function setLang(lang) {
   currentLang = lang;
   localStorage.setItem('p2lang', lang);
-  localStorage.setItem('app-lang', lang);
   var t = TRANSLATIONS[lang] || TRANSLATIONS['fr'];
+  var isRtl = lang === 'ar';
   Object.keys(t).forEach(function(id) {
     var el = document.getElementById(id);
-    if (el) el.textContent = t[id];
+    if (el) {
+      el.textContent = t[id];
+      el.setAttribute('dir', isRtl ? 'rtl' : 'ltr');
+    }
   });
-  document.body.setAttribute('dir', lang === 'ar' ? 'rtl' : 'ltr');
 }
 
 // ============================
@@ -1516,7 +1518,7 @@ completed.forEach(function(id) {
 updateProgress();
 go('home');
 // Restaurer la langue
-var _savedLang = localStorage.getItem('p2lang') || localStorage.getItem('app-lang');
+var _savedLang = localStorage.getItem('p2lang');
 if(_savedLang){
   var _ls = document.getElementById('langSelect');
   if(_ls) _ls.value = _savedLang;
