@@ -1,0 +1,44 @@
+{
+  "name": "J'apprends le Français",
+  "short_name": "Apprendre FR",
+  "description": "Application interactive pour apprendre le français — du niveau zéro au niveau A1",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#FFF8F0",
+  "theme_color": "#F59038",
+  "lang": "fr",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "screenshots": [],
+  "categories": ["education", "lifestyle"],
+  "shortcuts": [
+    {
+      "name": "Phase 1 — Débutant",
+      "url": "/apprendre-phase1",
+      "description": "Premiers mots et phrases"
+    },
+    {
+      "name": "Phase 2 — Niveau A1",
+      "url": "/apprendre-phase2",
+      "description": "Grammaire et vocabulaire A1"
+    },
+    {
+      "name": "Phase 3 — Je parle français",
+      "url": "/apprendre-phase3",
+      "description": "Conversations et expressions A1"
+    }
+  ]
+}

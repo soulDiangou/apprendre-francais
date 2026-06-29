@@ -4,6 +4,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>J'apprends le Français — Apprendre le français gratuitement</title>
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#F59038">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Apprendre FR">
+<link rel="apple-touch-icon" href="/icon-192.png">
 <meta name="description" content="Application gratuite pour apprendre le français depuis le début. Alphabet, syllabes, vocabulaire, dialogues, formulaires. Pour débutants complets.">
 <meta name="theme-color" content="#F59038">
 
@@ -744,5 +750,10 @@ footer {
   <div class="footer-copy">Apprentissage du français · Gratuit &amp; libre</div>
 </footer>
 
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => navigator.serviceWorker.register('/sw.js'));
+}
+</script>
 </body>
 </html>
