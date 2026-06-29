@@ -446,6 +446,7 @@ footer {
   .phases-grid { grid-template-columns: 1fr; }
   .how-grid { grid-template-columns: 1fr; gap: 12px; }
   .nav-links .nav-link { display: none; }
+  .dash-grid { grid-template-columns: 1fr; }
 }
 @media (max-width: 560px) {
   .stats-inner { grid-template-columns: 1fr 1fr; padding: 24px 20px; gap: 16px; }
@@ -454,6 +455,81 @@ footer {
   footer { flex-direction: column; align-items: flex-start; }
   .footer-links { flex-wrap: wrap; gap: 12px; }
 }
+
+/* ===== DARK MODE ===== */
+body.dark {
+  --bg: #1C1916; --bg2: #23201B; --card: #2A2620;
+  --ink: #F0EAE0; --ink2: #B8AD9E; --muted: #7A6E65;
+  --border: #3A342E;
+  --orange-soft: #5C3A1E; --blue-soft: #1A3A52;
+  --green-soft: #1A3D1A; --violet-soft: #2D2A45;
+  --yellow-soft: #403510; --teal-soft: #0D3330;
+  --shadow: 0 4px 20px rgba(0,0,0,0.4);
+  --shadow-lg: 0 12px 40px rgba(0,0,0,0.6);
+}
+body.dark nav { background: rgba(28,25,22,0.97); }
+
+.dark-toggle {
+  width: 36px; height: 36px; border-radius: 50%;
+  background: var(--bg2); border: 1.5px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 17px; cursor: pointer; transition: transform 0.2s;
+  flex-shrink: 0;
+}
+.dark-toggle:hover { transform: scale(1.12); }
+
+/* ===== DASHBOARD ===== */
+.dash-section {
+  padding: clamp(48px,7vh,80px) clamp(20px,5vw,60px);
+  background: var(--bg2);
+}
+.dash-inner { max-width: 1100px; margin: 0 auto; }
+.dash-grid {
+  display: grid; grid-template-columns: repeat(3,1fr);
+  gap: 18px; margin: 32px 0 0;
+}
+.dash-card {
+  background: var(--card); border-radius: 20px; padding: 24px;
+  border: 2px solid var(--border); box-shadow: var(--shadow);
+  display: flex; flex-direction: column; gap: 14px;
+}
+.dash-card-header { display: flex; align-items: center; gap: 12px; }
+.dash-card-emoji { font-size: 28px; flex-shrink: 0; }
+.dash-card-name { font-size: 14px; font-weight: 800; color: var(--ink); }
+.dash-card-sub { font-size: 12px; color: var(--muted); font-weight: 600; margin-top: 2px; }
+.dash-badge {
+  margin-left: auto; padding: 4px 10px; border-radius: 20px;
+  font-size: 11px; font-weight: 800; white-space: nowrap; flex-shrink: 0;
+}
+.badge-none { background: var(--bg2); color: var(--muted); }
+.badge-active { background: var(--orange-soft); color: var(--orange-dark,#D97B22); }
+.badge-done { background: var(--green-soft); color: var(--green); }
+.dash-bar-wrap { background: var(--border); border-radius: 8px; height: 10px; overflow: hidden; }
+.dash-bar-fill {
+  height: 100%; border-radius: 8px; width: 0%;
+  background: linear-gradient(90deg,var(--orange),var(--yellow));
+  transition: width 1s cubic-bezier(.4,0,.2,1);
+}
+.dash-bar-fill.blue { background: linear-gradient(90deg,var(--blue),var(--teal)); }
+.dash-bar-fill.green { background: linear-gradient(90deg,var(--green),var(--teal)); }
+.dash-bar-fill.rainbow { background: linear-gradient(90deg,var(--orange),var(--yellow),var(--green)); }
+.dash-pct { font-size: 26px; font-weight: 900; color: var(--ink); }
+.dash-link {
+  display: inline-flex; align-items: center; padding: 9px 18px;
+  border-radius: 12px; background: var(--orange); color: white;
+  font-size: 13px; font-weight: 700; transition: all 0.15s;
+  align-self: flex-start; margin-top: auto;
+}
+.dash-link:hover { filter: brightness(1.1); transform: translateX(2px); }
+.dash-total-wrap {
+  background: var(--card); border-radius: 20px; padding: 24px;
+  border: 2px solid var(--border); box-shadow: var(--shadow); margin-top: 18px;
+}
+.dash-total-label {
+  display: flex; justify-content: space-between; align-items: center;
+  font-size: 15px; font-weight: 700; color: var(--ink); margin-bottom: 14px;
+}
+.dash-total-pct { font-size: 22px; font-weight: 900; color: var(--orange); }
 </style>
 </head>
 <body>
@@ -466,8 +542,9 @@ footer {
   </div>
   <div class="nav-links">
     <a href="#modules" class="nav-link">Modules</a>
-    <a href="#phases" class="nav-link">Phase 1 &amp; 2</a>
+    <a href="#progression" class="nav-link">Ma progression</a>
     <a href="manuel-utilisateur" class="nav-link">Manuel</a>
+    <button class="dark-toggle" onclick="toggleDark()" aria-label="Thème sombre">🌙</button>
     <a href="apprendre-phase1" class="nav-cta">▶ Commencer →</a>
   </div>
 </nav>
@@ -674,6 +751,67 @@ footer {
   </div>
 </div>
 
+<!-- ===== DASHBOARD ===== -->
+<div class="dash-section" id="progression">
+  <div class="dash-inner">
+    <div class="section-center">
+      <div class="section-tag tag-orange">📊 Suivi</div>
+      <h2>Ma progression</h2>
+      <p class="section-sub">Ta progression est sauvegardée automatiquement dans ton navigateur.</p>
+    </div>
+    <div class="dash-grid">
+      <div class="dash-card">
+        <div class="dash-card-header">
+          <span class="dash-card-emoji">📙</span>
+          <div>
+            <div class="dash-card-name">Phase 1 — Les bases</div>
+            <div class="dash-card-sub" id="dash-p1-sub">0 / 8 modules</div>
+          </div>
+          <span class="dash-badge badge-none" id="dash-p1-badge">Pas commencé</span>
+        </div>
+        <div class="dash-bar-wrap"><div class="dash-bar-fill" id="dash-p1-fill"></div></div>
+        <div class="dash-pct" id="dash-p1-pct">0%</div>
+        <a href="apprendre-phase1" class="dash-link">▶ Phase 1 →</a>
+      </div>
+      <div class="dash-card">
+        <div class="dash-card-header">
+          <span class="dash-card-emoji">📘</span>
+          <div>
+            <div class="dash-card-name">Phase 2 — Consolidation</div>
+            <div class="dash-card-sub" id="dash-p2-sub">0 / 7 modules</div>
+          </div>
+          <span class="dash-badge badge-none" id="dash-p2-badge">Pas commencé</span>
+        </div>
+        <div class="dash-bar-wrap"><div class="dash-bar-fill blue" id="dash-p2-fill"></div></div>
+        <div class="dash-pct" id="dash-p2-pct">0%</div>
+        <a href="apprendre-phase2" class="dash-link" style="background:var(--blue)">▶ Phase 2 →</a>
+      </div>
+      <div class="dash-card">
+        <div class="dash-card-header">
+          <span class="dash-card-emoji">📗</span>
+          <div>
+            <div class="dash-card-name">Phase 3 — Je parle</div>
+            <div class="dash-card-sub" id="dash-p3-sub">0 / 8 modules</div>
+          </div>
+          <span class="dash-badge badge-none" id="dash-p3-badge">Pas commencé</span>
+        </div>
+        <div class="dash-bar-wrap"><div class="dash-bar-fill green" id="dash-p3-fill"></div></div>
+        <div class="dash-pct" id="dash-p3-pct">0%</div>
+        <a href="apprendre-phase3" class="dash-link" style="background:var(--green)">▶ Phase 3 →</a>
+      </div>
+    </div>
+    <div class="dash-total-wrap">
+      <div class="dash-total-label">
+        <span>🏆 Total — <strong id="dash-total-done">0</strong> / 23 modules complétés</span>
+        <span class="dash-total-pct" id="dash-total-pct">0%</span>
+      </div>
+      <div class="dash-bar-wrap">
+        <div class="dash-bar-fill rainbow" id="dash-total-fill"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- ===== FEATURES ===== -->
 <div style="background: var(--bg2); padding: clamp(48px, 7vh, 80px) 0;">
   <div class="section" style="padding-top: 0; padding-bottom: 0;">
@@ -751,8 +889,53 @@ footer {
 </footer>
 
 <script>
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => navigator.serviceWorker.register('/sw.js'));
+// Dark mode — apply before paint
+(function(){
+  if(localStorage.getItem('theme')==='dark') document.body.classList.add('dark');
+})();
+
+function toggleDark(){
+  const d = document.body.classList.toggle('dark');
+  localStorage.setItem('theme', d ? 'dark' : 'light');
+  document.querySelectorAll('.dark-toggle').forEach(b => b.textContent = d ? '☀️' : '🌙');
+}
+
+// Dashboard
+function loadDashboard(){
+  let p1done=0, p2done=0, p3done=0;
+  try{ const s=JSON.parse(localStorage.getItem('apprendre_phase1_v2')||'{}'); p1done=(s.completed||[]).length; }catch(e){}
+  try{ const a=JSON.parse(localStorage.getItem('p2done')||'[]'); p2done=Array.isArray(a)?a.length:0; }catch(e){}
+  try{ const o=JSON.parse(localStorage.getItem('p3done')||'{}'); p3done=Object.values(o).filter(Boolean).length; }catch(e){}
+
+  const cfg=[
+    {id:'p1',done:p1done,total:8},
+    {id:'p2',done:p2done,total:7},
+    {id:'p3',done:p3done,total:8}
+  ];
+  cfg.forEach(function(c){
+    const pct=Math.round(c.done/c.total*100);
+    document.getElementById('dash-'+c.id+'-fill').style.width=pct+'%';
+    document.getElementById('dash-'+c.id+'-sub').textContent=c.done+' / '+c.total+' modules';
+    document.getElementById('dash-'+c.id+'-pct').textContent=pct+'%';
+    const b=document.getElementById('dash-'+c.id+'-badge');
+    if(c.done===0){b.textContent='Pas commencé';b.className='dash-badge badge-none';}
+    else if(c.done>=c.total){b.textContent='✓ Terminé';b.className='dash-badge badge-done';}
+    else{b.textContent='En cours';b.className='dash-badge badge-active';}
+  });
+  const td=p1done+p2done+p3done, tm=23, tp=Math.round(td/tm*100);
+  document.getElementById('dash-total-done').textContent=td;
+  document.getElementById('dash-total-fill').style.width=tp+'%';
+  document.getElementById('dash-total-pct').textContent=tp+'%';
+}
+
+window.addEventListener('DOMContentLoaded',function(){
+  const dark=document.body.classList.contains('dark');
+  document.querySelectorAll('.dark-toggle').forEach(b=>b.textContent=dark?'☀️':'🌙');
+  loadDashboard();
+});
+
+if('serviceWorker' in navigator){
+  window.addEventListener('load',()=>navigator.serviceWorker.register('/sw.js'));
 }
 </script>
 </body>

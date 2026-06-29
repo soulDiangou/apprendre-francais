@@ -882,7 +882,18 @@ h3 { font-size: 20px; font-weight: 700; color: var(--ink); margin: 24px 0 12px; 
   .dial-tabs { gap: 6px; }
   .dial-tab { font-size: 12px; padding: 7px 12px; }
 }
+/* DARK MODE */
+body.dark {
+  --bg:#1C1916;--bg2:#23201B;--card:#2A2620;
+  --ink:#F0EAE0;--ink2:#B8AD9E;--muted:#7A6E65;--border:#3A342E;
+  --orange-soft:#5C3A1E;--blue-soft:#1A3A52;--green-soft:#1A3D1A;
+  --violet-soft:#2D2A45;--yellow-soft:#403510;--teal-soft:#0D3330;--pink-soft:#4A1A28;
+  --shadow:0 4px 20px rgba(0,0,0,0.4);--shadow-lg:0 12px 40px rgba(0,0,0,0.6)
+}
+.dark-toggle{width:32px;height:32px;border-radius:50%;background:var(--bg2);border:1.5px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:15px;cursor:pointer;transition:transform .2s;flex-shrink:0}
+.dark-toggle:hover{transform:scale(1.12)}
 </style>
+<script>(function(){if(localStorage.getItem('theme')==='dark')document.body.classList.add('dark')})()</script>
 </head>
 <body>
 
@@ -894,10 +905,11 @@ h3 { font-size: 20px; font-weight: 700; color: var(--ink); margin: 24px 0 12px; 
 <nav class="sidebar" id="sidebar">
   <div class="logo">
     <span class="logo-icon">📚</span>
-    <div>
+    <div style="flex:1">
       <div class="logo-text">J'apprends</div>
       <div class="logo-sub">le Français — Phase 1</div>
     </div>
+    <button class="dark-toggle" onclick="toggleDark()" id="themeBtn" title="Thème sombre">🌙</button>
   </div>
 
   <div class="progress-block">
@@ -3047,11 +3059,23 @@ go('home');
 // Pre-load voices
 setTimeout(loadVoices, 400);
 setTimeout(loadVoices, 1200);
+// Dark mode init
+(function(){
+  const d=document.body.classList.contains('dark');
+  const tb=document.getElementById('themeBtn');
+  if(tb)tb.textContent=d?'☀️':'🌙';
+})();
 </script>
 <footer style="text-align:center;padding:18px 0 24px;color:var(--muted,#aaa);font-size:13px;letter-spacing:.03em;">
   Created by <strong style="color:var(--violet)">@S.B</strong> from T.
 </footer>
 <script>
+function toggleDark(){
+  const d=document.body.classList.toggle('dark');
+  localStorage.setItem('theme',d?'dark':'light');
+  const tb=document.getElementById('themeBtn');
+  if(tb)tb.textContent=d?'☀️':'🌙';
+}
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => navigator.serviceWorker.register('/sw.js'));
 }
