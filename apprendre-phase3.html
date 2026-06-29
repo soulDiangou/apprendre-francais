@@ -393,7 +393,7 @@ body.dark{
 <div class="lesson">
   <div class="module-tag" style="background:var(--violet-soft);color:var(--violet)">👫 MODULE 1 · Grammaire</div>
   <h2>Masculin et Féminin</h2>
-  <p class="intro">En français, <strong>chaque mot a un genre</strong> : masculin ou féminin. Le genre change l'article (le / la) et parfois la fin du mot.</p>
+  <p class="intro" id="p3-m1-intro">En français, <strong>chaque mot a un genre</strong> : masculin ou féminin. Le genre change l'article (le / la) et parfois la fin du mot.</p>
 
   <div class="tip"><div class="tip-icon">📌</div><div class="tip-body"><strong>Règle principale :</strong> Les mots qui se terminent en <strong>-e</strong> sont <em>souvent</em> féminins. Les autres sont souvent masculins. Mais il y a des exceptions — apprends les mots avec leur article !</div></div>
 
@@ -455,7 +455,7 @@ body.dark{
 <div class="lesson">
   <div class="module-tag" style="background:var(--orange-soft);color:var(--orange)">📌 MODULE 2 · Grammaire</div>
   <h2>Les Articles</h2>
-  <p class="intro">L'article indique si un mot est <strong>masculin, féminin ou pluriel</strong>, et s'il est connu ou non. Clique sur chaque article pour l'entendre dans un exemple.</p>
+  <p class="intro" id="p3-m2-intro">L'article indique si un mot est <strong>masculin, féminin ou pluriel</strong>, et s'il est connu ou non. Clique sur chaque article pour l'entendre dans un exemple.</p>
 
   <div class="art-grid">
     <div class="art-card">
@@ -512,7 +512,7 @@ body.dark{
 <div class="lesson">
   <div class="module-tag" style="background:var(--blue-soft);color:var(--blue)">🔵 MODULE 3 · Verbes</div>
   <h2>Le verbe ÊTRE</h2>
-  <p class="intro">ÊTRE est le verbe le plus important en français. Il sert à dire qui tu es, comment tu vas, où tu es. Clique sur chaque ligne pour l'entendre.</p>
+  <p class="intro" id="p3-m3-intro">ÊTRE est le verbe le plus important en français. Il sert à dire qui tu es, comment tu vas, où tu es. Clique sur chaque ligne pour l'entendre.</p>
 
   <table class="conj-table blue">
     <tr><th>Pronom</th><th>Forme</th><th>Exemple</th></tr>
@@ -557,7 +557,7 @@ body.dark{
 <div class="lesson">
   <div class="module-tag" style="background:var(--orange-soft);color:var(--orange)">🟠 MODULE 4 · Verbes</div>
   <h2>Le verbe AVOIR</h2>
-  <p class="intro">AVOIR = to have. Il sert à dire ce que tu possèdes et à exprimer des sensations. Clique sur chaque ligne pour l'entendre.</p>
+  <p class="intro" id="p3-m4-intro">AVOIR = to have. Il sert à dire ce que tu possèdes et à exprimer des sensations. Clique sur chaque ligne pour l'entendre.</p>
 
   <table class="conj-table">
     <tr><th>Pronom</th><th>Forme</th><th>Exemple</th></tr>
@@ -602,7 +602,7 @@ body.dark{
 <div class="lesson">
   <div class="module-tag" style="background:var(--green-soft);color:var(--green)">👤 MODULE 5 · Expression</div>
   <h2>Se présenter</h2>
-  <p class="intro">Apprends à te présenter en français. Remplis les cases et écoute ta présentation complète !</p>
+  <p class="intro" id="p3-m5-intro">Apprends à te présenter en français. Remplis les cases et écoute ta présentation complète !</p>
 
   <div class="pres-builder">
     <h3 style="margin-top:0">📝 Construis ta présentation</h3>
@@ -649,7 +649,7 @@ body.dark{
 <div class="lesson">
   <div class="module-tag" style="background:var(--violet-soft);color:var(--violet)">🔢 MODULE 6 · Vocabulaire</div>
   <h2>Les Chiffres — 1 à 100</h2>
-  <p class="intro">Clique sur n'importe quel chiffre pour l'entendre. Attention aux chiffres 70-99, ils sont spéciaux en français !</p>
+  <p class="intro" id="p3-m6-intro">Clique sur n'importe quel chiffre pour l'entendre. Attention aux chiffres 70-99, ils sont spéciaux en français !</p>
 
   <h3>1 — 20</h3>
   <div class="num-grid" id="num1-20"></div>
@@ -694,7 +694,7 @@ body.dark{
 <div class="lesson">
   <div class="module-tag" style="background:var(--teal-soft);color:var(--teal)">🕐 MODULE 7 · Vie quotidienne</div>
   <h2>L'Heure &amp; Le Calendrier</h2>
-  <p class="intro">Apprends à dire l'heure, les jours de la semaine et les mois. Essentiels pour tous les rendez-vous !</p>
+  <p class="intro" id="p3-m7-intro">Apprends à dire l'heure, les jours de la semaine et les mois. Essentiels pour tous les rendez-vous !</p>
 
   <h3>📅 Les jours de la semaine</h3>
   <div class="calendar-grid" id="jours-grid"></div>
@@ -737,7 +737,7 @@ body.dark{
 <div class="lesson">
   <div class="module-tag" style="background:var(--blue-soft);color:var(--blue)">💬 MODULE 8 · Conversations</div>
   <h2>Conversations A1 — La vraie vie</h2>
-  <p class="intro">4 vraies conversations que tu vas utiliser en France. Clique sur chaque bulle pour l'entendre. Les bulles bleues, c'est toi !</p>
+  <p class="intro" id="p3-m8-intro">4 vraies conversations que tu vas utiliser en France. Clique sur chaque bulle pour l'entendre. Les bulles bleues, c'est toi !</p>
 
   <div class="dial-tabs">
     <button class="dial-tab on" onclick="showDial('cafe',this)">☕ Au café</button>
@@ -888,7 +888,70 @@ const LANGS={
   wolof:{prog:'Xam-xam bi'},
   bambara:{prog:'N ka dɔnni'}
 };
-function setLang(l){localStorage.setItem('p3lang',l);}
+const P3_TRANSLATIONS = {
+  fr: {
+    'p3-m1-intro': "En français, chaque mot a un genre : masculin ou féminin. Le genre change l'article (le / la) et parfois la fin du mot.",
+    'p3-m2-intro': "L'article indique si un mot est masculin, féminin ou pluriel, et s'il est connu ou non. Clique sur chaque article pour l'entendre dans un exemple.",
+    'p3-m3-intro': "ÊTRE est le verbe le plus important en français. Il sert à dire qui tu es, comment tu vas, où tu es. Clique sur chaque ligne pour l'entendre.",
+    'p3-m4-intro': "AVOIR = to have. Il sert à dire ce que tu possèdes et à exprimer des sensations. Clique sur chaque ligne pour l'entendre.",
+    'p3-m5-intro': "Apprends à te présenter en français. Remplis les cases et écoute ta présentation complète !",
+    'p3-m6-intro': "Clique sur n'importe quel chiffre pour l'entendre. Attention aux chiffres 70-99, ils sont spéciaux en français !",
+    'p3-m7-intro': "Apprends à dire l'heure, les jours de la semaine et les mois. Essentiels pour tous les rendez-vous !",
+    'p3-m8-intro': "4 vraies conversations que tu vas utiliser en France. Clique sur chaque bulle pour l'entendre. Les bulles bleues, c'est toi !"
+  },
+  ar: {
+    'p3-m1-intro': "في الفرنسية، كل كلمة لها جنس: مذكر أو مؤنث. الجنس يغيّر الأداة (le / la) وأحياناً نهاية الكلمة.",
+    'p3-m2-intro': "الأداة تحدد إذا كانت الكلمة مذكراً أو مؤنثاً أو جمعاً، ومعروفة أم لا. اضغط على كل أداة لسماعها في مثال.",
+    'p3-m3-intro': "ÊTRE هو أهم فعل في الفرنسية. يُستخدم لوصف هويتك وكيف حالك وأين أنت. اضغط على كل سطر لسماعه.",
+    'p3-m4-intro': "AVOIR تعني «يملك». تُستخدم لقول ما تمتلكه وللتعبير عن الأحاسيس الجسدية. اضغط على كل سطر لسماعه.",
+    'p3-m5-intro': "تعلّم كيف تعرّف بنفسك بالفرنسية. امأل الخانات واستمع لتعريفك الكامل!",
+    'p3-m6-intro': "اضغط على أي رقم لسماعه. انتبه للأرقام 70-99، فهي خاصة في الفرنسية!",
+    'p3-m7-intro': "تعلّم قول الوقت وأيام الأسبوع والأشهر. ضرورية لجميع المواعيد!",
+    'p3-m8-intro': "4 محادثات حقيقية ستستخدمها في فرنسا. اضغط على كل فقاعة لسماعها. الفقاعات الزرقاء هي كلامك!"
+  },
+  en: {
+    'p3-m1-intro': "In French, every word has a gender: masculine or feminine. The gender changes the article (le / la) and sometimes the end of the word.",
+    'p3-m2-intro': "The article shows if a word is masculine, feminine or plural, and if it is known or not. Click each article to hear it in an example.",
+    'p3-m3-intro': "ÊTRE (to be) is the most important verb in French. It is used to say who you are, how you are, where you are. Click each line to hear it.",
+    'p3-m4-intro': "AVOIR (to have) is used to say what you own and to express physical sensations. Click each line to hear it.",
+    'p3-m5-intro': "Learn to introduce yourself in French. Fill in the boxes and listen to your complete introduction!",
+    'p3-m6-intro': "Click on any number to hear it. Watch out for numbers 70-99, they are special in French!",
+    'p3-m7-intro': "Learn to say the time, days of the week and months. Essential for all appointments!",
+    'p3-m8-intro': "4 real conversations you will use in France. Click each bubble to hear it. Blue bubbles are you!"
+  },
+  wolof: {
+    'p3-m1-intro': "Ci Faransi, baat bëgg am dëkk ci baat yépp: goor wala jigéen. Dëkk bi yëgël liggéey (le / la) ak musaa xam mu màgg bi.",
+    'p3-m2-intro': "Liggéey bi wax ne baat bi goor la, jigéen la, wala bu bari. Dawal ci kenn liggéey ngir ngë dëgël ci mbir benn.",
+    'p3-m3-intro': "ÊTRE mooy werb bi am solo kanam ci Faransi. Dafa jëfandikoo ngir wax kenn nga moom, naka nga am ak foofu nga nekk. Dawal ci kenn woon ngir dëgël.",
+    'p3-m4-intro': "AVOIR mooy «am». Dafa jëfandikoo ngir wax loolu nga am ak ngir fàtte. Dawal ci kenn woon ngir dëgël.",
+    'p3-m5-intro': "Jàng ngir diis sa bopp ci Faransi. Top ay woon yi te dëgël sa diis bu sore!",
+    'p3-m6-intro': "Dawal ci kenn noomu ngir dëgël. Jëfandal noomu yu 70-99, dañu am solo ci Faransi!",
+    'p3-m7-intro': "Jàng ngir wax waxtu, fan yi ci ayu-bis ak weeru bi. Dañu am solo ci ndaje yépp!",
+    'p3-m8-intro': "4 waxtaan yu dëgër yëgël ma ci Faraŋse. Dawal ci kenn bulb ngir dëgël. Bulb yu kaw yi mooy sa wax!"
+  },
+  bambara: {
+    'p3-m1-intro': "Faransi kan na, kuma bɛɛ sɔrɔ ni (cεden walima musoman). Aw bɛ jatekunnafoni (le / la) yɛlɛma ani kuma laban.",
+    'p3-m2-intro': "Jatekunnafoni b'a jira ni kuma ye cεden, musoman walima caaman, ani ni a bɛ lɔn. Jatekunnafoni kelen digi ka mɛn misali la.",
+    'p3-m3-intro': "ÊTRE ye kuma ɲuman ye faransi kan na. A bɛ kɛ i ka i yɛrɛ fɔ, i ka kɛnɛ cogo di, ani fɔ i bɛ min. Dugu kelen digi ka mɛn.",
+    'p3-m4-intro': "AVOIR ko «sɔrɔ». A bɛ kɛ ka fɔ i bɛ mun sɔrɔ ani ka miiri fɔ. Dugu kelen digi ka mɛn.",
+    'p3-m5-intro': "Kalan ka i yɛrɛ weele faransi kan na. Sɛbɛnw tumu ani ka i bolo mɛn weele dɔlɔlen!",
+    'p3-m6-intro': "Jate o jate digi ka mɛn. Jaabi jatew 70-99 kan, u ka di faransi kan na!",
+    'p3-m7-intro': "Kalan ka waati, donni, ani kalo fɔ. U bɛ nafama yen bɛɛ la!",
+    'p3-m8-intro': "4 kumakan tilennen i bɛna kɛ Faransi jamana la. Bulub kelen digi ka mɛn. Bulub bulukan bɛ i ka kuma fɔ!"
+  }
+};
+
+function setLang(l){
+  localStorage.setItem('p3lang', l);
+  localStorage.setItem('app-lang', l);
+  const t = P3_TRANSLATIONS[l] || P3_TRANSLATIONS['fr'];
+  Object.keys(t).forEach(function(id){
+    const el = document.getElementById(id);
+    if(el) el.textContent = t[id];
+  });
+  // RTL pour l'arabe
+  document.body.setAttribute('dir', l === 'ar' ? 'rtl' : 'ltr');
+}
 
 // ===== M1 : GENRE QUIZ =====
 const genreWords=[
@@ -1365,8 +1428,11 @@ window.addEventListener('DOMContentLoaded',()=>{
   buildJours();buildMois();buildHeures();
   initDayQuiz();
   buildDial('cafe');
-  const lang=localStorage.getItem('p3lang');
-  if(lang)document.getElementById('langSelect').value=lang;
+  const lang=localStorage.getItem('p3lang')||localStorage.getItem('app-lang');
+  if(lang){
+    document.getElementById('langSelect').value=lang;
+    setLang(lang);
+  }
   const dark=document.body.classList.contains('dark');
   const tb=document.getElementById('themeBtn');
   if(tb)tb.textContent=dark?'☀️':'🌙';

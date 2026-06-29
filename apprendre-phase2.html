@@ -744,11 +744,14 @@ var TRANSLATIONS = {
 
 function setLang(lang) {
   currentLang = lang;
+  localStorage.setItem('p2lang', lang);
+  localStorage.setItem('app-lang', lang);
   var t = TRANSLATIONS[lang] || TRANSLATIONS['fr'];
   Object.keys(t).forEach(function(id) {
     var el = document.getElementById(id);
     if (el) el.textContent = t[id];
   });
+  document.body.setAttribute('dir', lang === 'ar' ? 'rtl' : 'ltr');
 }
 
 // ============================
@@ -1489,6 +1492,14 @@ completed.forEach(function(id) {
 });
 updateProgress();
 go('home');
+// Restaurer la langue
+var _savedLang = localStorage.getItem('p2lang') || localStorage.getItem('app-lang');
+if(_savedLang){
+  var _ls = document.getElementById('langSelect');
+  if(_ls) _ls.value = _savedLang;
+  setLang(_savedLang);
+}
+// Restaurer le thème
 const _dark2=document.body.classList.contains('dark');
 const _tb2=document.getElementById('themeBtn');
 if(_tb2)_tb2.textContent=_dark2?'☀️':'🌙';
