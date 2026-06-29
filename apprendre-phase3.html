@@ -1,0 +1,1355 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>J'apprends le Français — Phase 3 · A1</title>
+<style>
+:root {
+  --bg:#FFF8F0; --bg2:#FBEFE0; --card:#FFFFFF;
+  --ink:#2D2A26; --ink2:#5F5852; --muted:#9A8F87;
+  --border:#F0E3D2;
+  --orange:#F59038; --orange-soft:#FFD9B5; --orange-dark:#D97B22;
+  --blue:#5BA8D9; --blue-soft:#D5EAF7;
+  --green:#6BBE5C; --green-soft:#DCEFD2;
+  --pink:#E97D9C; --pink-soft:#F9DDE5;
+  --violet:#9888D1; --violet-soft:#E3DFF3;
+  --yellow:#F4C95D; --yellow-soft:#FBEFC8;
+  --red:#E26A6A; --teal:#38B2AC; --teal-soft:#E6FFFA;
+  --shadow:0 4px 16px rgba(180,140,90,0.13);
+  --shadow-lg:0 8px 32px rgba(180,140,90,0.2);
+  --r:16px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--ink);font-size:16px;line-height:1.5;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+input,textarea{font-family:inherit;font-size:16px}
+
+/* Layout */
+.shell{display:flex;min-height:100vh}
+.sidebar{width:260px;background:var(--card);border-right:2px solid var(--border);padding:20px 14px;position:fixed;top:0;bottom:0;left:0;overflow-y:auto;z-index:100;transition:transform .3s;display:flex;flex-direction:column;gap:6px}
+.main{margin-left:260px;flex:1;padding:32px 36px 80px;min-height:100vh}
+.sec{display:none;animation:fadeIn .35s ease}
+.sec.on{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.lesson{max-width:960px;margin:0 auto}
+
+/* Sidebar */
+.logo{display:flex;align-items:center;gap:10px;padding:6px 0 10px}
+.logo-icon{font-size:32px}
+.logo-text{font-size:18px;font-weight:800;color:var(--orange);line-height:1.1}
+.logo-sub{font-size:11px;color:var(--muted);font-weight:500}
+.prog-block{background:var(--bg2);border-radius:var(--r);padding:12px 14px;margin-bottom:4px}
+.prog-label{font-size:12px;color:var(--ink2);font-weight:700;margin-bottom:6px;display:flex;justify-content:space-between}
+.prog-bar{height:8px;background:var(--border);border-radius:6px;overflow:hidden}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--orange),var(--yellow));width:0%;transition:width .6s ease;border-radius:6px}
+.prog-stars{margin-top:8px;font-size:16px;color:var(--yellow);letter-spacing:2px}
+.nav-lbl{font-size:10px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:1.5px;padding:6px 4px 2px}
+.ni{display:flex;align-items:center;gap:10px;padding:11px 12px;border-radius:12px;font-size:14px;font-weight:600;color:var(--ink2);width:100%;text-align:left;transition:all .15s;position:relative}
+.ni:hover{background:var(--bg2);color:var(--ink)}
+.ni.on{background:var(--orange);color:white;box-shadow:var(--shadow)}
+.ni.done{background:var(--green-soft);color:var(--green)}
+.ni.done::after{content:"✓";margin-left:auto;font-weight:900;font-size:13px}
+.ni-icon{font-size:20px;flex-shrink:0}
+.phase-link{display:flex;align-items:center;gap:8px;padding:9px 12px;border-radius:12px;font-size:13px;font-weight:700;color:var(--violet);background:var(--violet-soft);text-decoration:none;transition:all .2s;margin-top:4px}
+.phase-link:hover{background:var(--violet);color:white}
+.audio-box{margin-top:auto;background:var(--blue-soft);border-radius:var(--r);padding:12px 14px}
+.audio-box-title{font-size:12px;font-weight:700;color:var(--ink2);margin-bottom:8px}
+.audio-row{display:flex;align-items:center;gap:8px;margin:6px 0}
+.audio-row label{font-size:12px;color:var(--ink2);min-width:56px}
+.audio-row input[type=range]{flex:1;accent-color:var(--blue)}
+.test-voice-btn{width:100%;margin-top:8px;padding:8px;background:var(--blue);color:white;border-radius:10px;font-size:12px;font-weight:700;text-align:center}
+.reset-btn{width:100%;margin-top:6px;padding:8px;background:var(--pink-soft);color:var(--red);border-radius:10px;font-size:11px;font-weight:700;text-align:center}
+.lang-wrap{padding:10px 0 4px;border-top:1px solid var(--border);margin-top:6px}
+.lang-label{font-size:10px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:5px}
+.lang-select{width:100%;padding:7px 10px;border-radius:10px;border:2px solid var(--border);background:var(--card);font-size:12px;font-weight:600;color:var(--ink)}
+
+/* Mobile */
+.menu-btn{display:none;position:fixed;top:12px;right:12px;z-index:200;background:var(--orange);color:white;width:46px;height:46px;border-radius:12px;font-size:20px;box-shadow:var(--shadow);align-items:center;justify-content:center}
+
+/* Typography */
+.module-tag{display:inline-block;padding:5px 14px;border-radius:20px;font-size:12px;font-weight:800;margin-bottom:12px;letter-spacing:.5px}
+h1{font-size:36px;font-weight:800;color:var(--ink);margin-bottom:8px;line-height:1.15}
+h2{font-size:28px;font-weight:800;color:var(--ink);margin-bottom:8px}
+h3{font-size:20px;font-weight:700;color:var(--ink);margin:24px 0 12px}
+.intro{font-size:16px;color:var(--ink2);margin-bottom:20px;max-width:720px}
+.tip{background:var(--yellow-soft);border-left:4px solid var(--yellow);padding:12px 16px;border-radius:10px;margin:16px 0;display:flex;gap:10px}
+.tip-icon{font-size:22px;flex-shrink:0}
+.tip-body{font-size:14px;color:var(--ink2)}
+.lesson-nav{display:flex;justify-content:space-between;align-items:center;margin-top:40px;padding-top:24px;border-top:2px solid var(--border)}
+.nav-btn{padding:12px 20px;background:var(--card);border:2px solid var(--border);border-radius:12px;font-size:14px;font-weight:700;color:var(--ink2);transition:all .2s}
+.nav-btn:hover{border-color:var(--orange);color:var(--orange)}
+.nav-btn.primary{background:var(--orange);color:white;border-color:var(--orange);box-shadow:var(--shadow)}
+.nav-btn.primary:hover{background:var(--orange-dark);transform:translateY(-2px)}
+.nav-count{font-size:13px;color:var(--muted);font-weight:600}
+
+/* Hero */
+.hero{background:linear-gradient(135deg,var(--violet-soft) 0%,var(--blue-soft) 100%);border-radius:24px;padding:40px 36px;text-align:center;margin-bottom:28px}
+.hero-emoji{font-size:72px;display:block;margin-bottom:12px}
+.hero h1{font-size:38px}
+.hero p{font-size:17px;color:var(--ink2);margin-top:10px;max-width:560px;margin-left:auto;margin-right:auto}
+.home-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin:20px 0}
+.home-card{background:var(--card);border:2px solid var(--border);border-radius:20px;padding:20px;cursor:pointer;transition:all .2s;text-align:left;position:relative;overflow:hidden}
+.home-card:hover{border-color:var(--orange);transform:translateY(-4px);box-shadow:var(--shadow-lg)}
+.home-card.done-card{border-color:var(--green)}
+.home-card-emoji{font-size:40px;margin-bottom:10px;display:block}
+.home-card-title{font-size:17px;font-weight:800;color:var(--ink);margin-bottom:4px}
+.home-card-desc{font-size:13px;color:var(--muted)}
+.home-card-badge{position:absolute;top:12px;right:12px;background:var(--green);color:white;font-size:11px;font-weight:700;padding:3px 8px;border-radius:8px}
+
+/* Buttons */
+.btn{display:inline-flex;align-items:center;gap:6px;padding:10px 18px;border-radius:12px;font-size:14px;font-weight:700;transition:all .2s}
+.btn-orange{background:var(--orange);color:white;box-shadow:var(--shadow)}.btn-orange:hover{background:var(--orange-dark);transform:translateY(-2px)}
+.btn-blue{background:var(--blue);color:white}.btn-blue:hover{background:#4a90c4}
+.btn-green{background:var(--green);color:white}.btn-green:hover{background:#5aaa4a}
+.btn-ghost{background:var(--card);border:2px solid var(--border);color:var(--ink2)}.btn-ghost:hover{border-color:var(--orange);color:var(--orange)}
+.btn-violet{background:var(--violet);color:white}.btn-violet:hover{background:#8070c0}
+
+/* Quiz */
+.quiz-block{background:var(--card);border:2px solid var(--border);border-radius:20px;padding:24px;margin:16px 0}
+.quiz-q{font-size:18px;font-weight:700;color:var(--ink);margin-bottom:16px}
+.quiz-opts{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px}
+.qopt{padding:18px 10px;background:var(--bg2);border:3px solid transparent;border-radius:14px;font-size:20px;font-weight:800;color:var(--ink);text-align:center;transition:all .2s}
+.qopt:hover:not(:disabled){border-color:var(--orange);transform:scale(1.04)}
+.qopt:disabled{cursor:default;opacity:.75}
+.qopt.ok{background:var(--green-soft);border-color:var(--green);color:var(--green)}
+.qopt.ko{background:var(--pink-soft);border-color:var(--red);color:var(--red)}
+.quiz-fb{display:none;margin-top:14px;padding:12px 16px;border-radius:12px;font-weight:700;font-size:15px}
+.quiz-fb.show{display:block}
+.quiz-fb.ok{background:var(--green-soft);color:#2f7d1d}
+.quiz-fb.ko{background:var(--pink-soft);color:#b93434}
+
+/* Conjugation table */
+.conj-table{width:100%;border-collapse:collapse;border-radius:16px;overflow:hidden;box-shadow:var(--shadow);margin:16px 0}
+.conj-table th{background:var(--orange);color:white;padding:12px 16px;font-size:14px;font-weight:800;text-align:left}
+.conj-table td{padding:12px 16px;border-bottom:1px solid var(--border);font-size:16px;cursor:pointer;transition:background .15s}
+.conj-table tr:last-child td{border-bottom:none}
+.conj-table tr:hover td{background:var(--orange-soft)}
+.conj-table .pronom{font-weight:700;color:var(--ink2);font-size:15px}
+.conj-table .forme{font-weight:800;color:var(--orange);font-size:18px}
+.conj-table .exemple{font-size:13px;color:var(--muted);font-style:italic}
+.conj-table.blue th{background:var(--blue)}
+.conj-table.blue tr:hover td{background:var(--blue-soft)}
+.conj-table.blue .forme{color:var(--blue)}
+
+/* Genre cards */
+.genre-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin:20px 0}
+.genre-col{border-radius:20px;padding:20px}
+.genre-col.masc{background:var(--blue-soft);border:2px solid var(--blue)}
+.genre-col.fem{background:var(--pink-soft);border:2px solid var(--pink)}
+.genre-title{font-size:18px;font-weight:800;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.genre-col.masc .genre-title{color:var(--blue)}
+.genre-col.fem .genre-title{color:var(--pink)}
+.genre-word{display:flex;align-items:center;gap:10px;padding:10px 12px;background:white;border-radius:12px;margin-bottom:8px;cursor:pointer;font-size:15px;font-weight:600;transition:all .15s}
+.genre-word:hover{transform:translateX(4px);box-shadow:var(--shadow)}
+.genre-word .article{font-size:13px;font-weight:700;padding:2px 8px;border-radius:8px;flex-shrink:0}
+.masc .article{background:var(--blue-soft);color:var(--blue)}
+.fem .article{background:var(--pink-soft);color:var(--pink)}
+
+/* Article table */
+.art-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:16px 0}
+.art-card{background:var(--card);border:2px solid var(--border);border-radius:18px;padding:18px;text-align:center;transition:all .2s}
+.art-card:hover{border-color:var(--orange);box-shadow:var(--shadow)}
+.art-card-label{font-size:12px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px}
+.art-row{display:flex;justify-content:center;gap:8px;flex-wrap:wrap}
+.art-pill{padding:8px 16px;border-radius:12px;font-size:22px;font-weight:900;cursor:pointer;transition:all .2s;border:3px solid transparent}
+.art-pill.masc{background:var(--blue-soft);color:var(--blue)}.art-pill.masc:hover{border-color:var(--blue)}
+.art-pill.fem{background:var(--pink-soft);color:var(--pink)}.art-pill.fem:hover{border-color:var(--pink)}
+.art-pill.pl{background:var(--green-soft);color:var(--green)}.art-pill.pl:hover{border-color:var(--green)}
+.art-pill.vow{background:var(--violet-soft);color:var(--violet)}.art-pill.vow:hover{border-color:var(--violet)}
+.art-pill.playing{filter:brightness(.85);transform:scale(1.08)}
+
+/* Fill-in-the-blank */
+.fill-block{background:var(--card);border:2px solid var(--border);border-radius:18px;padding:20px;margin:14px 0}
+.fill-sentence{font-size:20px;font-weight:600;color:var(--ink);margin-bottom:14px;line-height:2}
+.fill-input{padding:8px 14px;border:2.5px solid var(--border);border-radius:10px;font-size:18px;font-weight:700;width:100px;text-align:center;outline:none;transition:border-color .2s}
+.fill-input:focus{border-color:var(--blue)}
+.fill-input.ok{border-color:var(--green);background:var(--green-soft);color:var(--green)}
+.fill-input.ko{border-color:var(--red);background:var(--pink-soft);color:var(--red)}
+.fill-check{padding:8px 16px;border-radius:10px;background:var(--blue);color:white;font-size:14px;font-weight:700;margin-left:8px}
+.fill-fb{font-size:14px;margin-top:8px;font-weight:600;min-height:20px}
+
+/* Number grid */
+.num-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(90px,1fr));gap:10px;margin:16px 0}
+.num-card{background:var(--card);border:3px solid var(--border);border-radius:14px;padding:14px 6px;text-align:center;cursor:pointer;transition:all .2s}
+.num-card:hover{border-color:var(--violet);transform:translateY(-3px);box-shadow:var(--shadow)}
+.num-card.playing{background:var(--violet-soft);border-color:var(--violet)}
+.num-big{font-size:28px;font-weight:900;color:var(--violet);line-height:1}
+.num-word{font-size:12px;font-weight:700;color:var(--ink2);margin-top:5px;line-height:1.3}
+
+/* Clock & calendar */
+.calendar-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;margin:14px 0}
+.cal-card{background:var(--card);border:2px solid var(--border);border-radius:12px;padding:10px 6px;text-align:center;cursor:pointer;transition:all .15s}
+.cal-card:hover{border-color:var(--teal);background:var(--teal-soft);transform:translateY(-2px)}
+.cal-card.playing{background:var(--teal);color:white;border-color:var(--teal)}
+.cal-num{font-size:11px;font-weight:700;color:var(--muted)}
+.cal-name{font-size:13px;font-weight:800;color:var(--ink)}
+.months-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:14px 0}
+.month-card{background:var(--card);border:2px solid var(--border);border-radius:12px;padding:10px;text-align:center;cursor:pointer;transition:all .15s}
+.month-card:hover{border-color:var(--orange);background:var(--orange-soft)}
+.month-card.playing{background:var(--orange);color:white;border-color:var(--orange)}
+.month-num{font-size:10px;color:var(--muted);font-weight:700}
+.month-name{font-size:14px;font-weight:800;color:var(--ink)}
+.month-card.playing .month-name,.month-card.playing .month-num{color:white}
+.time-list{display:grid;gap:10px;margin:16px 0}
+.time-row{display:flex;align-items:center;gap:14px;background:var(--card);border:2px solid var(--border);border-radius:14px;padding:14px 18px;cursor:pointer;transition:all .15s}
+.time-row:hover{border-color:var(--teal);background:var(--teal-soft)}
+.time-row.playing{border-color:var(--teal);background:var(--teal)}
+.time-row.playing .time-fr,.time-row.playing .time-ex{color:white}
+.time-clock{font-size:28px;font-weight:900;color:var(--teal);min-width:70px}
+.time-row.playing .time-clock{color:white}
+.time-fr{font-size:16px;font-weight:700;color:var(--ink)}
+.time-ex{font-size:13px;color:var(--muted);font-style:italic}
+
+/* Expressions */
+.expr-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin:16px 0}
+.expr-card{background:var(--card);border:2px solid var(--border);border-radius:16px;padding:16px 14px;cursor:pointer;transition:all .2s}
+.expr-card:hover{border-color:var(--green);transform:translateY(-3px);box-shadow:var(--shadow)}
+.expr-card.playing{background:var(--green-soft);border-color:var(--green)}
+.expr-fr{font-size:16px;font-weight:800;color:var(--ink);margin-bottom:4px}
+.expr-trans{font-size:13px;color:var(--muted)}
+.expr-icon{font-size:28px;margin-bottom:8px}
+
+/* Présentation */
+.pres-builder{background:var(--card);border:2px solid var(--border);border-radius:20px;padding:24px;margin:16px 0}
+.pres-line{display:flex;align-items:center;gap:10px;margin-bottom:12px;flex-wrap:wrap}
+.pres-label{font-size:15px;font-weight:700;color:var(--ink);min-width:160px}
+.pres-input{padding:10px 14px;border:2px solid var(--border);border-radius:10px;font-size:15px;flex:1;min-width:140px;outline:none;transition:border-color .2s}
+.pres-input:focus{border-color:var(--orange)}
+.pres-preview{background:var(--violet-soft);border:2px solid var(--violet);border-radius:16px;padding:20px 24px;margin-top:16px;font-size:17px;color:var(--ink);line-height:2;font-weight:600;display:none}
+.pres-preview.show{display:block}
+.pres-preview strong{color:var(--violet)}
+.famille-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin:14px 0}
+.fam-card{background:var(--card);border:2px solid var(--border);border-radius:14px;padding:14px 10px;text-align:center;cursor:pointer;transition:all .2s}
+.fam-card:hover{border-color:var(--orange);transform:translateY(-3px);box-shadow:var(--shadow)}
+.fam-card.playing{background:var(--orange-soft);border-color:var(--orange)}
+.fam-emoji{font-size:34px;display:block;margin-bottom:6px}
+.fam-fr{font-size:15px;font-weight:800;color:var(--ink)}
+.fam-poss{font-size:12px;color:var(--muted);margin-top:2px}
+
+/* Conversations */
+.dial-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px}
+.dial-tab{padding:9px 16px;border-radius:20px;background:var(--card);border:2px solid var(--border);font-size:13px;font-weight:700;color:var(--ink2);transition:all .15s;cursor:pointer}
+.dial-tab:hover{border-color:var(--blue)}
+.dial-tab.on{background:var(--blue);color:white;border-color:var(--blue)}
+.dial-scene{display:none;animation:fadeIn .3s ease}
+.dial-scene.on{display:block}
+.dial-header{background:linear-gradient(135deg,var(--blue-soft),var(--violet-soft));border-radius:18px;padding:20px 22px;margin-bottom:18px;display:flex;align-items:center;gap:16px}
+.dial-header-icon{font-size:48px}
+.dial-header-title{font-size:20px;font-weight:800;color:var(--ink)}
+.dial-header-context{font-size:14px;color:var(--ink2);margin-top:4px}
+.dial-conv{display:flex;flex-direction:column;gap:10px;margin:0 0 16px}
+.dial-line{display:flex;gap:10px;align-items:flex-end}
+.dial-line.me{flex-direction:row-reverse}
+.dial-bubble{max-width:72%;padding:12px 16px;border-radius:18px;font-size:16px;font-weight:600;cursor:pointer;transition:all .15s;line-height:1.55}
+.dial-line.them .dial-bubble{background:var(--bg2);border:2px solid var(--border);border-radius:4px 18px 18px 18px;color:var(--ink)}
+.dial-line.me .dial-bubble{background:var(--blue);color:white;border-radius:18px 4px 18px 18px}
+.dial-bubble:hover{filter:brightness(.93);transform:scale(1.01)}
+.dial-bubble.playing{animation:pulse .5s}
+.dial-who{font-size:11px;font-weight:700;color:var(--muted);padding-bottom:4px;white-space:nowrap}
+.dial-trans{font-size:12px;color:var(--muted);font-style:italic;margin-top:3px}
+.dial-vocab{background:var(--violet-soft);border-radius:14px;padding:14px 16px;margin-top:4px}
+.dial-vocab-title{font-size:12px;font-weight:700;color:var(--violet);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px}
+.dial-vocab-item{display:flex;gap:10px;margin:6px 0;font-size:14px;cursor:pointer;padding:4px 6px;border-radius:8px;transition:background .15s}
+.dial-vocab-item:hover{background:rgba(152,136,209,.2)}
+.dvw{font-weight:800;color:var(--ink);min-width:180px;flex-shrink:0}
+.dvd{color:var(--ink2)}
+
+/* Reward */
+.reward-pop{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(0);background:var(--card);padding:36px 48px;border-radius:24px;border:4px solid var(--yellow);box-shadow:var(--shadow-lg);text-align:center;z-index:300;transition:transform .45s cubic-bezier(.5,1.6,.5,1);pointer-events:none}
+.reward-pop.show{transform:translate(-50%,-50%) scale(1)}
+.reward-emoji{font-size:72px;display:block}
+.reward-text{font-size:22px;font-weight:800;color:var(--orange);margin-top:10px}
+.reward-sub{font-size:14px;color:var(--muted);margin-top:4px}
+
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
+
+/* Responsive */
+@media(max-width:900px){
+  .sidebar{transform:translateX(-100%);box-shadow:var(--shadow-lg)}
+  .sidebar.open{transform:translateX(0)}
+  .main{margin-left:0;padding:20px 16px 80px}
+  .menu-btn{display:flex}
+  h1{font-size:26px} h2{font-size:22px}
+  .genre-grid{grid-template-columns:1fr}
+  .art-grid{grid-template-columns:1fr}
+  .calendar-grid{grid-template-columns:repeat(4,1fr)}
+}
+@media(max-width:500px){
+  .months-grid{grid-template-columns:repeat(3,1fr)}
+  .dial-bubble{font-size:14px;max-width:85%}
+  .num-grid{grid-template-columns:repeat(auto-fill,minmax(72px,1fr))}
+}
+</style>
+</head>
+<body>
+
+<button class="menu-btn" id="menuBtn" onclick="toggleSidebar()">☰</button>
+
+<div class="shell">
+
+<!-- SIDEBAR -->
+<nav class="sidebar" id="sidebar">
+  <div class="logo">
+    <span class="logo-icon">📚</span>
+    <div>
+      <div class="logo-text">J'apprends</div>
+      <div class="logo-sub">le Français — Phase 3 · A1</div>
+    </div>
+  </div>
+
+  <div class="prog-block">
+    <div class="prog-label"><span>Ma progression</span><span id="prog-pct">0 %</span></div>
+    <div class="prog-bar"><div class="prog-fill" id="progFill"></div></div>
+    <div class="prog-stars" id="progStars">☆ ☆ ☆ ☆ ☆ ☆ ☆ ☆</div>
+  </div>
+
+  <div class="nav-lbl">Modules</div>
+  <button class="ni on" id="ni-home" onclick="go('home')"><span class="ni-icon">🏠</span>Accueil</button>
+  <button class="ni" id="ni-m1" onclick="go('m1')"><span class="ni-icon">👫</span>1. Masculin / Féminin</button>
+  <button class="ni" id="ni-m2" onclick="go('m2')"><span class="ni-icon">📌</span>2. Les Articles</button>
+  <button class="ni" id="ni-m3" onclick="go('m3')"><span class="ni-icon">🔵</span>3. Verbe ÊTRE</button>
+  <button class="ni" id="ni-m4" onclick="go('m4')"><span class="ni-icon">🟠</span>4. Verbe AVOIR</button>
+  <button class="ni" id="ni-m5" onclick="go('m5')"><span class="ni-icon">👤</span>5. Se présenter</button>
+  <button class="ni" id="ni-m6" onclick="go('m6')"><span class="ni-icon">🔢</span>6. Les Chiffres</button>
+  <button class="ni" id="ni-m7" onclick="go('m7')"><span class="ni-icon">🕐</span>7. L'Heure & Calendrier</button>
+  <button class="ni" id="ni-m8" onclick="go('m8')"><span class="ni-icon">💬</span>8. Conversations A1</button>
+
+  <div class="nav-lbl">Autres phases</div>
+  <a href="apprendre-phase1.html" class="phase-link">📙 Phase 1 — Les Bases</a>
+  <a href="apprendre-phase2.html" class="phase-link">📘 Phase 2 — Consolidation</a>
+
+  <div class="lang-wrap">
+    <div class="lang-label">🌍 Langue des consignes</div>
+    <select class="lang-select" id="langSelect" onchange="setLang(this.value)">
+      <option value="fr">🇫🇷 Français</option>
+      <option value="ar">🇸🇦 العربية</option>
+      <option value="wolof">🌍 Wolof</option>
+      <option value="bambara">🌍 Bambara</option>
+      <option value="en">🇬🇧 English</option>
+    </select>
+  </div>
+
+  <div class="audio-box">
+    <div class="audio-box-title">🔊 Voix</div>
+    <div class="audio-row"><label>Vitesse</label><input type="range" id="rateSlider" min="0.5" max="1.2" step="0.1" value="0.85"></div>
+    <div class="audio-row"><label>Volume</label><input type="range" id="volSlider" min="0.2" max="1" step="0.1" value="1"></div>
+    <button class="test-voice-btn" onclick="speak('Bonjour, je parle français !')">▶ Tester la voix</button>
+    <button class="reset-btn" onclick="resetProgress()">🔄 Réinitialiser</button>
+  </div>
+</nav>
+
+<!-- MAIN -->
+<main class="main">
+
+<!-- HOME -->
+<section class="sec on" id="s-home">
+<div class="lesson">
+  <div class="hero">
+    <span class="hero-emoji">🇫🇷</span>
+    <h1>Phase 3 — Niveau A1</h1>
+    <p>Tu connais les bases. Maintenant tu vas <strong>parler français</strong> ! Grammaire, verbes, conversations réelles.</p>
+    <div style="margin-top:20px">
+      <button class="btn btn-violet" style="font-size:16px;padding:14px 24px" onclick="speak('Bienvenue dans la phase trois. Tu vas apprendre la grammaire française et faire tes premières vraies conversations.')">▶ Écouter le message</button>
+    </div>
+  </div>
+
+  <div class="home-grid" id="homeGrid">
+    <div class="home-card" onclick="go('m1')"><span class="home-card-emoji">👫</span><div class="home-card-title">1. Masculin / Féminin</div><div class="home-card-desc">Chaque mot a un genre. Apprends les règles et les exceptions.</div></div>
+    <div class="home-card" onclick="go('m2')"><span class="home-card-emoji">📌</span><div class="home-card-title">2. Les Articles</div><div class="home-card-desc">le, la, les, un, une, des — le secret des articles français.</div></div>
+    <div class="home-card" onclick="go('m3')"><span class="home-card-emoji">🔵</span><div class="home-card-title">3. Verbe ÊTRE</div><div class="home-card-desc">Je suis, tu es, il est… Le verbe le plus important en français.</div></div>
+    <div class="home-card" onclick="go('m4')"><span class="home-card-emoji">🟠</span><div class="home-card-title">4. Verbe AVOIR</div><div class="home-card-desc">J'ai, tu as, il a… Et les expressions avec avoir.</div></div>
+    <div class="home-card" onclick="go('m5')"><span class="home-card-emoji">👤</span><div class="home-card-title">5. Se présenter</div><div class="home-card-desc">Dis qui tu es, ton âge, ta ville, ta famille.</div></div>
+    <div class="home-card" onclick="go('m6')"><span class="home-card-emoji">🔢</span><div class="home-card-title">6. Les Chiffres</div><div class="home-card-desc">Compte de 1 à 100. Avec les chiffres difficiles !</div></div>
+    <div class="home-card" onclick="go('m7')"><span class="home-card-emoji">🕐</span><div class="home-card-title">7. L'Heure & Calendrier</div><div class="home-card-desc">Les jours, les mois, l'heure. Essentiel au quotidien.</div></div>
+    <div class="home-card" onclick="go('m8')"><span class="home-card-emoji">💬</span><div class="home-card-title">8. Conversations A1</div><div class="home-card-desc">4 vraies conversations : café, bus, voisin, travail.</div></div>
+  </div>
+
+  <div class="tip"><div class="tip-icon">💡</div><div class="tip-body"><strong>Astuce :</strong> Clique sur toutes les formes du verbe pour les entendre. Répète à voix haute à chaque fois. C'est le secret pour apprendre vite !</div></div>
+</div>
+</section>
+
+<!-- MODULE 1 : MASCULIN / FÉMININ -->
+<section class="sec" id="s-m1">
+<div class="lesson">
+  <div class="module-tag" style="background:var(--violet-soft);color:var(--violet)">👫 MODULE 1 · Grammaire</div>
+  <h2>Masculin et Féminin</h2>
+  <p class="intro">En français, <strong>chaque mot a un genre</strong> : masculin ou féminin. Le genre change l'article (le / la) et parfois la fin du mot.</p>
+
+  <div class="tip"><div class="tip-icon">📌</div><div class="tip-body"><strong>Règle principale :</strong> Les mots qui se terminent en <strong>-e</strong> sont <em>souvent</em> féminins. Les autres sont souvent masculins. Mais il y a des exceptions — apprends les mots avec leur article !</div></div>
+
+  <h3>👫 Exemples — Clique pour écouter</h3>
+  <div class="genre-grid">
+    <div class="genre-col masc">
+      <div class="genre-title">🔵 Masculin — <em>le / un</em></div>
+      <div class="genre-word" onclick="speak('le garçon')"><span class="article">le</span> garçon</div>
+      <div class="genre-word" onclick="speak('le père')"><span class="article">le</span> père</div>
+      <div class="genre-word" onclick="speak('le frère')"><span class="article">le</span> frère</div>
+      <div class="genre-word" onclick="speak('le livre')"><span class="article">le</span> livre</div>
+      <div class="genre-word" onclick="speak('le café')"><span class="article">le</span> café</div>
+      <div class="genre-word" onclick="speak('le médecin')"><span class="article">le</span> médecin</div>
+      <div class="genre-word" onclick="speak('le bus')"><span class="article">le</span> bus</div>
+      <div class="genre-word" onclick="speak('le travail')"><span class="article">le</span> travail</div>
+    </div>
+    <div class="genre-col fem">
+      <div class="genre-title">🩷 Féminin — <em>la / une</em></div>
+      <div class="genre-word" onclick="speak('la fille')"><span class="article">la</span> fille</div>
+      <div class="genre-word" onclick="speak('la mère')"><span class="article">la</span> mère</div>
+      <div class="genre-word" onclick="speak('la sœur')"><span class="article">la</span> sœur</div>
+      <div class="genre-word" onclick="speak('la maison')"><span class="article">la</span> maison</div>
+      <div class="genre-word" onclick="speak('la voiture')"><span class="article">la</span> voiture</div>
+      <div class="genre-word" onclick="speak('la ville')"><span class="article">la</span> ville</div>
+      <div class="genre-word" onclick="speak('la table')"><span class="article">la</span> table</div>
+      <div class="genre-word" onclick="speak('la famille')"><span class="article">la</span> famille</div>
+    </div>
+  </div>
+
+  <h3>⚠️ Devant une voyelle : <em>l'</em></h3>
+  <div style="display:flex;gap:10px;flex-wrap:wrap;margin:12px 0">
+    <div class="genre-word" style="background:var(--card);border:2px solid var(--violet);border-radius:12px;padding:10px 14px;cursor:pointer" onclick="speak('l apostrophe ami')"><span class="article" style="background:var(--violet-soft);color:var(--violet)">l'</span> ami(e)</div>
+    <div class="genre-word" style="background:var(--card);border:2px solid var(--violet);border-radius:12px;padding:10px 14px;cursor:pointer" onclick="speak('l apostrophe école')"><span class="article" style="background:var(--violet-soft);color:var(--violet)">l'</span> école</div>
+    <div class="genre-word" style="background:var(--card);border:2px solid var(--violet);border-radius:12px;padding:10px 14px;cursor:pointer" onclick="speak('l apostrophe hôpital')"><span class="article" style="background:var(--violet-soft);color:var(--violet)">l'</span> hôpital</div>
+    <div class="genre-word" style="background:var(--card);border:2px solid var(--violet);border-radius:12px;padding:10px 14px;cursor:pointer" onclick="speak('l apostrophe enfant')"><span class="article" style="background:var(--violet-soft);color:var(--violet)">l'</span> enfant</div>
+  </div>
+
+  <h3>🎯 Quiz — Masculin ou Féminin ?</h3>
+  <div class="quiz-block">
+    <div class="quiz-q" id="genre-q">Quel est le genre de : <strong id="genre-word-display" style="color:var(--orange);font-size:22px"></strong> ?</div>
+    <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+      <button class="btn btn-blue" id="masc-btn" onclick="checkGenre('m')" style="font-size:18px;padding:16px 32px">🔵 Masculin</button>
+      <button class="btn" id="fem-btn" onclick="checkGenre('f')" style="font-size:18px;padding:16px 32px;background:var(--pink);color:white">🩷 Féminin</button>
+    </div>
+    <div class="quiz-fb" id="genre-fb"></div>
+    <div style="text-align:center;margin-top:14px"><button class="btn btn-ghost" onclick="nextGenreQuiz()">Suivant ▶</button></div>
+  </div>
+
+  <div class="lesson-nav">
+    <button class="nav-btn" onclick="go('home')">← Accueil</button>
+    <span class="nav-count">Module 1 / 8</span>
+    <button class="nav-btn primary" onclick="markDone('m1');go('m2')">Suivant →</button>
+  </div>
+</div>
+</section>
+
+<!-- MODULE 2 : LES ARTICLES -->
+<section class="sec" id="s-m2">
+<div class="lesson">
+  <div class="module-tag" style="background:var(--orange-soft);color:var(--orange)">📌 MODULE 2 · Grammaire</div>
+  <h2>Les Articles</h2>
+  <p class="intro">L'article indique si un mot est <strong>masculin, féminin ou pluriel</strong>, et s'il est connu ou non. Clique sur chaque article pour l'entendre dans un exemple.</p>
+
+  <div class="art-grid">
+    <div class="art-card">
+      <div class="art-card-label">Articles définis — Ce qu'on connaît</div>
+      <div class="art-row">
+        <span class="art-pill masc" onclick="speakEx('le chat')">le</span>
+        <span class="art-pill fem" onclick="speakEx('la maison')">la</span>
+        <span class="art-pill vow" onclick="speakEx('l apostrophe école')">l'</span>
+        <span class="art-pill pl" onclick="speakEx('les enfants')">les</span>
+      </div>
+      <div style="margin-top:10px;font-size:13px;color:var(--ink2)">
+        <div>🔵 <strong>le</strong> → masculin : <em onclick="speak('le chat')" style="cursor:pointer">le chat</em></div>
+        <div>🩷 <strong>la</strong> → féminin : <em onclick="speak('la maison')" style="cursor:pointer">la maison</em></div>
+        <div>🟣 <strong>l'</strong> → voyelle : <em onclick="speak('l école')" style="cursor:pointer">l'école</em></div>
+        <div>🟢 <strong>les</strong> → pluriel : <em onclick="speak('les enfants')" style="cursor:pointer">les enfants</em></div>
+      </div>
+    </div>
+    <div class="art-card">
+      <div class="art-card-label">Articles indéfinis — Ce qu'on ne connaît pas</div>
+      <div class="art-row">
+        <span class="art-pill masc" onclick="speakEx('un ami')">un</span>
+        <span class="art-pill fem" onclick="speakEx('une amie')">une</span>
+        <span class="art-pill pl" onclick="speakEx('des amis')">des</span>
+      </div>
+      <div style="margin-top:10px;font-size:13px;color:var(--ink2)">
+        <div>🔵 <strong>un</strong> → masculin : <em onclick="speak('un ami')" style="cursor:pointer">un ami</em></div>
+        <div>🩷 <strong>une</strong> → féminin : <em onclick="speak('une amie')" style="cursor:pointer">une amie</em></div>
+        <div>🟢 <strong>des</strong> → pluriel : <em onclick="speak('des amis')" style="cursor:pointer">des amis</em></div>
+      </div>
+    </div>
+  </div>
+
+  <h3>📝 Exercice — Mets le bon article</h3>
+  <div id="art-exercises"></div>
+
+  <h3>🎯 Quiz — Quel article ?</h3>
+  <div class="quiz-block">
+    <div class="quiz-q">Choisis le bon article pour : <strong id="art-quiz-word" style="color:var(--orange);font-size:20px"></strong></div>
+    <div class="quiz-opts" id="art-quiz-opts"></div>
+    <div class="quiz-fb" id="art-quiz-fb"></div>
+    <div style="text-align:center;margin-top:14px"><button class="btn btn-ghost" onclick="nextArtQuiz()">Suivant ▶</button></div>
+  </div>
+
+  <div class="lesson-nav">
+    <button class="nav-btn" onclick="go('m1')">← Précédent</button>
+    <span class="nav-count">Module 2 / 8</span>
+    <button class="nav-btn primary" onclick="markDone('m2');go('m3')">Suivant →</button>
+  </div>
+</div>
+</section>
+
+<!-- MODULE 3 : ÊTRE -->
+<section class="sec" id="s-m3">
+<div class="lesson">
+  <div class="module-tag" style="background:var(--blue-soft);color:var(--blue)">🔵 MODULE 3 · Verbes</div>
+  <h2>Le verbe ÊTRE</h2>
+  <p class="intro">ÊTRE est le verbe le plus important en français. Il sert à dire qui tu es, comment tu vas, où tu es. Clique sur chaque ligne pour l'entendre.</p>
+
+  <table class="conj-table blue">
+    <tr><th>Pronom</th><th>Forme</th><th>Exemple</th></tr>
+    <tr onclick="speak('Je suis français')"><td class="pronom">Je</td><td class="forme">suis</td><td class="exemple">Je suis français.</td></tr>
+    <tr onclick="speak('Tu es à Paris ?')"><td class="pronom">Tu</td><td class="forme">es</td><td class="exemple">Tu es à Paris ?</td></tr>
+    <tr onclick="speak('Il est médecin')"><td class="pronom">Il / Elle / On</td><td class="forme">est</td><td class="exemple">Il est médecin.</td></tr>
+    <tr onclick="speak('Nous sommes amis')"><td class="pronom">Nous</td><td class="forme">sommes</td><td class="exemple">Nous sommes amis.</td></tr>
+    <tr onclick="speak('Vous êtes prêts ?')"><td class="pronom">Vous</td><td class="forme">êtes</td><td class="exemple">Vous êtes prêts ?</td></tr>
+    <tr onclick="speak('Ils sont contents')"><td class="pronom">Ils / Elles</td><td class="forme">sont</td><td class="exemple">Ils sont contents.</td></tr>
+  </table>
+
+  <div class="tip"><div class="tip-icon">🎯</div><div class="tip-body"><strong>Astuce :</strong> Clique sur chaque ligne et répète à voix haute. Apprends d'abord <strong>je suis, tu es, il est</strong> — c'est les plus utilisés.</div></div>
+
+  <h3>💬 Expressions utiles avec ÊTRE</h3>
+  <div class="expr-grid">
+    <div class="expr-card" onclick="speak('Je suis fatigué')"><div class="expr-icon">😴</div><div class="expr-fr">Je suis fatigué(e)</div><div class="expr-trans">I am tired</div></div>
+    <div class="expr-card" onclick="speak('Je suis prêt')"><div class="expr-icon">✅</div><div class="expr-fr">Je suis prêt(e)</div><div class="expr-trans">I am ready</div></div>
+    <div class="expr-card" onclick="speak('Je suis content')"><div class="expr-icon">😊</div><div class="expr-fr">Je suis content(e)</div><div class="expr-trans">I am happy</div></div>
+    <div class="expr-card" onclick="speak('Je suis en retard')"><div class="expr-icon">⏰</div><div class="expr-fr">Je suis en retard</div><div class="expr-trans">I am late</div></div>
+    <div class="expr-card" onclick="speak('Je suis à la maison')"><div class="expr-icon">🏠</div><div class="expr-fr">Je suis à la maison</div><div class="expr-trans">I am at home</div></div>
+    <div class="expr-card" onclick="speak('C\'est bien')"><div class="expr-icon">👍</div><div class="expr-fr">C'est bien !</div><div class="expr-trans">That's good!</div></div>
+  </div>
+
+  <h3>🎯 Quiz — Conjugue ÊTRE</h3>
+  <div class="quiz-block">
+    <div class="quiz-q">Complète la phrase : <strong id="etre-phrase" style="color:var(--ink);font-size:19px"></strong></div>
+    <div class="quiz-opts" id="etre-opts"></div>
+    <div class="quiz-fb" id="etre-fb"></div>
+    <div style="text-align:center;margin-top:14px"><button class="btn btn-ghost" onclick="nextEtreQuiz()">Suivant ▶</button></div>
+  </div>
+
+  <div class="lesson-nav">
+    <button class="nav-btn" onclick="go('m2')">← Précédent</button>
+    <span class="nav-count">Module 3 / 8</span>
+    <button class="nav-btn primary" onclick="markDone('m3');go('m4')">Suivant →</button>
+  </div>
+</div>
+</section>
+
+<!-- MODULE 4 : AVOIR -->
+<section class="sec" id="s-m4">
+<div class="lesson">
+  <div class="module-tag" style="background:var(--orange-soft);color:var(--orange)">🟠 MODULE 4 · Verbes</div>
+  <h2>Le verbe AVOIR</h2>
+  <p class="intro">AVOIR = to have. Il sert à dire ce que tu possèdes et à exprimer des sensations. Clique sur chaque ligne pour l'entendre.</p>
+
+  <table class="conj-table">
+    <tr><th>Pronom</th><th>Forme</th><th>Exemple</th></tr>
+    <tr onclick="speak('J apostrophe ai un chat')"><td class="pronom">Je</td><td class="forme">j'ai</td><td class="exemple">J'ai un chat.</td></tr>
+    <tr onclick="speak('Tu as quel âge ?')"><td class="pronom">Tu</td><td class="forme">as</td><td class="exemple">Tu as quel âge ?</td></tr>
+    <tr onclick="speak('Il a une voiture')"><td class="pronom">Il / Elle / On</td><td class="forme">a</td><td class="exemple">Il a une voiture.</td></tr>
+    <tr onclick="speak('Nous avons deux enfants')"><td class="pronom">Nous</td><td class="forme">avons</td><td class="exemple">Nous avons deux enfants.</td></tr>
+    <tr onclick="speak('Vous avez un rendez-vous ?')"><td class="pronom">Vous</td><td class="forme">avez</td><td class="exemple">Vous avez un rendez-vous ?</td></tr>
+    <tr onclick="speak('Ils ont une grande maison')"><td class="pronom">Ils / Elles</td><td class="forme">ont</td><td class="exemple">Ils ont une grande maison.</td></tr>
+  </table>
+
+  <h3>💡 Expressions avec AVOIR — L'âge et les sensations</h3>
+  <div class="expr-grid">
+    <div class="expr-card" onclick="speak('J apostrophe ai trente ans')"><div class="expr-icon">🎂</div><div class="expr-fr">J'ai … ans</div><div class="expr-trans">I am … years old</div></div>
+    <div class="expr-card" onclick="speak('J apostrophe ai faim')"><div class="expr-icon">🍽️</div><div class="expr-fr">J'ai faim</div><div class="expr-trans">I am hungry</div></div>
+    <div class="expr-card" onclick="speak('J apostrophe ai soif')"><div class="expr-icon">💧</div><div class="expr-fr">J'ai soif</div><div class="expr-trans">I am thirsty</div></div>
+    <div class="expr-card" onclick="speak('J apostrophe ai chaud')"><div class="expr-icon">🥵</div><div class="expr-fr">J'ai chaud</div><div class="expr-trans">I am hot</div></div>
+    <div class="expr-card" onclick="speak('J apostrophe ai froid')"><div class="expr-icon">🥶</div><div class="expr-fr">J'ai froid</div><div class="expr-trans">I am cold</div></div>
+    <div class="expr-card" onclick="speak('J apostrophe ai peur')"><div class="expr-icon">😨</div><div class="expr-fr">J'ai peur</div><div class="expr-trans">I am afraid</div></div>
+    <div class="expr-card" onclick="speak('J apostrophe ai besoin d apostrophe aide')"><div class="expr-icon">🙋</div><div class="expr-fr">J'ai besoin d'aide</div><div class="expr-trans">I need help</div></div>
+    <div class="expr-card" onclick="speak('J apostrophe ai un rendez-vous')"><div class="expr-icon">📅</div><div class="expr-fr">J'ai un rendez-vous</div><div class="expr-trans">I have an appointment</div></div>
+  </div>
+
+  <h3>🎯 Quiz — Conjugue AVOIR</h3>
+  <div class="quiz-block">
+    <div class="quiz-q">Complète la phrase : <strong id="avoir-phrase" style="color:var(--ink);font-size:19px"></strong></div>
+    <div class="quiz-opts" id="avoir-opts"></div>
+    <div class="quiz-fb" id="avoir-fb"></div>
+    <div style="text-align:center;margin-top:14px"><button class="btn btn-ghost" onclick="nextAvoirQuiz()">Suivant ▶</button></div>
+  </div>
+
+  <div class="lesson-nav">
+    <button class="nav-btn" onclick="go('m3')">← Précédent</button>
+    <span class="nav-count">Module 4 / 8</span>
+    <button class="nav-btn primary" onclick="markDone('m4');go('m5')">Suivant →</button>
+  </div>
+</div>
+</section>
+
+<!-- MODULE 5 : SE PRÉSENTER -->
+<section class="sec" id="s-m5">
+<div class="lesson">
+  <div class="module-tag" style="background:var(--green-soft);color:var(--green)">👤 MODULE 5 · Expression</div>
+  <h2>Se présenter</h2>
+  <p class="intro">Apprends à te présenter en français. Remplis les cases et écoute ta présentation complète !</p>
+
+  <div class="pres-builder">
+    <h3 style="margin-top:0">📝 Construis ta présentation</h3>
+    <div class="pres-line"><span class="pres-label" onclick="speak('Je m apostrophe appelle')">🔊 Je m'appelle</span><input class="pres-input" id="p-nom" placeholder="ton prénom" oninput="buildPres()"></div>
+    <div class="pres-line"><span class="pres-label" onclick="speak('J apostrophe ai')">🔊 J'ai</span><input class="pres-input" id="p-age" placeholder="ton âge" oninput="buildPres()" style="width:80px;flex:none"> <span style="font-size:16px;font-weight:700">ans.</span></div>
+    <div class="pres-line"><span class="pres-label" onclick="speak('Je suis')">🔊 Je suis</span><input class="pres-input" id="p-nat" placeholder="ta nationalité" oninput="buildPres()"></div>
+    <div class="pres-line"><span class="pres-label" onclick="speak('J apostrophe habite à')">🔊 J'habite à</span><input class="pres-input" id="p-ville" placeholder="ta ville" oninput="buildPres()"></div>
+    <div class="pres-line"><span class="pres-label" onclick="speak('Je parle')">🔊 Je parle</span><input class="pres-input" id="p-langue" placeholder="tes langues" oninput="buildPres()"></div>
+    <div class="pres-preview" id="presPreview"></div>
+    <div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap">
+      <button class="btn btn-green" onclick="speakPres()">▶ Écouter ma présentation</button>
+      <button class="btn btn-ghost" onclick="clearPres()">🗑️ Effacer</button>
+    </div>
+  </div>
+
+  <h3>👨‍👩‍👧‍👦 Ma famille — Clique pour écouter</h3>
+  <div class="famille-grid">
+    <div class="fam-card" onclick="speak('mon père')"><span class="fam-emoji">👨</span><div class="fam-fr">le père</div><div class="fam-poss">mon père</div></div>
+    <div class="fam-card" onclick="speak('ma mère')"><span class="fam-emoji">👩</span><div class="fam-fr">la mère</div><div class="fam-poss">ma mère</div></div>
+    <div class="fam-card" onclick="speak('mon frère')"><span class="fam-emoji">👦</span><div class="fam-fr">le frère</div><div class="fam-poss">mon frère</div></div>
+    <div class="fam-card" onclick="speak('ma sœur')"><span class="fam-emoji">👧</span><div class="fam-fr">la sœur</div><div class="fam-poss">ma sœur</div></div>
+    <div class="fam-card" onclick="speak('mon mari')"><span class="fam-emoji">🤵</span><div class="fam-fr">le mari</div><div class="fam-poss">mon mari</div></div>
+    <div class="fam-card" onclick="speak('ma femme')"><span class="fam-emoji">👰</span><div class="fam-fr">la femme</div><div class="fam-poss">ma femme</div></div>
+    <div class="fam-card" onclick="speak('mon fils')"><span class="fam-emoji">🧒</span><div class="fam-fr">le fils</div><div class="fam-poss">mon fils</div></div>
+    <div class="fam-card" onclick="speak('ma fille')"><span class="fam-emoji">👧</span><div class="fam-fr">la fille</div><div class="fam-poss">ma fille</div></div>
+    <div class="fam-card" onclick="speak('mon grand-père')"><span class="fam-emoji">👴</span><div class="fam-fr">le grand-père</div><div class="fam-poss">mon grand-père</div></div>
+    <div class="fam-card" onclick="speak('ma grand-mère')"><span class="fam-emoji">👵</span><div class="fam-fr">la grand-mère</div><div class="fam-poss">ma grand-mère</div></div>
+    <div class="fam-card" onclick="speak('mes enfants')"><span class="fam-emoji">👶</span><div class="fam-fr">les enfants</div><div class="fam-poss">mes enfants</div></div>
+    <div class="fam-card" onclick="speak('mes parents')"><span class="fam-emoji">👨‍👩‍👦</span><div class="fam-fr">les parents</div><div class="fam-poss">mes parents</div></div>
+  </div>
+
+  <div class="tip"><div class="tip-icon">💬</div><div class="tip-body"><strong>mon / ma / mes :</strong> On dit <strong>mon père</strong> (masculin), <strong>ma mère</strong> (féminin), <strong>mes parents</strong> (pluriel). Devant voyelle : <strong>mon amie</strong> (même au féminin !).</div></div>
+
+  <div class="lesson-nav">
+    <button class="nav-btn" onclick="go('m4')">← Précédent</button>
+    <span class="nav-count">Module 5 / 8</span>
+    <button class="nav-btn primary" onclick="markDone('m5');go('m6')">Suivant →</button>
+  </div>
+</div>
+</section>
+
+<!-- MODULE 6 : CHIFFRES -->
+<section class="sec" id="s-m6">
+<div class="lesson">
+  <div class="module-tag" style="background:var(--violet-soft);color:var(--violet)">🔢 MODULE 6 · Vocabulaire</div>
+  <h2>Les Chiffres — 1 à 100</h2>
+  <p class="intro">Clique sur n'importe quel chiffre pour l'entendre. Attention aux chiffres 70-99, ils sont spéciaux en français !</p>
+
+  <h3>1 — 20</h3>
+  <div class="num-grid" id="num1-20"></div>
+
+  <h3>Les dizaines — 10, 20, 30…</h3>
+  <div class="num-grid" id="num-dizaines"></div>
+
+  <div class="tip" style="background:var(--pink-soft);border-color:var(--pink)">
+    <div class="tip-icon">⚠️</div>
+    <div class="tip-body">
+      <strong>Attention aux chiffres difficiles !</strong><br>
+      <strong>70</strong> = soixante-<em>dix</em> (60+10) &nbsp;|&nbsp; <strong>71</strong> = soixante et onze<br>
+      <strong>80</strong> = quatre-<em>vingts</em> (4×20) &nbsp;|&nbsp; <strong>81</strong> = quatre-vingt-un<br>
+      <strong>90</strong> = quatre-vingt-<em>dix</em> (80+10) &nbsp;|&nbsp; <strong>91</strong> = quatre-vingt-onze
+    </div>
+  </div>
+
+  <h3>70 — 100</h3>
+  <div class="num-grid" id="num-special"></div>
+
+  <h3>🎯 Quiz — Quel est ce chiffre ?</h3>
+  <div class="quiz-block">
+    <div class="quiz-q">🔊 Écoute et trouve le bon chiffre :</div>
+    <div style="text-align:center;margin-bottom:16px">
+      <button class="btn btn-violet" id="num-play-btn" onclick="playNumQuiz()" style="font-size:16px;padding:14px 24px">▶ Écouter</button>
+    </div>
+    <div class="quiz-opts" id="num-quiz-opts"></div>
+    <div class="quiz-fb" id="num-quiz-fb"></div>
+    <div style="text-align:center;margin-top:14px"><button class="btn btn-ghost" onclick="nextNumQuiz()">Suivant ▶</button></div>
+  </div>
+
+  <div class="lesson-nav">
+    <button class="nav-btn" onclick="go('m5')">← Précédent</button>
+    <span class="nav-count">Module 6 / 8</span>
+    <button class="nav-btn primary" onclick="markDone('m6');go('m7')">Suivant →</button>
+  </div>
+</div>
+</section>
+
+<!-- MODULE 7 : HEURE & CALENDRIER -->
+<section class="sec" id="s-m7">
+<div class="lesson">
+  <div class="module-tag" style="background:var(--teal-soft);color:var(--teal)">🕐 MODULE 7 · Vie quotidienne</div>
+  <h2>L'Heure &amp; Le Calendrier</h2>
+  <p class="intro">Apprends à dire l'heure, les jours de la semaine et les mois. Essentiels pour tous les rendez-vous !</p>
+
+  <h3>📅 Les jours de la semaine</h3>
+  <div class="calendar-grid" id="jours-grid"></div>
+
+  <h3>🗓️ Les mois de l'année</h3>
+  <div class="months-grid" id="mois-grid"></div>
+
+  <div class="tip"><div class="tip-icon">💡</div><div class="tip-body">En français, les jours et les mois s'écrivent en <strong>minuscules</strong> : <em>lundi</em>, <em>janvier</em> — pas de majuscule !</div></div>
+
+  <h3>🕐 Dire l'heure — Clique pour écouter</h3>
+  <div class="time-list" id="heure-list"></div>
+
+  <h3>❓ Poser des questions sur le temps</h3>
+  <div class="expr-grid">
+    <div class="expr-card" onclick="speak('Quelle heure est-il ?')"><div class="expr-icon">⏰</div><div class="expr-fr">Quelle heure est-il ?</div><div class="expr-trans">What time is it?</div></div>
+    <div class="expr-card" onclick="speak('C\'est quel jour aujourd\'hui ?')"><div class="expr-icon">📅</div><div class="expr-fr">C'est quel jour ?</div><div class="expr-trans">What day is it?</div></div>
+    <div class="expr-card" onclick="speak('On est le combien ?')"><div class="expr-icon">🔢</div><div class="expr-fr">On est le combien ?</div><div class="expr-trans">What's the date?</div></div>
+    <div class="expr-card" onclick="speak('À quelle heure commence le cours ?')"><div class="expr-icon">🏫</div><div class="expr-fr">À quelle heure... ?</div><div class="expr-trans">At what time...?</div></div>
+  </div>
+
+  <h3>🎯 Quiz — Quel jour est-ce ?</h3>
+  <div class="quiz-block">
+    <div class="quiz-q">🔊 Écoute et trouve le bon jour :</div>
+    <div style="text-align:center;margin-bottom:16px"><button class="btn btn-orange" id="day-play-btn" onclick="playDayQuiz()" style="font-size:16px;padding:14px 24px">▶ Écouter</button></div>
+    <div class="quiz-opts" id="day-quiz-opts"></div>
+    <div class="quiz-fb" id="day-quiz-fb"></div>
+    <div style="text-align:center;margin-top:14px"><button class="btn btn-ghost" onclick="nextDayQuiz()">Suivant ▶</button></div>
+  </div>
+
+  <div class="lesson-nav">
+    <button class="nav-btn" onclick="go('m6')">← Précédent</button>
+    <span class="nav-count">Module 7 / 8</span>
+    <button class="nav-btn primary" onclick="markDone('m7');go('m8')">Suivant →</button>
+  </div>
+</div>
+</section>
+
+<!-- MODULE 8 : CONVERSATIONS A1 -->
+<section class="sec" id="s-m8">
+<div class="lesson">
+  <div class="module-tag" style="background:var(--blue-soft);color:var(--blue)">💬 MODULE 8 · Conversations</div>
+  <h2>Conversations A1 — La vraie vie</h2>
+  <p class="intro">4 vraies conversations que tu vas utiliser en France. Clique sur chaque bulle pour l'entendre. Les bulles bleues, c'est toi !</p>
+
+  <div class="dial-tabs">
+    <button class="dial-tab on" onclick="showDial('cafe',this)">☕ Au café</button>
+    <button class="dial-tab" onclick="showDial('bus',this)">🚌 Dans le bus</button>
+    <button class="dial-tab" onclick="showDial('voisin',this)">🏠 Le voisin</button>
+    <button class="dial-tab" onclick="showDial('travail',this)">💼 Au travail</button>
+  </div>
+
+  <!-- CAFÉ -->
+  <div class="dial-scene on" id="dial-cafe">
+    <div class="dial-header"><div class="dial-header-icon">☕</div><div><div class="dial-header-title">Au café</div><div class="dial-header-context">Tu entres dans un café pour commander un café et payer.</div></div></div>
+    <div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap">
+      <button class="btn btn-orange" onclick="playDialAll('cafe')">▶ Écouter tout</button>
+      <button class="btn btn-ghost" onclick="window.speechSynthesis&&window.speechSynthesis.cancel()">⏹ Stop</button>
+    </div>
+    <div class="dial-conv" id="conv-cafe"></div>
+    <div class="dial-vocab" id="vocab-cafe"></div>
+  </div>
+
+  <!-- BUS -->
+  <div class="dial-scene" id="dial-bus">
+    <div class="dial-header"><div class="dial-header-icon">🚌</div><div><div class="dial-header-title">Dans le bus</div><div class="dial-header-context">Tu ne connais pas bien la ville. Tu demandes ton chemin dans le bus.</div></div></div>
+    <div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap">
+      <button class="btn btn-orange" onclick="playDialAll('bus')">▶ Écouter tout</button>
+      <button class="btn btn-ghost" onclick="window.speechSynthesis&&window.speechSynthesis.cancel()">⏹ Stop</button>
+    </div>
+    <div class="dial-conv" id="conv-bus"></div>
+    <div class="dial-vocab" id="vocab-bus"></div>
+  </div>
+
+  <!-- VOISIN -->
+  <div class="dial-scene" id="dial-voisin">
+    <div class="dial-header"><div class="dial-header-icon">🏠</div><div><div class="dial-header-title">Rencontrer son voisin</div><div class="dial-header-context">Tu viens d'emménager. Tu rencontres ton voisin dans le couloir.</div></div></div>
+    <div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap">
+      <button class="btn btn-orange" onclick="playDialAll('voisin')">▶ Écouter tout</button>
+      <button class="btn btn-ghost" onclick="window.speechSynthesis&&window.speechSynthesis.cancel()">⏹ Stop</button>
+    </div>
+    <div class="dial-conv" id="conv-voisin"></div>
+    <div class="dial-vocab" id="vocab-voisin"></div>
+  </div>
+
+  <!-- TRAVAIL -->
+  <div class="dial-scene" id="dial-travail">
+    <div class="dial-header"><div class="dial-header-icon">💼</div><div><div class="dial-header-title">Premier jour au travail</div><div class="dial-header-context">C'est ton premier jour. Tu rencontres ton responsable.</div></div></div>
+    <div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap">
+      <button class="btn btn-orange" onclick="playDialAll('travail')">▶ Écouter tout</button>
+      <button class="btn btn-ghost" onclick="window.speechSynthesis&&window.speechSynthesis.cancel()">⏹ Stop</button>
+    </div>
+    <div class="dial-conv" id="conv-travail"></div>
+    <div class="dial-vocab" id="vocab-travail"></div>
+  </div>
+
+  <div class="tip" style="margin-top:24px"><div class="tip-icon">🎯</div><div class="tip-body"><strong>Conseil :</strong> Écoute d'abord tout le dialogue, puis écoute chaque bulle une par une. Enfin, <strong>répète à voix haute</strong> la partie bleue (ton rôle) !</div></div>
+
+  <div class="lesson-nav">
+    <button class="nav-btn" onclick="go('m7')">← Précédent</button>
+    <span class="nav-count">Module 8 / 8</span>
+    <button class="nav-btn primary" onclick="markDone('m8');showFinish()">🎉 Terminer Phase 3 →</button>
+  </div>
+</div>
+</section>
+
+</main>
+</div>
+
+<!-- Reward popup -->
+<div class="reward-pop" id="rewardPop">
+  <span class="reward-emoji" id="rewardEmoji">⭐</span>
+  <div class="reward-text" id="rewardText">Bravo !</div>
+  <div class="reward-sub" id="rewardSub">Module terminé !</div>
+</div>
+
+<script>
+// ===== CORE =====
+const MODULES = ['m1','m2','m3','m4','m5','m6','m7','m8'];
+let done = JSON.parse(localStorage.getItem('p3done')||'{}');
+
+function speak(t){
+  if(!window.speechSynthesis)return;
+  window.speechSynthesis.cancel();
+  const u=new SpeechSynthesisUtterance(t);
+  u.lang='fr-FR';
+  u.rate=parseFloat(document.getElementById('rateSlider').value)||0.85;
+  u.volume=parseFloat(document.getElementById('volSlider').value)||1;
+  window.speechSynthesis.speak(u);
+}
+function speakEx(t){speak(t)}
+
+function go(id){
+  document.querySelectorAll('.sec').forEach(s=>s.classList.remove('on'));
+  document.querySelectorAll('.ni').forEach(n=>n.classList.remove('on'));
+  document.getElementById('s-'+id).classList.add('on');
+  document.getElementById('ni-'+id)?.classList.add('on');
+  window.scrollTo(0,0);
+  closeSidebar();
+}
+
+function markDone(id){
+  done[id]=true;
+  localStorage.setItem('p3done',JSON.stringify(done));
+  updateProgress();
+  showReward(id);
+  const el=document.getElementById('ni-'+id);
+  if(el){el.classList.remove('on');el.classList.add('done');}
+  const card=document.querySelector(`[onclick="go('${id}')"]`);
+  if(card){card.classList.add('done-card');if(!card.querySelector('.home-card-badge')){const b=document.createElement('div');b.className='home-card-badge';b.textContent='✓';card.appendChild(b);}}
+}
+
+function updateProgress(){
+  const n=Object.keys(done).filter(k=>MODULES.includes(k)).length;
+  const pct=Math.round(n/MODULES.length*100);
+  document.getElementById('progFill').style.width=pct+'%';
+  document.getElementById('prog-pct').textContent=pct+' %';
+  const stars='⭐'.repeat(n)+'☆'.repeat(MODULES.length-n);
+  document.getElementById('progStars').textContent=stars;
+}
+
+function showReward(id){
+  const msgs={m1:['👫','Genre maîtrisé !','Tu sais le masculin et le féminin !'],m2:['📌','Articles appris !','le, la, les, un, une, des !'],m3:['🔵','ÊTRE conjugué !','Je suis, tu es, il est... Bravo !'],m4:['🟠','AVOIR conjugué !','J\'ai, tu as, il a... Super !'],m5:['👤','Présentation réussie !','Tu peux te présenter en français !'],m6:['🔢','Chiffres maîtrisés !','De 1 à 100, tu comptes en français !'],m7:['🕐','Calendrier appris !','Tu connais les jours et les mois !'],m8:['💬','Conversations A1 !','Tu peux parler en français !']} ;
+  const [e,t,s]=msgs[id]||['⭐','Bravo !','Module terminé !'];
+  const p=document.getElementById('rewardPop');
+  document.getElementById('rewardEmoji').textContent=e;
+  document.getElementById('rewardText').textContent=t;
+  document.getElementById('rewardSub').textContent=s;
+  p.classList.add('show');
+  setTimeout(()=>p.classList.remove('show'),2800);
+}
+
+function showFinish(){
+  const p=document.getElementById('rewardPop');
+  document.getElementById('rewardEmoji').textContent='🏆';
+  document.getElementById('rewardText').textContent='Phase 3 terminée !';
+  document.getElementById('rewardSub').textContent='Tu parles français niveau A1 ! Félicitations !';
+  p.classList.add('show');
+  setTimeout(()=>p.classList.remove('show'),3500);
+}
+
+function resetProgress(){if(!confirm('Réinitialiser toute la progression ?'))return;done={};localStorage.removeItem('p3done');updateProgress();document.querySelectorAll('.ni').forEach(n=>n.classList.remove('done'));document.querySelectorAll('.home-card-badge').forEach(b=>b.remove());document.querySelectorAll('.done-card').forEach(c=>c.classList.remove('done-card'));}
+
+function toggleSidebar(){document.getElementById('sidebar').classList.toggle('open')}
+function closeSidebar(){document.getElementById('sidebar').classList.remove('open')}
+
+// ===== LANG =====
+const LANGS={
+  fr:{prog:'Ma progression'},
+  en:{prog:'My progress'},
+  ar:{prog:'تقدمي'},
+  wolof:{prog:'Xam-xam bi'},
+  bambara:{prog:'N ka dɔnni'}
+};
+function setLang(l){localStorage.setItem('p3lang',l);}
+
+// ===== M1 : GENRE QUIZ =====
+const genreWords=[
+  {w:'garçon',g:'m'},{w:'fille',g:'f'},{w:'livre',g:'m'},{w:'maison',g:'f'},
+  {w:'père',g:'m'},{w:'mère',g:'f'},{w:'bus',g:'m'},{w:'voiture',g:'f'},
+  {w:'café',g:'m'},{w:'école',g:'f'},{w:'travail',g:'m'},{w:'famille',g:'f'},
+  {w:'médecin',g:'m'},{w:'table',g:'f'},{w:'ami',g:'m'},{w:'amie',g:'f'}
+];
+let genreIdx=0,genreAnswered=false;
+function initGenreQuiz(){
+  genreIdx=Math.floor(Math.random()*genreWords.length);
+  genreAnswered=false;
+  document.getElementById('genre-word-display').textContent=genreWords[genreIdx].w;
+  speak(genreWords[genreIdx].w);
+  const fb=document.getElementById('genre-fb');fb.className='quiz-fb';fb.textContent='';
+  document.getElementById('masc-btn').disabled=false;
+  document.getElementById('fem-btn').disabled=false;
+}
+function checkGenre(ans){
+  if(genreAnswered)return;
+  genreAnswered=true;
+  const correct=genreWords[genreIdx].g===ans;
+  const fb=document.getElementById('genre-fb');
+  fb.className='quiz-fb show '+(correct?'ok':'ko');
+  fb.textContent=correct?'✅ Correct ! C\'est masculin.':'❌ Non ! C\'est '+(genreWords[genreIdx].g==='m'?'masculin (le)':'féminin (la)')+'.';
+  document.getElementById('masc-btn').disabled=true;
+  document.getElementById('fem-btn').disabled=true;
+}
+function nextGenreQuiz(){initGenreQuiz();}
+
+// ===== M2 : ARTICLES =====
+const artExercises=[
+  {sentence:'Je veux ___ café.',answer:'un',opts:['le','un','la','une'],explain:"un café (masculin, indéfini)"},
+  {sentence:"C'est ___ école.",answer:"l'",opts:["le","la","l'","un"],explain:"l'école (voyelle)"},
+  {sentence:'Où sont ___ enfants ?',answer:'les',opts:['les','des','le','un'],explain:"les enfants (pluriel, défini)"},
+  {sentence:'J\'ai ___ sœur.',answer:'une',opts:['un','une','la','le'],explain:"une sœur (féminin, indéfini)"},
+];
+
+function buildArtExercises(){
+  const c=document.getElementById('art-exercises');
+  if(!c)return;
+  c.innerHTML='';
+  artExercises.forEach((ex,i)=>{
+    const d=document.createElement('div');
+    d.className='fill-block';
+    d.innerHTML=`<div class="fill-sentence">${ex.sentence.replace('___','<input class="fill-input" id="fill-${i}" placeholder="?" autocomplete="off">')}</div>
+    <button class="fill-check" onclick="checkFill(${i},'${ex.answer}','${ex.explain}')">✅ Vérifier</button>
+    <div class="fill-fb" id="fill-fb-${i}"></div>`;
+    c.appendChild(d);
+  });
+}
+
+function checkFill(i,ans,explain){
+  const inp=document.getElementById('fill-'+i);
+  const fb=document.getElementById('fill-fb-'+i);
+  const val=inp.value.trim().toLowerCase().replace("'","'");
+  const correct=val===ans.toLowerCase();
+  inp.className='fill-input '+(correct?'ok':'ko');
+  fb.textContent=correct?'✅ Parfait ! '+explain:'❌ La bonne réponse : '+ans+' — '+explain;
+  fb.style.color=correct?'var(--green)':'var(--red)';
+}
+
+const artQuizItems=[
+  {word:'chat',answer:'le',opts:['le','la','l\'','les']},
+  {word:'maison',answer:'la',opts:['le','la','un','une']},
+  {word:'ami',answer:'un',opts:['un','une','le','les']},
+  {word:'école',answer:'l\'',opts:['le','la','l\'','un']},
+  {word:'enfants',answer:'les',opts:['le','les','des','un']},
+  {word:'voiture',answer:'la',opts:['le','la','un','une']},
+  {word:'frères',answer:'les',opts:['le','les','des','la']},
+  {word:'père',answer:'le',opts:['le','la','un','une']},
+];
+let artIdx=0;
+function initArtQuiz(){
+  const q=artQuizItems[artIdx%artQuizItems.length];
+  document.getElementById('art-quiz-word').textContent=q.word;
+  speak(q.word);
+  const opts=document.getElementById('art-quiz-opts');
+  opts.innerHTML='';
+  [...q.opts].sort(()=>Math.random()-.5).forEach(o=>{
+    const b=document.createElement('button');
+    b.className='qopt';b.textContent=o;
+    b.onclick=()=>answerArt(b,o===q.answer,opts);
+    opts.appendChild(b);
+  });
+  document.getElementById('art-quiz-fb').className='quiz-fb';
+}
+function answerArt(btn,ok,opts){
+  opts.querySelectorAll('.qopt').forEach(b=>b.disabled=true);
+  btn.classList.add(ok?'ok':'ko');
+  const fb=document.getElementById('art-quiz-fb');
+  fb.className='quiz-fb show '+(ok?'ok':'ko');
+  fb.textContent=ok?'✅ Bravo !':'❌ Pas tout à fait. Regarde le tableau ci-dessus.';
+}
+function nextArtQuiz(){artIdx++;initArtQuiz();}
+
+// ===== M3 : ÊTRE QUIZ =====
+const etreQuiz=[
+  {phrase:'Je ___ français.',answer:'suis',opts:['suis','es','est','sommes']},
+  {phrase:'Tu ___ à Paris ?',answer:'es',opts:['suis','es','est','êtes']},
+  {phrase:'Il ___ médecin.',answer:'est',opts:['est','es','suis','sont']},
+  {phrase:'Nous ___ amis.',answer:'sommes',opts:['sommes','êtes','sont','est']},
+  {phrase:'Vous ___ prêts ?',answer:'êtes',opts:['êtes','sommes','sont','est']},
+  {phrase:'Ils ___ contents.',answer:'sont',opts:['sont','est','êtes','sommes']},
+];
+let etreIdx=0;
+function initEtreQuiz(){
+  const q=etreQuiz[etreIdx%etreQuiz.length];
+  document.getElementById('etre-phrase').textContent=q.phrase;
+  speak(q.phrase.replace('___',''));
+  const opts=document.getElementById('etre-opts');
+  opts.innerHTML='';
+  [...q.opts].sort(()=>Math.random()-.5).forEach(o=>{
+    const b=document.createElement('button');
+    b.className='qopt';b.style.fontSize='18px';b.textContent=o;
+    b.onclick=()=>{
+      opts.querySelectorAll('.qopt').forEach(x=>x.disabled=true);
+      const ok=o===q.answer;
+      b.classList.add(ok?'ok':'ko');
+      const fb=document.getElementById('etre-fb');
+      fb.className='quiz-fb show '+(ok?'ok':'ko');
+      fb.textContent=ok?'✅ Parfait ! '+q.phrase.replace('___',o):'❌ La bonne réponse : '+q.answer;
+      if(ok)speak(q.phrase.replace('___',q.answer));
+    };
+    opts.appendChild(b);
+  });
+  document.getElementById('etre-fb').className='quiz-fb';
+}
+function nextEtreQuiz(){etreIdx++;initEtreQuiz();}
+
+// ===== M4 : AVOIR QUIZ =====
+const avoirQuiz=[
+  {phrase:"J'___ un chat.",answer:'ai',opts:['ai','as','a','avons']},
+  {phrase:'Tu ___ quel âge ?',answer:'as',opts:['ai','as','a','avez']},
+  {phrase:'Elle ___ une voiture.',answer:'a',opts:['a','as','ai','ont']},
+  {phrase:'Nous ___ deux enfants.',answer:'avons',opts:['avons','avez','ont','a']},
+  {phrase:'Vous ___ un rendez-vous ?',answer:'avez',opts:['avez','avons','ont','a']},
+  {phrase:'Ils ___ une grande maison.',answer:'ont',opts:['ont','avons','avez','a']},
+];
+let avoirIdx=0;
+function initAvoirQuiz(){
+  const q=avoirQuiz[avoirIdx%avoirQuiz.length];
+  document.getElementById('avoir-phrase').textContent=q.phrase;
+  const opts=document.getElementById('avoir-opts');
+  opts.innerHTML='';
+  [...q.opts].sort(()=>Math.random()-.5).forEach(o=>{
+    const b=document.createElement('button');
+    b.className='qopt';b.style.fontSize='18px';b.textContent=o;
+    b.onclick=()=>{
+      opts.querySelectorAll('.qopt').forEach(x=>x.disabled=true);
+      const ok=o===q.answer;
+      b.classList.add(ok?'ok':'ko');
+      const fb=document.getElementById('avoir-fb');
+      fb.className='quiz-fb show '+(ok?'ok':'ko');
+      fb.textContent=ok?'✅ Parfait ! '+q.phrase.replace('___',o):'❌ La bonne réponse : '+q.answer;
+      if(ok)speak(q.phrase.replace('___',q.answer));
+    };
+    opts.appendChild(b);
+  });
+  document.getElementById('avoir-fb').className='quiz-fb';
+}
+function nextAvoirQuiz(){avoirIdx++;initAvoirQuiz();}
+
+// ===== M5 : PRÉSENTATION =====
+function buildPres(){
+  const nom=document.getElementById('p-nom').value;
+  const age=document.getElementById('p-age').value;
+  const nat=document.getElementById('p-nat').value;
+  const ville=document.getElementById('p-ville').value;
+  const langue=document.getElementById('p-langue').value;
+  const p=document.getElementById('presPreview');
+  if(!nom&&!age&&!nat&&!ville&&!langue){p.className='pres-preview';return;}
+  let txt='';
+  if(nom)txt+=`<strong>Je m'appelle ${nom}.</strong><br>`;
+  if(age)txt+=`<strong>J'ai ${age} ans.</strong><br>`;
+  if(nat)txt+=`<strong>Je suis ${nat}.</strong><br>`;
+  if(ville)txt+=`<strong>J'habite à ${ville}.</strong><br>`;
+  if(langue)txt+=`<strong>Je parle ${langue}.</strong>`;
+  p.innerHTML=txt;
+  p.className='pres-preview show';
+}
+function speakPres(){
+  const nom=document.getElementById('p-nom').value;
+  const age=document.getElementById('p-age').value;
+  const nat=document.getElementById('p-nat').value;
+  const ville=document.getElementById('p-ville').value;
+  const langue=document.getElementById('p-langue').value;
+  let t='';
+  if(nom)t+=`Je m'appelle ${nom}. `;
+  if(age)t+=`J'ai ${age} ans. `;
+  if(nat)t+=`Je suis ${nat}. `;
+  if(ville)t+=`J'habite à ${ville}. `;
+  if(langue)t+=`Je parle ${langue}.`;
+  if(t)speak(t);
+}
+function clearPres(){
+  ['p-nom','p-age','p-nat','p-ville','p-langue'].forEach(id=>{document.getElementById(id).value='';});
+  document.getElementById('presPreview').className='pres-preview';
+}
+
+// ===== M6 : CHIFFRES =====
+const nums1_20=[
+  [1,'un'],[2,'deux'],[3,'trois'],[4,'quatre'],[5,'cinq'],
+  [6,'six'],[7,'sept'],[8,'huit'],[9,'neuf'],[10,'dix'],
+  [11,'onze'],[12,'douze'],[13,'treize'],[14,'quatorze'],[15,'quinze'],
+  [16,'seize'],[17,'dix-sept'],[18,'dix-huit'],[19,'dix-neuf'],[20,'vingt']
+];
+const numsDizaines=[
+  [10,'dix'],[20,'vingt'],[30,'trente'],[40,'quarante'],[50,'cinquante'],[60,'soixante'],[100,'cent']
+];
+const numsSpecial=[
+  [70,'soixante-dix'],[71,'soixante et onze'],[72,'soixante-douze'],[75,'soixante-quinze'],
+  [79,'soixante-dix-neuf'],[80,'quatre-vingts'],[81,'quatre-vingt-un'],[85,'quatre-vingt-cinq'],
+  [90,'quatre-vingt-dix'],[91,'quatre-vingt-onze'],[95,'quatre-vingt-quinze'],[99,'quatre-vingt-dix-neuf']
+];
+
+function buildNumGrid(data,containerId){
+  const c=document.getElementById(containerId);
+  if(!c)return;
+  c.innerHTML='';
+  data.forEach(([n,w])=>{
+    const d=document.createElement('div');
+    d.className='num-card';
+    d.onclick=()=>{speak(w);d.classList.add('playing');setTimeout(()=>d.classList.remove('playing'),800);};
+    d.innerHTML=`<div class="num-big">${n}</div><div class="num-word">${w}</div>`;
+    c.appendChild(d);
+  });
+}
+
+const allNums=[...nums1_20,...numsSpecial,...numsDizaines];
+let numQuizCurrent=null;
+function initNumQuiz(){
+  numQuizCurrent=allNums[Math.floor(Math.random()*allNums.length)];
+  const opts=document.getElementById('num-quiz-opts');
+  opts.innerHTML='';
+  document.getElementById('num-quiz-fb').className='quiz-fb';
+  const wrongs=allNums.filter(x=>x[0]!==numQuizCurrent[0]).sort(()=>Math.random()-.5).slice(0,3);
+  const choices=[numQuizCurrent,...wrongs].sort(()=>Math.random()-.5);
+  choices.forEach(([n,w])=>{
+    const b=document.createElement('button');
+    b.className='qopt';b.style.fontSize='20px';b.textContent=n;
+    b.onclick=()=>{
+      opts.querySelectorAll('.qopt').forEach(x=>x.disabled=true);
+      const ok=n===numQuizCurrent[0];
+      b.classList.add(ok?'ok':'ko');
+      const fb=document.getElementById('num-quiz-fb');
+      fb.className='quiz-fb show '+(ok?'ok':'ko');
+      fb.textContent=ok?'✅ Bravo ! '+numQuizCurrent[0]+' = '+numQuizCurrent[1]:'❌ C\'était '+numQuizCurrent[0]+' ('+numQuizCurrent[1]+')';
+    };
+    opts.appendChild(b);
+  });
+}
+function playNumQuiz(){if(numQuizCurrent)speak(numQuizCurrent[1]);}
+function nextNumQuiz(){initNumQuiz();}
+
+// ===== M7 : JOURS / MOIS / HEURE =====
+const jours=[
+  {n:1,name:'Lundi'},{n:2,name:'Mardi'},{n:3,name:'Mercredi'},
+  {n:4,name:'Jeudi'},{n:5,name:'Vendredi'},{n:6,name:'Samedi'},{n:7,name:'Dimanche'}
+];
+const mois=[
+  [1,'Janvier'],[2,'Février'],[3,'Mars'],[4,'Avril'],[5,'Mai'],[6,'Juin'],
+  [7,'Juillet'],[8,'Août'],[9,'Septembre'],[10,'Octobre'],[11,'Novembre'],[12,'Décembre']
+];
+const heures=[
+  {clock:'08:00',fr:'Il est huit heures',ex:'Le rendez-vous est à huit heures.'},
+  {clock:'08:30',fr:'Il est huit heures et demie',ex:'Le cours commence à huit heures et demie.'},
+  {clock:'09:15',fr:'Il est neuf heures et quart',ex:'J\'arrive à neuf heures et quart.'},
+  {clock:'11:45',fr:'Il est midi moins le quart',ex:'On mange à midi moins le quart.'},
+  {clock:'12:00',fr:'Il est midi',ex:'Il est midi. On mange !'},
+  {clock:'14:00',fr:'Il est deux heures de l\'après-midi',ex:'La réunion est à quatorze heures.'},
+  {clock:'18:30',fr:'Il est six heures et demie du soir',ex:'Je rentre à dix-huit heures trente.'},
+  {clock:'00:00',fr:'Il est minuit',ex:'Le film finit à minuit.'},
+];
+
+function buildJours(){
+  const c=document.getElementById('jours-grid');if(!c)return;
+  c.innerHTML='';
+  jours.forEach(j=>{
+    const d=document.createElement('div');
+    d.className='cal-card';
+    d.innerHTML=`<div class="cal-num">${j.n}</div><div class="cal-name">${j.name}</div>`;
+    d.onclick=()=>{speak(j.name);d.classList.add('playing');setTimeout(()=>d.classList.remove('playing'),800);};
+    c.appendChild(d);
+  });
+}
+function buildMois(){
+  const c=document.getElementById('mois-grid');if(!c)return;
+  c.innerHTML='';
+  mois.forEach(([n,name])=>{
+    const d=document.createElement('div');
+    d.className='month-card';
+    d.innerHTML=`<div class="month-num">${n}</div><div class="month-name">${name}</div>`;
+    d.onclick=()=>{speak(name);d.classList.add('playing');setTimeout(()=>d.classList.remove('playing'),1000);};
+    c.appendChild(d);
+  });
+}
+function buildHeures(){
+  const c=document.getElementById('heure-list');if(!c)return;
+  c.innerHTML='';
+  heures.forEach(h=>{
+    const d=document.createElement('div');
+    d.className='time-row';
+    d.innerHTML=`<div class="time-clock">${h.clock}</div><div><div class="time-fr">${h.fr}</div><div class="time-ex">${h.ex}</div></div>`;
+    d.onclick=()=>{speak(h.fr+'. '+h.ex);d.classList.add('playing');setTimeout(()=>d.classList.remove('playing'),3000);};
+    c.appendChild(d);
+  });
+}
+
+let dayQuizCurrent=null;
+function initDayQuiz(){
+  dayQuizCurrent=jours[Math.floor(Math.random()*jours.length)];
+  const opts=document.getElementById('day-quiz-opts');
+  opts.innerHTML='';
+  document.getElementById('day-quiz-fb').className='quiz-fb';
+  const choices=[...jours].sort(()=>Math.random()-.5).slice(0,4);
+  if(!choices.find(j=>j.name===dayQuizCurrent.name)){choices[0]=dayQuizCurrent;}
+  choices.sort(()=>Math.random()-.5);
+  choices.forEach(j=>{
+    const b=document.createElement('button');
+    b.className='qopt';b.style.fontSize='16px';b.textContent=j.name;
+    b.onclick=()=>{
+      opts.querySelectorAll('.qopt').forEach(x=>x.disabled=true);
+      const ok=j.name===dayQuizCurrent.name;
+      b.classList.add(ok?'ok':'ko');
+      const fb=document.getElementById('day-quiz-fb');
+      fb.className='quiz-fb show '+(ok?'ok':'ko');
+      fb.textContent=ok?'✅ Bravo ! C\'est bien '+dayQuizCurrent.name+' !':'❌ C\'était '+dayQuizCurrent.name;
+    };
+    opts.appendChild(b);
+  });
+}
+function playDayQuiz(){if(dayQuizCurrent)speak(dayQuizCurrent.name);}
+function nextDayQuiz(){initDayQuiz();}
+
+// ===== M8 : CONVERSATIONS =====
+const dialogues={
+  cafe:{
+    lines:[
+      {who:'them',speaker:'Serveur',text:'Bonjour ! Je vous écoute.',trans:'Hello! What can I get you?'},
+      {who:'me',speaker:'Moi',text:'Bonjour ! Un café, s\'il vous plaît.',trans:'Hello! A coffee, please.'},
+      {who:'them',speaker:'Serveur',text:'Grand ou petit ?',trans:'Large or small?'},
+      {who:'me',speaker:'Moi',text:'Petit, merci.',trans:'Small, thank you.'},
+      {who:'them',speaker:'Serveur',text:'Avec du sucre ?',trans:'With sugar?'},
+      {who:'me',speaker:'Moi',text:'Non merci. C\'est combien ?',trans:'No thanks. How much is it?'},
+      {who:'them',speaker:'Serveur',text:'Un euro soixante, s\'il vous plaît.',trans:'One euro sixty, please.'},
+      {who:'me',speaker:'Moi',text:'Voilà. Merci, bonne journée !',trans:'Here you go. Thank you, have a good day!'},
+      {who:'them',speaker:'Serveur',text:'Bonne journée à vous !',trans:'Good day to you!'},
+    ],
+    vocab:[
+      {w:'s\'il vous plaît',d:'please (formal)'},
+      {w:'C\'est combien ?',d:'How much is it?'},
+      {w:'Voilà',d:'Here you go'},
+      {w:'Bonne journée !',d:'Have a good day!'},
+      {w:'Grand / petit',d:'Large / small'},
+    ]
+  },
+  bus:{
+    lines:[
+      {who:'me',speaker:'Moi',text:'Excusez-moi, ce bus va à la gare ?',trans:'Excuse me, does this bus go to the station?'},
+      {who:'them',speaker:'Passager',text:'Oui, c\'est le bon bus.',trans:'Yes, it\'s the right bus.'},
+      {who:'me',speaker:'Moi',text:'Merci ! C\'est loin ?',trans:'Thank you! Is it far?'},
+      {who:'them',speaker:'Passager',text:'Non, c\'est à cinq arrêts.',trans:'No, it\'s five stops away.'},
+      {who:'me',speaker:'Moi',text:'D\'accord. Je dois descendre où exactement ?',trans:'Alright. Where exactly do I need to get off?'},
+      {who:'them',speaker:'Passager',text:'À l\'arrêt "Gare Centrale". Je vous dirai.',trans:'At the "Gare Centrale" stop. I\'ll let you know.'},
+      {who:'me',speaker:'Moi',text:'C\'est très gentil. Merci beaucoup !',trans:'That\'s very kind. Thank you very much!'},
+    ],
+    vocab:[
+      {w:'Excusez-moi',d:'Excuse me (formal)'},
+      {w:'Ce bus va à... ?',d:'Does this bus go to...?'},
+      {w:'C\'est loin ?',d:'Is it far?'},
+      {w:'À cinq arrêts',d:'Five stops away'},
+      {w:'Je dois descendre où ?',d:'Where do I need to get off?'},
+    ]
+  },
+  voisin:{
+    lines:[
+      {who:'them',speaker:'Voisin',text:'Bonjour ! Vous êtes le nouveau voisin ?',trans:'Hello! Are you the new neighbour?'},
+      {who:'me',speaker:'Moi',text:'Oui, bonjour ! Je m\'appelle Diarama. Je viens du Sénégal.',trans:'Yes, hello! My name is Diarama. I come from Senegal.'},
+      {who:'them',speaker:'Voisin',text:'Bienvenue ! Moi c\'est Pierre. Vous habitez ici depuis longtemps ?',trans:'Welcome! I\'m Pierre. Have you been living here long?'},
+      {who:'me',speaker:'Moi',text:'Non, je suis arrivé la semaine dernière.',trans:'No, I arrived last week.'},
+      {who:'them',speaker:'Voisin',text:'Et vous aimez le quartier ?',trans:'And do you like the neighbourhood?'},
+      {who:'me',speaker:'Moi',text:'Oui, c\'est très calme. J\'aime bien.',trans:'Yes, it\'s very quiet. I like it.'},
+      {who:'them',speaker:'Voisin',text:'Si vous avez besoin de quelque chose, n\'hésitez pas !',trans:'If you need anything, don\'t hesitate!'},
+      {who:'me',speaker:'Moi',text:'Merci, c\'est très gentil. À bientôt !',trans:'Thank you, that\'s very kind. See you soon!'},
+    ],
+    vocab:[
+      {w:'Bienvenue !',d:'Welcome!'},
+      {w:'Je viens de...',d:'I come from...'},
+      {w:'Depuis longtemps ?',d:'For a long time?'},
+      {w:'La semaine dernière',d:'Last week'},
+      {w:'N\'hésitez pas !',d:'Don\'t hesitate!'},
+      {w:'À bientôt !',d:'See you soon!'},
+    ]
+  },
+  travail:{
+    lines:[
+      {who:'them',speaker:'Responsable',text:'Bonjour ! Vous êtes Diarama, le nouveau stagiaire ?',trans:'Hello! You are Diarama, the new intern?'},
+      {who:'me',speaker:'Moi',text:'Oui, bonjour madame. Je suis très content d\'être ici.',trans:'Yes, hello ma\'am. I am very happy to be here.'},
+      {who:'them',speaker:'Responsable',text:'Bienvenue dans l\'équipe ! Vous avez déjà travaillé en France ?',trans:'Welcome to the team! Have you already worked in France?'},
+      {who:'me',speaker:'Moi',text:'Non, c\'est mon premier emploi ici. Mais je parle français.',trans:'No, it\'s my first job here. But I speak French.'},
+      {who:'them',speaker:'Responsable',text:'Très bien ! Vous avez des questions ?',trans:'Very good! Do you have any questions?'},
+      {who:'me',speaker:'Moi',text:'Oui. À quelle heure commence le travail ?',trans:'Yes. What time does work start?'},
+      {who:'them',speaker:'Responsable',text:'À neuf heures. Et on finit à dix-sept heures.',trans:'At nine o\'clock. And we finish at five o\'clock.'},
+      {who:'me',speaker:'Moi',text:'D\'accord. Merci beaucoup !',trans:'Alright. Thank you very much!'},
+    ],
+    vocab:[
+      {w:'Bienvenue dans l\'équipe !',d:'Welcome to the team!'},
+      {w:'Mon premier emploi',d:'My first job'},
+      {w:'À quelle heure... ?',d:'At what time...?'},
+      {w:'On commence / on finit',d:'We start / we finish'},
+      {w:'Je suis content(e)',d:'I am happy'},
+    ]
+  }
+};
+
+function buildDial(id){
+  const d=dialogues[id];if(!d)return;
+  const conv=document.getElementById('conv-'+id);
+  if(!conv||conv.children.length)return;
+  d.lines.forEach(line=>{
+    const row=document.createElement('div');row.className='dial-line '+line.who;
+    row.innerHTML=`<div><div class="dial-who">${line.speaker}</div><div class="dial-bubble" onclick="speak('${line.text.replace(/'/g,"\\'")}');this.classList.add('playing');setTimeout(()=>this.classList.remove('playing'),2000)">${line.text}</div><div class="dial-trans">${line.trans}</div></div>`;
+    conv.appendChild(row);
+  });
+  const voc=document.getElementById('vocab-'+id);
+  if(voc&&!voc.children.length){
+    voc.innerHTML=`<div class="dial-vocab-title">📚 Vocabulaire clé</div>`;
+    d.vocab.forEach(v=>{
+      const item=document.createElement('div');item.className='dial-vocab-item';
+      item.innerHTML=`<span class="dvw" onclick="speak('${v.w.replace(/'/g,"\\'")}')">${v.w}</span><span class="dvd">${v.d}</span>`;
+      voc.appendChild(item);
+    });
+  }
+}
+
+async function playDialAll(id){
+  const d=dialogues[id];if(!d)return;
+  window.speechSynthesis.cancel();
+  for(const line of d.lines){
+    await new Promise(res=>{
+      const u=new SpeechSynthesisUtterance(line.text);
+      u.lang='fr-FR';
+      u.rate=parseFloat(document.getElementById('rateSlider').value)||0.85;
+      u.volume=parseFloat(document.getElementById('volSlider').value)||1;
+      u.onend=()=>setTimeout(res,400);
+      u.onerror=res;
+      window.speechSynthesis.speak(u);
+    });
+  }
+}
+
+function showDial(id,btn){
+  document.querySelectorAll('.dial-scene').forEach(s=>s.classList.remove('on'));
+  document.querySelectorAll('.dial-tab').forEach(t=>t.classList.remove('on'));
+  document.getElementById('dial-'+id).classList.add('on');
+  btn.classList.add('on');
+  buildDial(id);
+}
+
+// ===== INIT =====
+window.addEventListener('DOMContentLoaded',()=>{
+  updateProgress();
+  MODULES.forEach(id=>{if(done[id]){const el=document.getElementById('ni-'+id);if(el)el.classList.add('done');}});
+  initGenreQuiz();
+  buildArtExercises();
+  initArtQuiz();
+  initEtreQuiz();
+  initAvoirQuiz();
+  buildNumGrid(nums1_20,'num1-20');
+  buildNumGrid(numsDizaines,'num-dizaines');
+  buildNumGrid(numsSpecial,'num-special');
+  initNumQuiz();
+  buildJours();buildMois();buildHeures();
+  initDayQuiz();
+  buildDial('cafe');
+  const lang=localStorage.getItem('p3lang');
+  if(lang)document.getElementById('langSelect').value=lang;
+});
+</script>
+</body>
+</html>

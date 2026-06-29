@@ -299,7 +299,7 @@ h2 {
 
 /* ===== PHASES ===== */
 .phases-grid {
-  display: grid; grid-template-columns: 1fr 1fr;
+  display: grid; grid-template-columns: repeat(3, 1fr);
   gap: 20px; margin-top: 40px;
 }
 .phase-card {
@@ -323,6 +323,14 @@ h2 {
 }
 .p1 .phase-label { color: var(--orange); }
 .p2 .phase-label { color: var(--blue); }
+.phase-card.p3 {
+  background: linear-gradient(135deg, var(--green-soft) 0%, var(--teal-soft) 100%);
+  border: 2px solid rgba(107,190,92,0.25);
+}
+.p3 .phase-label { color: var(--green); }
+.p3 .phase-list li::before { color: var(--green); }
+.p3 .phase-btn { background: var(--green); color: white; }
+.p3 .phase-btn:hover { background: #5aaa4a; transform: translateY(-2px); }
 .phase-title { font-size: 22px; font-weight: 900; color: var(--ink); margin-bottom: 10px; }
 .phase-list {
   list-style: none; margin: 0 0 24px;
@@ -607,8 +615,8 @@ footer {
 <div class="section" id="phases">
   <div class="section-center">
     <div class="section-tag tag-blue">🎓 Parcours</div>
-    <h2>Deux phases d'apprentissage</h2>
-    <p class="section-sub">Du niveau zéro jusqu'au niveau A1. À ton rythme.</p>
+    <h2>Trois phases d'apprentissage</h2>
+    <p class="section-sub">Du niveau zéro jusqu'au niveau A1 complet. À ton rythme.</p>
   </div>
   <div class="phases-grid">
     <div class="phase-card p1">
@@ -641,6 +649,21 @@ footer {
         <li>Se présenter en français</li>
       </ul>
       <a href="apprendre-phase2" class="phase-btn">📘 Aller à la Phase 2 →</a>
+    </div>
+    <div class="phase-card p3">
+      <span class="phase-emoji">📗</span>
+      <div class="phase-label">Phase 3 — Niveau A1</div>
+      <div class="phase-title">Je parle français</div>
+      <ul class="phase-list">
+        <li>Masculin / féminin</li>
+        <li>Les articles (le, la, les, un, une)</li>
+        <li>Les verbes être et avoir</li>
+        <li>Se présenter et sa famille</li>
+        <li>Les chiffres jusqu'à 100</li>
+        <li>L'heure, les jours, les mois</li>
+        <li>4 conversations A1 complètes</li>
+      </ul>
+      <a href="apprendre-phase3" class="phase-btn">📗 Aller à la Phase 3 →</a>
     </div>
   </div>
 </div>
