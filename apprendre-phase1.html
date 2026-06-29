@@ -1832,8 +1832,26 @@ if (window.speechSynthesis) {
   setTimeout(loadVoices, 1800);
 }
 
+// iOS Safari keeps the speech engine LOCKED until a first utterance fires inside a
+// real user gesture. Prime it (silent) on the first touch/click so later speak() works.
+var _speechUnlocked = false;
+function unlockSpeech() {
+  if (_speechUnlocked || !window.speechSynthesis) return;
+  _speechUnlocked = true;
+  try {
+    var u = new SpeechSynthesisUtterance(' ');
+    u.volume = 0; u.lang = 'fr-FR';
+    window.speechSynthesis.speak(u);
+    loadVoices();
+  } catch (e) {}
+}
+document.addEventListener('touchstart', unlockSpeech, { once: true, passive: true });
+document.addEventListener('mousedown', unlockSpeech, { once: true });
+
 function speak(text, rate, onEndCb) {
   if (!window.speechSynthesis) return;
+  // Chrome can leave the engine "paused" after idle → speak() is silently ignored.
+  try { window.speechSynthesis.resume(); } catch (e) {}
   window.speechSynthesis.cancel();
   var u = new SpeechSynthesisUtterance(String(text));
   u.lang = 'fr-FR';
@@ -1842,6 +1860,7 @@ function speak(text, rate, onEndCb) {
   u.pitch = 1.0;
   if (frenchVoice) u.voice = frenchVoice;
   if (onEndCb) u.onend = onEndCb;
+  try { window.speechSynthesis.resume(); } catch (e) {}
   window.speechSynthesis.speak(u);
   return u;
 }
