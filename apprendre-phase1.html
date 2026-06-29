@@ -1,0 +1,3049 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>J'apprends le Français — Phase 1</title>
+<style>
+/* ===== DESIGN SYSTEM ===== */
+:root {
+  --bg: #FFF8F0;
+  --bg2: #FBEFE0;
+  --card: #FFFFFF;
+  --ink: #2D2A26;
+  --ink2: #5F5852;
+  --muted: #9A8F87;
+  --border: #F0E3D2;
+  --orange: #F59038;
+  --orange-soft: #FFD9B5;
+  --blue: #5BA8D9;
+  --blue-soft: #D5EAF7;
+  --green: #6BBE5C;
+  --green-soft: #DCEFD2;
+  --pink: #E97D9C;
+  --pink-soft: #F9DDE5;
+  --violet: #9888D1;
+  --violet-soft: #E3DFF3;
+  --yellow: #F4C95D;
+  --yellow-soft: #FBEFC8;
+  --red: #E26A6A;
+  --teal: #38B2AC;
+  --teal-soft: #E6FFFA;
+  --shadow: 0 4px 16px rgba(180,140,90,0.13);
+  --shadow-lg: 0 8px 32px rgba(180,140,90,0.2);
+  --r: 16px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+  font-size: 16px;
+  line-height: 1.5;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+button { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; }
+input, textarea { font-family: inherit; font-size: 16px; }
+
+/* ===== LAYOUT ===== */
+.shell { display: flex; min-height: 100vh; }
+
+.sidebar {
+  width: 260px;
+  background: var(--card);
+  border-right: 2px solid var(--border);
+  padding: 20px 14px;
+  position: fixed;
+  top: 0; bottom: 0; left: 0;
+  overflow-y: auto;
+  z-index: 100;
+  transition: transform 0.3s;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 0 10px;
+}
+.logo-icon { font-size: 32px; }
+.logo-text { font-size: 18px; font-weight: 800; color: var(--orange); line-height: 1.1; }
+.logo-sub { font-size: 11px; color: var(--muted); font-weight: 500; }
+
+.progress-block {
+  background: var(--bg2);
+  border-radius: var(--r);
+  padding: 12px 14px;
+  margin-bottom: 4px;
+}
+.prog-label { font-size: 12px; color: var(--ink2); font-weight: 700; margin-bottom: 6px; display: flex; justify-content: space-between; align-items: center; }
+.prog-bar { height: 8px; background: var(--border); border-radius: 6px; overflow: hidden; }
+.prog-fill { height: 100%; background: linear-gradient(90deg, var(--orange), var(--yellow)); width: 0%; transition: width 0.6s ease; border-radius: 6px; }
+.prog-stars { margin-top: 8px; font-size: 16px; color: var(--yellow); letter-spacing: 2px; }
+
+.nav-section-label { font-size: 10px; color: var(--muted); font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; padding: 6px 4px 2px; }
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 11px 12px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink2);
+  width: 100%;
+  text-align: left;
+  transition: all 0.15s;
+  position: relative;
+}
+.nav-item:hover { background: var(--bg2); color: var(--ink); }
+.nav-item.active { background: var(--orange); color: white; box-shadow: var(--shadow); }
+.nav-item.done { background: var(--green-soft); color: var(--green); }
+.nav-item.done::after { content: "✓"; margin-left: auto; font-weight: 900; font-size: 13px; }
+.nav-icon { font-size: 20px; flex-shrink: 0; }
+.nav-streak { margin-left: auto; background: var(--orange-soft); color: var(--orange); font-size: 11px; font-weight: 700; padding: 2px 6px; border-radius: 8px; }
+
+.audio-box {
+  margin-top: auto;
+  background: var(--blue-soft);
+  border-radius: var(--r);
+  padding: 12px 14px;
+}
+.audio-box-title { font-size: 12px; font-weight: 700; color: var(--ink2); margin-bottom: 8px; }
+.audio-row { display: flex; align-items: center; gap: 8px; margin: 6px 0; }
+.audio-row label { font-size: 12px; color: var(--ink2); min-width: 56px; }
+.audio-row input[type=range] { flex: 1; accent-color: var(--blue); }
+.test-voice-btn {
+  width: 100%;
+  margin-top: 8px;
+  padding: 8px;
+  background: var(--blue);
+  color: white;
+  border-radius: 10px;
+  font-size: 12px;
+  font-weight: 700;
+  text-align: center;
+}
+.reset-btn {
+  width: 100%;
+  margin-top: 6px;
+  padding: 8px;
+  background: var(--pink-soft);
+  color: var(--red);
+  border-radius: 10px;
+  font-size: 11px;
+  font-weight: 700;
+  text-align: center;
+}
+
+/* ===== MOBILE MENU BUTTON ===== */
+.menu-btn {
+  display: none;
+  position: fixed;
+  top: 12px; right: 12px;
+  z-index: 200;
+  background: var(--orange);
+  color: white;
+  width: 46px; height: 46px;
+  border-radius: 12px;
+  font-size: 20px;
+  box-shadow: var(--shadow);
+  align-items: center;
+  justify-content: center;
+}
+
+/* ===== MAIN CONTENT ===== */
+.main {
+  margin-left: 260px;
+  flex: 1;
+  padding: 32px 36px 80px;
+  min-height: 100vh;
+}
+
+.section { display: none; animation: fadeIn 0.35s ease; }
+.section.active { display: block; }
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.lesson { max-width: 960px; margin: 0 auto; }
+
+.module-tag {
+  display: inline-block;
+  padding: 5px 14px;
+  background: var(--orange-soft);
+  color: var(--orange);
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 800;
+  margin-bottom: 12px;
+  letter-spacing: 0.5px;
+}
+
+h1 { font-size: 36px; font-weight: 800; color: var(--ink); margin-bottom: 8px; line-height: 1.15; }
+h2 { font-size: 28px; font-weight: 800; color: var(--ink); margin-bottom: 8px; }
+h3 { font-size: 20px; font-weight: 700; color: var(--ink); margin: 24px 0 12px; }
+.intro { font-size: 16px; color: var(--ink2); margin-bottom: 20px; max-width: 720px; }
+
+.tip {
+  background: var(--yellow-soft);
+  border-left: 4px solid var(--yellow);
+  padding: 12px 16px;
+  border-radius: 10px;
+  margin: 16px 0;
+  display: flex;
+  gap: 10px;
+}
+.tip-icon { font-size: 22px; flex-shrink: 0; }
+.tip-body { font-size: 14px; color: var(--ink2); }
+
+/* ===== NAVIGATION BUTTONS ===== */
+.lesson-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 40px;
+  padding-top: 24px;
+  border-top: 2px solid var(--border);
+}
+.nav-btn {
+  padding: 12px 20px;
+  background: var(--card);
+  border: 2px solid var(--border);
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--ink2);
+  transition: all 0.2s;
+}
+.nav-btn:hover { border-color: var(--orange); color: var(--orange); }
+.nav-btn.primary {
+  background: var(--orange);
+  color: white;
+  border-color: var(--orange);
+  box-shadow: var(--shadow);
+}
+.nav-btn.primary:hover { background: #e07520; transform: translateY(-2px); }
+.nav-count { font-size: 13px; color: var(--muted); font-weight: 600; }
+
+/* ===== HERO (HOME) ===== */
+.hero {
+  background: linear-gradient(135deg, var(--orange-soft) 0%, var(--yellow-soft) 100%);
+  border-radius: 24px;
+  padding: 40px 36px;
+  text-align: center;
+  margin-bottom: 28px;
+}
+.hero-emoji { font-size: 72px; display: block; margin-bottom: 12px; }
+.hero h1 { font-size: 40px; }
+.hero p { font-size: 17px; color: var(--ink2); margin-top: 10px; max-width: 560px; margin-left: auto; margin-right: auto; }
+
+.home-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 16px;
+  margin: 20px 0;
+}
+.home-card {
+  background: var(--card);
+  border: 2px solid var(--border);
+  border-radius: 20px;
+  padding: 20px;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: left;
+  position: relative;
+  overflow: hidden;
+}
+.home-card:hover { border-color: var(--orange); transform: translateY(-4px); box-shadow: var(--shadow-lg); }
+.home-card.done-card { border-color: var(--green); }
+.home-card-emoji { font-size: 40px; margin-bottom: 10px; display: block; }
+.home-card-title { font-size: 17px; font-weight: 800; color: var(--ink); margin-bottom: 4px; }
+.home-card-desc { font-size: 13px; color: var(--muted); }
+.home-card-badge {
+  position: absolute;
+  top: 12px; right: 12px;
+  background: var(--green);
+  color: white;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 8px;
+}
+
+/* ===== COMMON COMPONENTS ===== */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 18px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 700;
+  transition: all 0.2s;
+}
+.btn-orange { background: var(--orange); color: white; box-shadow: var(--shadow); }
+.btn-orange:hover { background: #e07520; transform: translateY(-2px); }
+.btn-blue { background: var(--blue); color: white; box-shadow: var(--shadow); }
+.btn-blue:hover { background: #4a90c4; transform: translateY(-2px); }
+.btn-green { background: var(--green); color: white; box-shadow: var(--shadow); }
+.btn-green:hover { background: #5aaa4a; transform: translateY(-2px); }
+.btn-ghost { background: var(--card); border: 2px solid var(--border); color: var(--ink2); }
+.btn-ghost:hover { border-color: var(--orange); color: var(--orange); }
+.btn-violet { background: var(--violet); color: white; }
+.btn-violet:hover { background: #8070c0; }
+
+.toggle-row { display: flex; gap: 8px; margin: 12px 0 20px; flex-wrap: wrap; }
+.toggle-btn {
+  padding: 8px 16px;
+  border-radius: 12px;
+  background: var(--card);
+  border: 2px solid var(--border);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--ink2);
+  transition: all 0.2s;
+}
+.toggle-btn:hover { border-color: var(--orange); }
+.toggle-btn.on { background: var(--orange); color: white; border-color: var(--orange); }
+
+/* ===== QUIZ ===== */
+.quiz-block {
+  background: var(--card);
+  border: 2px solid var(--border);
+  border-radius: 20px;
+  padding: 24px;
+  margin: 16px 0;
+}
+.quiz-q { font-size: 18px; font-weight: 700; color: var(--ink); margin-bottom: 16px; }
+.quiz-opts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 10px;
+}
+.qopt {
+  padding: 18px 10px;
+  background: var(--bg2);
+  border: 3px solid transparent;
+  border-radius: 14px;
+  font-size: 24px;
+  font-weight: 800;
+  color: var(--ink);
+  text-align: center;
+  transition: all 0.2s;
+}
+.qopt:hover:not(:disabled) { border-color: var(--orange); transform: scale(1.04); }
+.qopt:disabled { cursor: default; opacity: 0.75; }
+.qopt.ok { background: var(--green-soft); border-color: var(--green); color: var(--green); }
+.qopt.ko { background: var(--pink-soft); border-color: var(--red); color: var(--red); }
+.quiz-feedback {
+  display: none;
+  margin-top: 14px;
+  padding: 12px 16px;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 15px;
+}
+.quiz-feedback.show { display: block; }
+.quiz-feedback.ok { background: var(--green-soft); color: #2f7d1d; }
+.quiz-feedback.ko { background: var(--pink-soft); color: #b93434; }
+
+/* ===== ALPHABET ===== */
+.alpha-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  gap: 12px;
+  margin-top: 16px;
+}
+.alpha-card {
+  background: var(--card);
+  border: 3px solid var(--border);
+  border-radius: 16px;
+  padding: 14px 8px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.alpha-card:hover { border-color: var(--orange); transform: translateY(-4px); box-shadow: var(--shadow); }
+.alpha-card.playing { background: var(--orange-soft); border-color: var(--orange); animation: pulse 0.55s; }
+.alpha-upper { font-size: 42px; font-weight: 900; color: var(--orange); display: block; line-height: 1; }
+.alpha-lower { font-size: 28px; font-weight: 700; color: var(--ink2); display: block; margin-top: 2px; }
+.alpha-hint { font-size: 11px; color: var(--muted); margin-top: 5px; }
+
+@keyframes pulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.07)} }
+
+/* ===== LETTER TRACING ===== */
+.tracing-layout {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 24px;
+  align-items: start;
+}
+.letter-picker-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
+  width: 200px;
+}
+.lp-btn {
+  padding: 10px 6px;
+  border: 2px solid var(--border);
+  border-radius: 10px;
+  background: var(--card);
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--ink);
+  text-align: center;
+  transition: all 0.15s;
+}
+.lp-btn:hover { border-color: var(--blue); }
+.lp-btn.active { background: var(--blue); color: white; border-color: var(--blue); }
+.lp-btn.traced { background: var(--green-soft); border-color: var(--green); color: var(--green); }
+
+.canvas-area { display: flex; flex-direction: column; align-items: center; gap: 14px; }
+.canvas-box {
+  position: relative;
+  width: min(360px, 80vw);
+  height: min(360px, 80vw);
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: var(--shadow-lg);
+  border: 3px solid var(--border);
+}
+#guideCanvas, #drawCanvas {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+}
+#guideCanvas { background: white; }
+#drawCanvas { background: transparent; cursor: crosshair; touch-action: none; z-index: 2; }
+
+.trace-controls { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
+.trace-hint {
+  background: var(--violet-soft);
+  border-radius: 12px;
+  padding: 12px 16px;
+  font-size: 14px;
+  color: var(--ink2);
+  text-align: center;
+  max-width: 360px;
+}
+.trace-feedback {
+  font-size: 16px;
+  font-weight: 700;
+  padding: 10px 16px;
+  border-radius: 12px;
+  text-align: center;
+  display: none;
+}
+.trace-feedback.show { display: block; }
+.trace-feedback.ok { background: var(--green-soft); color: #2f7d1d; }
+.trace-feedback.ko { background: var(--pink-soft); color: #b93434; }
+.trace-feedback.mid { background: var(--yellow-soft); color: #8a6000; }
+.letters-done { font-size: 13px; color: var(--ink2); font-weight: 600; }
+
+/* ===== SYLLABLES ===== */
+.syl-demo-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+.syl-tile {
+  min-width: 72px;
+  padding: 14px 18px;
+  font-size: 36px;
+  font-weight: 800;
+  border-radius: 14px;
+  cursor: pointer;
+  border: 3px solid transparent;
+  transition: all 0.2s;
+  text-align: center;
+}
+.syl-tile.cons { background: var(--blue-soft); color: var(--blue); }
+.syl-tile.cons:hover { border-color: var(--blue); }
+.syl-tile.vow { background: var(--pink-soft); color: var(--pink); }
+.syl-tile.vow:hover { border-color: var(--pink); }
+.syl-tile.res { background: var(--green-soft); color: var(--green); }
+.syl-tile.res:hover { border-color: var(--green); }
+.syl-tile.playing { filter: brightness(0.85); animation: pulse 0.5s; }
+.syl-op { font-size: 32px; color: var(--muted); font-weight: 700; }
+
+.syl-table-wrap { overflow-x: auto; margin-top: 16px; border-radius: 16px; border: 2px solid var(--border); }
+.syl-table { border-collapse: collapse; width: 100%; background: var(--card); }
+.syl-table th {
+  background: var(--orange-soft);
+  padding: 10px 14px;
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--orange);
+  text-align: center;
+  border: 1px solid var(--border);
+}
+.syl-table td {
+  padding: 8px 10px;
+  text-align: center;
+  border: 1px solid var(--border);
+  font-size: 20px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s;
+  color: var(--ink);
+}
+.syl-table td:hover { background: var(--orange-soft); color: var(--orange); }
+.syl-table td.playing { background: var(--orange); color: white; animation: pulse 0.5s; }
+.syl-row-header {
+  background: var(--blue-soft) !important;
+  color: var(--blue) !important;
+  font-size: 22px !important;
+  font-weight: 900 !important;
+  cursor: default !important;
+}
+.syl-row-header:hover { background: var(--blue-soft) !important; color: var(--blue) !important; }
+
+/* ===== VOCABULARY ===== */
+.theme-tabs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
+.theme-tab {
+  padding: 8px 16px;
+  border-radius: 20px;
+  background: var(--card);
+  border: 2px solid var(--border);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--ink2);
+  transition: all 0.15s;
+}
+.theme-tab:hover { border-color: var(--green); }
+.theme-tab.on { background: var(--green); color: white; border-color: var(--green); }
+
+.word-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 14px;
+}
+.word-card {
+  background: var(--card);
+  border: 3px solid var(--border);
+  border-radius: 18px;
+  padding: 16px 10px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.word-card:hover { border-color: var(--green); transform: translateY(-4px); box-shadow: var(--shadow); }
+.word-card.playing { background: var(--green-soft); border-color: var(--green); animation: pulse 0.6s; }
+.word-emoji { font-size: 52px; display: block; margin-bottom: 8px; line-height: 1; }
+.word-text { font-size: 16px; font-weight: 700; color: var(--ink); }
+.word-listened { position: absolute; top: 6px; right: 6px; font-size: 12px; opacity: 0.6; }
+.vocab-stats { font-size: 13px; color: var(--ink2); margin-bottom: 12px; font-weight: 600; }
+
+/* ===== KARAOKE / SENTENCES ===== */
+.sentence-block {
+  background: var(--card);
+  border: 2px solid var(--border);
+  border-radius: 20px;
+  padding: 24px;
+  margin: 16px 0;
+}
+.sentence-img { font-size: 60px; text-align: center; margin-bottom: 12px; }
+.sentence-text {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--ink);
+  line-height: 1.7;
+  text-align: center;
+  margin-bottom: 14px;
+  min-height: 48px;
+}
+.k-word {
+  display: inline-block;
+  padding: 2px 6px;
+  border-radius: 8px;
+  margin: 2px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.k-word:hover { background: var(--orange-soft); color: var(--orange); }
+.k-word.k-playing { background: var(--orange); color: white; transform: scale(1.1); }
+.sentence-btns { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
+
+/* ===== GAMES ===== */
+.game-block {
+  background: var(--card);
+  border: 2px solid var(--border);
+  border-radius: 20px;
+  padding: 24px;
+  margin-bottom: 20px;
+}
+.game-title { font-size: 20px; font-weight: 800; color: var(--ink); margin-bottom: 16px; display: flex; align-items: center; gap: 10px; }
+
+/* Dictation */
+.dictation-word-area { text-align: center; margin: 16px 0; }
+.dictation-input {
+  width: 100%;
+  max-width: 320px;
+  padding: 12px 16px;
+  border: 2px solid var(--border);
+  border-radius: 12px;
+  font-size: 18px;
+  margin: 10px 0;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+.dictation-input:focus { outline: none; border-color: var(--orange); }
+.dictation-score { font-size: 14px; color: var(--ink2); font-weight: 600; text-align: center; margin-top: 6px; }
+
+/* Memory game */
+.memory-board {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  max-width: 520px;
+  margin: 0 auto;
+}
+.mem-card {
+  aspect-ratio: 1;
+  background: var(--orange);
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  font-weight: 800;
+  color: white;
+  cursor: pointer;
+  transition: all 0.3s;
+  user-select: none;
+  min-height: 80px;
+}
+.mem-card.flipped { background: var(--card); color: var(--ink); border: 3px solid var(--orange); }
+.mem-card.matched { background: var(--green-soft); color: var(--green); border: 3px solid var(--green); cursor: default; }
+.mem-card.word-type { font-size: 16px; }
+
+/* Score bar */
+.score-bar {
+  background: var(--yellow-soft);
+  border-radius: 12px;
+  padding: 8px 16px;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--ink2);
+  margin-bottom: 16px;
+  display: inline-block;
+}
+
+/* ===== REWARD POPUP ===== */
+.reward-pop {
+  position: fixed;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  background: var(--card);
+  padding: 36px 48px;
+  border-radius: 24px;
+  border: 4px solid var(--yellow);
+  box-shadow: var(--shadow-lg);
+  text-align: center;
+  z-index: 300;
+  transition: transform 0.45s cubic-bezier(0.5,1.6,0.5,1);
+  pointer-events: none;
+}
+.reward-pop.show { transform: translate(-50%, -50%) scale(1); }
+.reward-pop-emoji { font-size: 72px; display: block; }
+.reward-pop-text { font-size: 22px; font-weight: 800; color: var(--orange); margin-top: 10px; }
+.reward-pop-sub { font-size: 14px; color: var(--muted); margin-top: 4px; }
+
+/* ===== LANGUAGE SELECTOR ===== */
+.lang-wrap { padding: 10px 0 4px; border-top: 1px solid var(--border); margin-top: 6px; }
+.lang-label { font-size: 10px; color: var(--muted); font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px; }
+.lang-select { width: 100%; padding: 7px 10px; border-radius: 10px; border: 2px solid var(--border); background: var(--card); font-size: 12px; font-weight: 600; color: var(--ink); }
+
+/* ===== PHASE LINK ===== */
+.phase-link {
+  display: flex; align-items: center; gap: 8px;
+  padding: 9px 12px; border-radius: 12px;
+  font-size: 13px; font-weight: 700; color: var(--violet);
+  background: var(--violet-soft); text-decoration: none;
+  transition: all 0.2s; margin-top: 4px;
+}
+.phase-link:hover { background: var(--violet); color: white; }
+
+/* ===== DIALOGUES ===== */
+.dial-tabs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
+.dial-tab {
+  padding: 9px 16px; border-radius: 20px;
+  background: var(--card); border: 2px solid var(--border);
+  font-size: 13px; font-weight: 700; color: var(--ink2);
+  transition: all 0.15s; cursor: pointer;
+}
+.dial-tab:hover { border-color: var(--blue); }
+.dial-tab.on { background: var(--blue); color: white; border-color: var(--blue); }
+
+.dial-scene { display: none; animation: fadeIn 0.3s ease; }
+.dial-scene.on { display: block; }
+
+.dial-header {
+  background: linear-gradient(135deg, var(--blue-soft), var(--violet-soft));
+  border-radius: 18px; padding: 20px 22px; margin-bottom: 18px;
+  display: flex; align-items: center; gap: 16px;
+}
+.dial-header-icon { font-size: 48px; }
+.dial-header-title { font-size: 20px; font-weight: 800; color: var(--ink); }
+.dial-header-context { font-size: 14px; color: var(--ink2); margin-top: 4px; }
+
+.dial-conv { display: flex; flex-direction: column; gap: 10px; margin: 0 0 16px; }
+.dial-line { display: flex; gap: 10px; align-items: flex-end; }
+.dial-line.me { flex-direction: row-reverse; }
+
+.dial-bubble {
+  max-width: 72%; padding: 12px 16px; border-radius: 18px;
+  font-size: 16px; font-weight: 600; cursor: pointer;
+  transition: all 0.15s; line-height: 1.55;
+}
+.dial-line.them .dial-bubble {
+  background: var(--bg2); border: 2px solid var(--border);
+  border-radius: 4px 18px 18px 18px; color: var(--ink);
+}
+.dial-line.me .dial-bubble {
+  background: var(--blue); color: white;
+  border-radius: 18px 4px 18px 18px;
+}
+.dial-bubble:hover { filter: brightness(0.93); transform: scale(1.01); }
+.dial-bubble.playing { animation: pulse 0.5s; }
+.dial-who { font-size: 11px; font-weight: 700; color: var(--muted); padding-bottom: 4px; white-space: nowrap; }
+.dial-trans { font-size: 12px; color: var(--muted); font-style: italic; margin-top: 3px; }
+
+.dial-play-all {
+  display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap;
+}
+
+.dial-vocab {
+  background: var(--violet-soft); border-radius: 14px;
+  padding: 14px 16px; margin-top: 4px;
+}
+.dial-vocab-title { font-size: 12px; font-weight: 700; color: var(--violet); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; }
+.dial-vocab-item {
+  display: flex; gap: 10px; margin: 6px 0;
+  font-size: 14px; cursor: pointer; padding: 4px 6px;
+  border-radius: 8px; transition: background 0.15s;
+}
+.dial-vocab-item:hover { background: rgba(152,136,209,0.2); }
+.dvw { font-weight: 800; color: var(--ink); min-width: 170px; flex-shrink: 0; }
+.dvd { color: var(--ink2); }
+
+/* ===== FORMULAIRES ===== */
+.form-tabs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
+.form-tab-btn {
+  padding: 9px 16px; border-radius: 20px;
+  background: var(--card); border: 2px solid var(--border);
+  font-size: 13px; font-weight: 700; color: var(--ink2);
+  transition: all 0.15s; cursor: pointer;
+}
+.form-tab-btn:hover { border-color: var(--orange); }
+.form-tab-btn.on { background: var(--orange); color: white; border-color: var(--orange); }
+
+.form-tab-pane { display: none; animation: fadeIn 0.3s ease; }
+.form-tab-pane.on { display: block; }
+
+.form-simulator {
+  background: var(--card); border: 2px solid var(--border);
+  border-radius: 20px; overflow: hidden; margin-bottom: 20px;
+}
+.form-sim-header { padding: 20px 24px; color: white; }
+.form-sim-title { font-size: 19px; font-weight: 800; }
+.form-sim-sub { font-size: 13px; opacity: 0.85; margin-top: 3px; }
+.form-sim-body { padding: 22px 24px; }
+
+.form-section { margin-bottom: 22px; }
+.form-section-title {
+  font-size: 13px; font-weight: 800; text-transform: uppercase;
+  letter-spacing: 1px; margin-bottom: 12px; padding-bottom: 6px;
+  border-bottom: 2px solid var(--border); color: var(--orange);
+}
+.form-field { margin: 12px 0; }
+.form-label-row {
+  display: flex; align-items: center; gap: 6px;
+  margin-bottom: 5px; cursor: pointer;
+}
+.form-label-row:hover .form-label-text { color: var(--orange); }
+.form-label-text { font-size: 14px; font-weight: 700; color: var(--ink2); transition: color 0.15s; }
+.form-speak-btn { font-size: 14px; opacity: 0.5; transition: opacity 0.15s; }
+.form-speak-btn:hover { opacity: 1; }
+.form-explain { font-size: 12px; color: var(--muted); margin-bottom: 6px; }
+.form-input {
+  width: 100%; padding: 10px 14px; border: 2px solid var(--border);
+  border-radius: 10px; font-size: 15px; background: var(--bg);
+  transition: all 0.2s; font-family: inherit;
+}
+.form-input:focus { outline: none; border-color: var(--blue); background: white; }
+.form-input.filled { border-color: var(--green); background: var(--green-soft); }
+.form-select {
+  width: 100%; padding: 10px 14px; border: 2px solid var(--border);
+  border-radius: 10px; font-size: 15px; background: var(--bg);
+  transition: all 0.2s; font-family: inherit; cursor: pointer;
+}
+.form-select:focus { outline: none; border-color: var(--blue); }
+.form-textarea {
+  width: 100%; padding: 10px 14px; border: 2px solid var(--border);
+  border-radius: 10px; font-size: 14px; background: var(--bg);
+  min-height: 80px; resize: vertical; font-family: inherit; transition: all 0.2s;
+}
+.form-textarea:focus { outline: none; border-color: var(--blue); background: white; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.form-checklist { margin-top: 8px; }
+.form-check-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 14px; border: 2px solid var(--border);
+  border-radius: 10px; margin-bottom: 6px; cursor: pointer;
+  font-size: 14px; font-weight: 600; transition: all 0.2s;
+}
+.form-check-item:hover { border-color: var(--green); }
+.form-check-item.checked { background: var(--green-soft); border-color: var(--green); color: var(--green); }
+.form-check-box { width: 20px; height: 20px; border-radius: 5px; border: 2px solid var(--border); flex-shrink: 0; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
+.form-check-item.checked .form-check-box { background: var(--green); border-color: var(--green); color: white; font-size: 12px; }
+
+.form-info-item {
+  display: flex; gap: 12px; padding: 12px 14px;
+  background: var(--bg2); border-radius: 10px; margin: 8px 0;
+  align-items: flex-start;
+}
+.form-info-label { font-size: 14px; font-weight: 800; color: var(--orange); min-width: 180px; flex-shrink: 0; cursor: pointer; }
+.form-info-label:hover { color: var(--ink); }
+.form-info-explain { font-size: 13px; color: var(--ink2); line-height: 1.5; }
+
+.form-vocab-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 10px 0; }
+.form-vocab-card {
+  background: var(--card); border: 2px solid var(--border);
+  border-radius: 10px; padding: 10px 12px; cursor: pointer;
+  transition: all 0.15s;
+}
+.form-vocab-card:hover { border-color: var(--orange); background: var(--orange-soft); }
+.fvc-term { font-size: 14px; font-weight: 800; color: var(--orange); }
+.fvc-def { font-size: 12px; color: var(--ink2); margin-top: 2px; }
+
+.form-submit-btn {
+  width: 100%; padding: 14px; background: var(--green); color: white;
+  border-radius: 12px; font-size: 16px; font-weight: 700;
+  margin-top: 18px; border: none; cursor: pointer; transition: all 0.2s;
+}
+.form-submit-btn:hover { background: #5aaa4a; transform: translateY(-2px); }
+.form-success-msg {
+  display: none; background: var(--green-soft); border: 2px solid var(--green);
+  border-radius: 14px; padding: 20px; text-align: center; margin-top: 14px;
+}
+.form-success-msg.show { display: block; }
+.form-success-msg-icon { font-size: 44px; }
+.form-success-msg-text { font-size: 18px; font-weight: 700; color: var(--green); margin-top: 6px; }
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 900px) {
+  .sidebar {
+    transform: translateX(-100%);
+    width: 260px;
+    box-shadow: var(--shadow-lg);
+  }
+  .sidebar.open { transform: translateX(0); }
+  .main { margin-left: 0; padding: 20px 16px 80px; }
+  .menu-btn { display: flex; }
+  h1 { font-size: 28px; }
+  h2 { font-size: 24px; }
+  .hero { padding: 28px 20px; }
+  .hero h1 { font-size: 30px; }
+  .tracing-layout { grid-template-columns: 1fr; }
+  .letter-picker-grid { width: auto; grid-template-columns: repeat(7, 1fr); }
+  .alpha-grid { grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); gap: 8px; }
+  .memory-board { grid-template-columns: repeat(4, 1fr); }
+}
+@media (max-width: 500px) {
+  .sentence-text { font-size: 22px; }
+  .word-grid { grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); }
+  .memory-board { grid-template-columns: repeat(4, 1fr); gap: 6px; }
+  .mem-card { min-height: 64px; font-size: 22px; }
+  .mem-card.word-type { font-size: 12px; }
+  .form-row { grid-template-columns: 1fr; }
+  .form-vocab-grid { grid-template-columns: 1fr; }
+  .dial-bubble { font-size: 14px; max-width: 85%; }
+  .dial-tabs { gap: 6px; }
+  .dial-tab { font-size: 12px; padding: 7px 12px; }
+}
+</style>
+</head>
+<body>
+
+<button class="menu-btn" id="menuBtn" onclick="toggleSidebar()" aria-label="Menu">☰</button>
+
+<div class="shell">
+
+<!-- ====== SIDEBAR ====== -->
+<nav class="sidebar" id="sidebar">
+  <div class="logo">
+    <span class="logo-icon">📚</span>
+    <div>
+      <div class="logo-text">J'apprends</div>
+      <div class="logo-sub">le Français — Phase 1</div>
+    </div>
+  </div>
+
+  <div class="progress-block">
+    <div class="prog-label">
+      <span>Ma progression</span>
+      <span id="prog-pct">0 %</span>
+    </div>
+    <div class="prog-bar"><div class="prog-fill" id="progFill"></div></div>
+    <div class="prog-stars" id="progStars">☆ ☆ ☆ ☆ ☆ ☆</div>
+  </div>
+
+  <div class="nav-section-label">Modules</div>
+  <button class="nav-item active" id="ni-home" onclick="go('home')"><span class="nav-icon">🏠</span>Accueil</button>
+  <button class="nav-item" id="ni-m1" onclick="go('m1')"><span class="nav-icon">🔤</span>1. L'Alphabet</button>
+  <button class="nav-item" id="ni-m2" onclick="go('m2')"><span class="nav-icon">✍️</span>2. Je Trace</button>
+  <button class="nav-item" id="ni-m3" onclick="go('m3')"><span class="nav-icon">🎵</span>3. Les Syllabes</button>
+  <button class="nav-item" id="ni-m4" onclick="go('m4')"><span class="nav-icon">🍎</span>4. Mes Mots</button>
+  <button class="nav-item" id="ni-m5" onclick="go('m5')"><span class="nav-icon">📖</span>5. Je Lis</button>
+  <button class="nav-item" id="ni-m6" onclick="go('m6')"><span class="nav-icon">🎯</span>6. Jeux & Dictée</button>
+  <button class="nav-item" id="ni-m7" onclick="go('m7')"><span class="nav-icon">💬</span>7. Situations réelles</button>
+  <button class="nav-item" id="ni-m8" onclick="go('m8')"><span class="nav-icon">📋</span>8. Formulaires</button>
+
+  <div class="nav-section-label">Suite du parcours</div>
+  <a href="apprendre-phase2.html" class="phase-link">📘 Phase 2 — Niveau A1 →</a>
+
+  <div class="lang-wrap">
+    <div class="lang-label">🌍 Langue des consignes</div>
+    <select class="lang-select" id="langSelect" onchange="setLang(this.value)">
+      <option value="fr">🇫🇷 Français</option>
+      <option value="ar">🇸🇦 العربية</option>
+      <option value="wolof">🌍 Wolof</option>
+      <option value="bambara">🌍 Bambara</option>
+      <option value="en">🇬🇧 English</option>
+    </select>
+  </div>
+
+  <div class="audio-box">
+    <div class="audio-box-title">🔊 Voix</div>
+    <div class="audio-row">
+      <label for="rateSlider">Vitesse</label>
+      <input type="range" id="rateSlider" min="0.5" max="1.2" step="0.1" value="0.85">
+    </div>
+    <div class="audio-row">
+      <label for="volSlider">Volume</label>
+      <input type="range" id="volSlider" min="0.2" max="1" step="0.1" value="1">
+    </div>
+    <button class="test-voice-btn" onclick="speak('Bonjour, je suis prêt à apprendre le français !')">▶ Tester la voix</button>
+    <button class="reset-btn" onclick="resetProgress()">🔄 Réinitialiser la progression</button>
+  </div>
+</nav>
+
+<!-- ====== MAIN ====== -->
+<main class="main">
+
+<!-- ===== HOME ===== -->
+<section class="section active" id="s-home">
+<div class="lesson">
+  <div class="hero">
+    <span class="hero-emoji">🌟</span>
+    <h1>On diarama 🌟 Diangou français Diadia 📚</h1>
+    <p>Clique sur les lettres, les mots et les phrases pour les entendre. Tout est fait pour toi !</p>
+    <div style="margin-top:20px;">
+      <button class="btn btn-orange" style="font-size:16px;padding:14px 24px;" onclick="speak('Bienvenue ! Je suis heureux de commencer à apprendre le français avec toi. Clique sur un module pour commencer.')">▶ Écouter le message d'accueil</button>
+    </div>
+  </div>
+
+  <div class="home-grid" id="homeGrid">
+    <div class="home-card" onclick="go('m1')">
+      <span class="home-card-emoji">🔤</span>
+      <div class="home-card-title">1. L'Alphabet</div>
+      <div class="home-card-desc">Apprends les 26 lettres, leurs noms et leurs sons.</div>
+    </div>
+    <div class="home-card" onclick="go('m2')">
+      <span class="home-card-emoji">✍️</span>
+      <div class="home-card-title">2. Je Trace</div>
+      <div class="home-card-desc">Trace les lettres avec ton doigt ou ta souris.</div>
+    </div>
+    <div class="home-card" onclick="go('m3')">
+      <span class="home-card-emoji">🎵</span>
+      <div class="home-card-title">3. Les Syllabes</div>
+      <div class="home-card-desc">Combine les lettres pour faire des syllabes.</div>
+    </div>
+    <div class="home-card" onclick="go('m4')">
+      <span class="home-card-emoji">🍎</span>
+      <div class="home-card-title">4. Mes Mots</div>
+      <div class="home-card-desc">150 mots utiles avec images et audio.</div>
+    </div>
+    <div class="home-card" onclick="go('m5')">
+      <span class="home-card-emoji">📖</span>
+      <div class="home-card-title">5. Je Lis</div>
+      <div class="home-card-desc">Lis des phrases simples mot par mot.</div>
+    </div>
+    <div class="home-card" onclick="go('m6')">
+      <span class="home-card-emoji">🎯</span>
+      <div class="home-card-title">6. Jeux & Dictée</div>
+      <div class="home-card-desc">Joue, mémorise, écris et gagne des étoiles.</div>
+    </div>
+  </div>
+
+  <div class="tip">
+    <div class="tip-icon">💡</div>
+    <div class="tip-body"><strong>Astuce :</strong> Sur cette application, <strong>tout est cliquable</strong>. Clique sur n'importe quelle lettre, syllabe ou mot pour l'entendre. Tu peux régler la vitesse de la voix dans le menu à gauche.</div>
+  </div>
+</div>
+</section>
+
+<!-- ===== MODULE 1 : ALPHABET ===== -->
+<section class="section" id="s-m1">
+<div class="lesson">
+  <div class="module-tag">🔤 MODULE 1 · L'Alphabet</div>
+  <h2>L'alphabet français</h2>
+  <p class="intro">L'alphabet français a <strong>26 lettres</strong>. Chaque lettre a deux formes. Clique pour écouter son nom ou son son.</p>
+
+  <div class="toggle-row">
+    <span style="font-weight:700; font-size:14px; align-self:center;">Mode :</span>
+    <button class="toggle-btn on" id="tb-name" onclick="setAlphaMode('name')">🔤 Nom de la lettre</button>
+    <button class="toggle-btn" id="tb-sound" onclick="setAlphaMode('sound')">🔊 Son dans un mot</button>
+  </div>
+
+  <div class="alpha-grid" id="alphaGrid"></div>
+
+  <h3>Les voyelles — elles chantent !</h3>
+  <p style="color:var(--ink2);margin-bottom:14px;">A, E, I, O, U, Y — ces lettres sont très importantes. Elles sont dans tous les mots.</p>
+  <div style="display:flex;gap:12px;flex-wrap:wrap;">
+    <div style="background:var(--pink-soft);border:3px solid var(--pink);border-radius:16px;padding:14px 18px;text-align:center;cursor:pointer;font-size:36px;font-weight:900;color:var(--pink);min-width:70px;" onclick="speak('A')">A a</div>
+    <div style="background:var(--pink-soft);border:3px solid var(--pink);border-radius:16px;padding:14px 18px;text-align:center;cursor:pointer;font-size:36px;font-weight:900;color:var(--pink);min-width:70px;" onclick="speak('E')">E e</div>
+    <div style="background:var(--pink-soft);border:3px solid var(--pink);border-radius:16px;padding:14px 18px;text-align:center;cursor:pointer;font-size:36px;font-weight:900;color:var(--pink);min-width:70px;" onclick="speak('I')">I i</div>
+    <div style="background:var(--pink-soft);border:3px solid var(--pink);border-radius:16px;padding:14px 18px;text-align:center;cursor:pointer;font-size:36px;font-weight:900;color:var(--pink);min-width:70px;" onclick="speak('O')">O o</div>
+    <div style="background:var(--pink-soft);border:3px solid var(--pink);border-radius:16px;padding:14px 18px;text-align:center;cursor:pointer;font-size:36px;font-weight:900;color:var(--pink);min-width:70px;" onclick="speak('U')">U u</div>
+    <div style="background:var(--pink-soft);border:3px solid var(--pink);border-radius:16px;padding:14px 18px;text-align:center;cursor:pointer;font-size:36px;font-weight:900;color:var(--pink);min-width:70px;" onclick="speak('Y')">Y y</div>
+  </div>
+
+  <h3>Quiz — trouve la lettre</h3>
+  <div class="quiz-block">
+    <div class="quiz-q">🔊 Écoute et trouve la bonne lettre :</div>
+    <div style="text-align:center;margin-bottom:16px;">
+      <button class="btn btn-orange" onclick="speak('M')">▶ Écouter</button>
+    </div>
+    <div class="quiz-opts">
+      <button class="qopt" onclick="qAnswer(this,'ko','qf-1a','m1q1')">N</button>
+      <button class="qopt" onclick="qAnswer(this,'ok','qf-1a','m1q1')">M</button>
+      <button class="qopt" onclick="qAnswer(this,'ko','qf-1a','m1q1')">W</button>
+      <button class="qopt" onclick="qAnswer(this,'ko','qf-1a','m1q1')">H</button>
+    </div>
+    <div class="quiz-feedback" id="qf-1a">✅ <strong>Bravo !</strong> C'est la lettre M. On dit « emm ».</div>
+  </div>
+
+  <div class="lesson-nav">
+    <button class="nav-btn" onclick="go('home')">← Accueil</button>
+    <span class="nav-count">Module 1 / 6</span>
+    <button class="nav-btn primary" onclick="markDone('m1');go('m2')">Suivant →</button>
+  </div>
+</div>
+</section>
+
+<!-- ===== MODULE 2 : TRAÇAGE ===== -->
+<section class="section" id="s-m2">
+<div class="lesson">
+  <div class="module-tag">✍️ MODULE 2 · Je Trace</div>
+  <h2>Apprends à écrire les lettres</h2>
+  <p class="intro">Choisis une lettre, regarde comment la tracer, puis trace-la avec ton doigt ou ta souris.</p>
+
+  <div class="tracing-layout" id="tracingLayout">
+    <!-- Letter picker -->
+    <div>
+      <div style="font-size:13px;font-weight:700;color:var(--ink2);margin-bottom:8px;">Choisis une lettre :</div>
+      <div class="letter-picker-grid" id="letterPicker"></div>
+      <div class="letters-done" id="lettersDoneCount" style="margin-top:10px;"></div>
+    </div>
+
+    <!-- Canvas area -->
+    <div class="canvas-area">
+      <div style="text-align:center;font-size:14px;font-weight:700;color:var(--ink2);">
+        Je trace la lettre : <span id="currentLetterLabel" style="font-size:24px;color:var(--orange);font-weight:900;">A</span>
+      </div>
+      <div class="canvas-box">
+        <canvas id="guideCanvas"></canvas>
+        <canvas id="drawCanvas"></canvas>
+      </div>
+      <div class="trace-controls">
+        <button class="btn btn-blue" onclick="animateLetter()">👁️ Voir le tracé</button>
+        <button class="btn btn-ghost" onclick="clearDraw()">🗑️ Effacer</button>
+        <button class="btn btn-orange" onclick="validateTrace()">✅ Vérifier</button>
+      </div>
+      <div class="trace-hint" id="traceHint">Regarde d'abord l'animation, puis trace la lettre par-dessus.</div>
+      <div class="trace-feedback" id="traceFeedback"></div>
+    </div>
+  </div>
+
+  <div class="tip" style="margin-top:24px;">
+    <div class="tip-icon">✋</div>
+    <div class="tip-body"><strong>Sur téléphone :</strong> trace avec ton doigt directement sur l'écran. <strong>Sur ordinateur :</strong> trace avec la souris en maintenant le clic enfoncé.</div>
+  </div>
+
+  <div class="lesson-nav">
+    <button class="nav-btn" onclick="go('m1')">← Précédent</button>
+    <span class="nav-count">Module 2 / 6</span>
+    <button class="nav-btn primary" onclick="markDone('m2');go('m3')">Suivant →</button>
+  </div>
+</div>
+</section>
+
+<!-- ===== MODULE 3 : SYLLABES ===== -->
+<section class="section" id="s-m3">
+<div class="lesson">
+  <div class="module-tag">🎵 MODULE 3 · Les Syllabes</div>
+  <h2>Construire des syllabes</h2>
+  <p class="intro">Une syllabe = <strong>une consonne + une voyelle</strong>. Clique sur chaque partie pour l'entendre.</p>
+
+  <div style="background:var(--card);border:2px solid var(--border);border-radius:20px;padding:22px;margin-bottom:20px;">
+    <h3 style="margin-top:0;">Démonstration</h3>
+    <div class="syl-demo-row">
+      <button class="syl-tile cons" onclick="playTile(this,'L')">L</button>
+      <span class="syl-op">+</span>
+      <button class="syl-tile vow" onclick="playTile(this,'A')">A</button>
+      <span class="syl-op">=</span>
+      <button class="syl-tile res" onclick="playTile(this,'la')">LA</button>
+      <span style="font-size:14px;color:var(--ink2);">← clique !</span>
+    </div>
+    <div class="syl-demo-row">
+      <button class="syl-tile cons" onclick="playTile(this,'M')">M</button>
+      <span class="syl-op">+</span>
+      <button class="syl-tile vow" onclick="playTile(this,'A')">A</button>
+      <span class="syl-op">=</span>
+      <button class="syl-tile res" onclick="playTile(this,'ma')">MA</button>
+    </div>
+    <div class="syl-demo-row">
+      <button class="syl-tile cons" onclick="playTile(this,'P')">P</button>
+      <span class="syl-op">+</span>
+      <button class="syl-tile vow" onclick="playTile(this,'I')">I</button>
+      <span class="syl-op">=</span>
+      <button class="syl-tile res" onclick="playTile(this,'pi')">PI</button>
+    </div>
+  </div>
+
+  <h3>Tableau complet des syllabes</h3>
+  <p style="color:var(--ink2);margin-bottom:12px;font-size:14px;">Clique sur n'importe quelle syllabe pour l'entendre. Les consonnes sont en bleu, les voyelles en orange.</p>
+  <div class="syl-table-wrap">
+    <table class="syl-table" id="sylTable"></table>
+  </div>
+
+  <div class="tip" style="margin-top:20px;">
+    <div class="tip-icon">🎯</div>
+    <div class="tip-body">Quand tu sais lire les syllabes, tu peux lire <strong>n'importe quel mot</strong> ! Par exemple : <strong>BA-NA-NE</strong>, <strong>TO-MA-TE</strong>, <strong>MA-MA-N</strong>.</div>
+  </div>
+
+  <h3>Quiz — quelle syllabe entends-tu ?</h3>
+  <div class="quiz-block">
+    <div class="quiz-q">🔊 Écoute et choisis la bonne syllabe :</div>
+    <div style="text-align:center;margin-bottom:16px;">
+      <button class="btn btn-orange" onclick="speak('fo')">▶ Écouter</button>
+    </div>
+    <div class="quiz-opts">
+      <button class="qopt" onclick="qAnswer(this,'ko','qf-3a','m3q1')">FI</button>
+      <button class="qopt" onclick="qAnswer(this,'ko','qf-3a','m3q1')">FA</button>
+      <button class="qopt" onclick="qAnswer(this,'ok','qf-3a','m3q1')">FO</button>
+      <button class="qopt" onclick="qAnswer(this,'ko','qf-3a','m3q1')">FU</button>
+    </div>
+    <div class="quiz-feedback" id="qf-3a">✅ <strong>Bravo !</strong> C'était la syllabe FO — « F + O ».</div>
+  </div>
+
+  <div class="lesson-nav">
+    <button class="nav-btn" onclick="go('m2')">← Précédent</button>
+    <span class="nav-count">Module 3 / 6</span>
+    <button class="nav-btn primary" onclick="markDone('m3');go('m4')">Suivant →</button>
+  </div>
+</div>
+</section>
+
+<!-- ===== MODULE 4 : VOCABULAIRE ===== -->
+<section class="section" id="s-m4">
+<div class="lesson">
+  <div class="module-tag">🍎 MODULE 4 · Mes Mots</div>
+  <h2>Mes premiers mots</h2>
+  <p class="intro">Clique sur un mot pour l'entendre. Explore les différentes catégories.</p>
+
+  <div class="vocab-stats" id="vocabStats"></div>
+  <div class="theme-tabs" id="themeTabs"></div>
+  <div class="word-grid" id="wordGrid"></div>
+
+  <div class="lesson-nav">
+    <button class="nav-btn" onclick="go('m3')">← Précédent</button>
+    <span class="nav-count">Module 4 / 6</span>
+    <button class="nav-btn primary" onclick="markDone('m4');go('m5')">Suivant →</button>
+  </div>
+</div>
+</section>
+
+<!-- ===== MODULE 5 : JE LIS / KARAOKÉ ===== -->
+<section class="section" id="s-m5">
+<div class="lesson">
+  <div class="module-tag">📖 MODULE 5 · Je Lis</div>
+  <h2>Lecture guidée</h2>
+  <p class="intro">Écoute chaque phrase. Chaque mot s'illumine pendant la lecture. Clique aussi sur un mot seul pour l'entendre.</p>
+
+  <div id="sentencesContainer"></div>
+
+  <div class="tip">
+    <div class="tip-icon">🏆</div>
+    <div class="tip-body">Essaie de lire la phrase <strong>avant</strong> de cliquer sur « Écouter ». Si tu reconnais des mots, c'est que tu progresses !</div>
+  </div>
+
+  <div class="lesson-nav">
+    <button class="nav-btn" onclick="go('m4')">← Précédent</button>
+    <span class="nav-count">Module 5 / 6</span>
+    <button class="nav-btn primary" onclick="markDone('m5');go('m6')">Suivant →</button>
+  </div>
+</div>
+</section>
+
+<!-- ===== MODULE 6 : JEUX & DICTÉE ===== -->
+<section class="section" id="s-m6">
+<div class="lesson">
+  <div class="module-tag">🎯 MODULE 6 · Jeux & Dictée</div>
+  <h2>Joue et apprends !</h2>
+  <p class="intro">Teste tout ce que tu as appris. Gagne des étoiles !</p>
+
+  <div class="score-bar">⭐ Score : <span id="gameScore">0</span> pts</div>
+
+  <!-- JEUX 1 : Dictée -->
+  <div class="game-block">
+    <div class="game-title">🎙️ Jeu 1 — Dictée</div>
+    <p style="color:var(--ink2);font-size:14px;margin-bottom:16px;">Écoute le mot et écris-le. Les accents ne sont pas obligatoires.</p>
+    <div class="dictation-word-area">
+      <button class="btn btn-orange" id="dictPlayBtn" onclick="dictPlay()" style="font-size:16px;padding:14px 24px;">▶ Écouter le mot</button>
+    </div>
+    <input type="text" class="dictation-input" id="dictInput" placeholder="Écris le mot ici..." onkeydown="if(event.key==='Enter')dictCheck()">
+    <div style="text-align:center;">
+      <button class="btn btn-green" onclick="dictCheck()" style="margin-top:4px;">✅ Vérifier</button>
+      <button class="btn btn-ghost" onclick="dictSkip()" style="margin-top:4px;margin-left:8px;">⏭️ Passer</button>
+    </div>
+    <div class="dictation-score" id="dictFeedback"></div>
+    <div class="dictation-score">Score : <span id="dictScore">0</span> / <span id="dictTotal">0</span></div>
+  </div>
+
+  <!-- JEU 2 : Mémoire -->
+  <div class="game-block">
+    <div class="game-title">🃏 Jeu 2 — Mémoire</div>
+    <p style="color:var(--ink2);font-size:14px;margin-bottom:14px;">Retourne les cartes et trouve les paires <strong>image + mot</strong>. Clique deux cartes pour les retourner.</p>
+    <div class="memory-board" id="memBoard"></div>
+    <div style="text-align:center;margin-top:14px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
+      <button class="btn btn-orange" onclick="initMemory()">🔄 Nouvelle partie</button>
+      <span id="memStatus" style="font-size:14px;font-weight:700;color:var(--ink2);align-self:center;"></span>
+    </div>
+  </div>
+
+  <!-- JEU 3 : Quiz lettres -->
+  <div class="game-block">
+    <div class="game-title">🔤 Jeu 3 — Reconnais la lettre</div>
+    <p style="color:var(--ink2);font-size:14px;margin-bottom:16px;">Écoute le son et trouve la bonne lettre.</p>
+    <div style="text-align:center;margin-bottom:16px;">
+      <button class="btn btn-orange" id="letterQuizPlayBtn" onclick="letterQuizPlay()" style="font-size:16px;padding:14px 24px;">▶ Écouter la lettre</button>
+    </div>
+    <div class="quiz-opts" id="letterQuizOpts"></div>
+    <div class="quiz-feedback" id="letterQuizFb"></div>
+    <div style="text-align:center;margin-top:14px;">
+      <button class="btn btn-ghost" onclick="nextLetterQuiz()">Suivant ▶</button>
+    </div>
+  </div>
+
+  <div class="tip" style="margin-top:8px;">
+    <div class="tip-icon">🎉</div>
+    <div class="tip-body"><strong>Continue comme ça !</strong> Reviens chaque jour pour quelques minutes. Tu peux refaire tous les modules autant de fois que tu veux.</div>
+  </div>
+
+  <div class="lesson-nav">
+    <button class="nav-btn" onclick="go('m5')">← Précédent</button>
+    <span class="nav-count">Module 6 / 8</span>
+    <button class="nav-btn primary" onclick="markDone('m6');go('m7')">Suivant →</button>
+  </div>
+</div>
+</section>
+
+<!-- ===== MODULE 7 : SITUATIONS RÉELLES ===== -->
+<section class="section" id="s-m7">
+<div class="lesson">
+  <div class="module-tag" style="background:var(--blue-soft);color:var(--blue);">💬 MODULE 7 · Situations réelles</div>
+  <h2>Parler dans la vraie vie</h2>
+  <p class="intro" id="m7-intro">Voici des conversations que tu peux avoir chaque jour. Clique sur chaque bulle pour entendre la phrase. Écoute, lis, et répète !</p>
+
+  <div class="dial-tabs" id="dialTabs">
+    <button class="dial-tab on" onclick="showDial('medecin',this)">🏥 Médecin</button>
+    <button class="dial-tab" onclick="showDial('mairie',this)">🏛️ Mairie</button>
+    <button class="dial-tab" onclick="showDial('ecole',this)">🏫 École</button>
+    <button class="dial-tab" onclick="showDial('pharmacie',this)">💊 Pharmacie</button>
+    <button class="dial-tab" onclick="showDial('logement',this)">🏠 Logement</button>
+    <button class="dial-tab" onclick="showDial('banque',this)">🏦 Banque</button>
+  </div>
+
+  <!-- MÉDECIN -->
+  <div class="dial-scene on" id="dial-medecin">
+    <div class="dial-header">
+      <div class="dial-header-icon">🏥</div>
+      <div>
+        <div class="dial-header-title">Chez le médecin</div>
+        <div class="dial-header-context" id="dial-ctx-medecin">Tu as mal au ventre depuis deux jours. Tu vas voir le médecin.</div>
+      </div>
+    </div>
+    <div class="dial-play-all">
+      <button class="btn btn-orange" onclick="playDialogueAll('medecin')">▶ Écouter tout</button>
+      <button class="btn btn-ghost" onclick="window.speechSynthesis && window.speechSynthesis.cancel()">⏹ Stop</button>
+    </div>
+    <div class="dial-conv" id="conv-medecin"></div>
+    <div class="dial-vocab" id="vocab-medecin"></div>
+  </div>
+
+  <!-- MAIRIE -->
+  <div class="dial-scene" id="dial-mairie">
+    <div class="dial-header">
+      <div class="dial-header-icon">🏛️</div>
+      <div>
+        <div class="dial-header-title">À la mairie / préfecture</div>
+        <div class="dial-header-context" id="dial-ctx-mairie">Tu vas à la mairie pour un acte de naissance et des démarches administratives.</div>
+      </div>
+    </div>
+    <div class="dial-play-all">
+      <button class="btn btn-orange" onclick="playDialogueAll('mairie')">▶ Écouter tout</button>
+      <button class="btn btn-ghost" onclick="window.speechSynthesis && window.speechSynthesis.cancel()">⏹ Stop</button>
+    </div>
+    <div class="dial-conv" id="conv-mairie"></div>
+    <div class="dial-vocab" id="vocab-mairie"></div>
+  </div>
+
+  <!-- ÉCOLE -->
+  <div class="dial-scene" id="dial-ecole">
+    <div class="dial-header">
+      <div class="dial-header-icon">🏫</div>
+      <div>
+        <div class="dial-header-title">À l'école — réunion parents</div>
+        <div class="dial-header-context" id="dial-ctx-ecole">Tu vas parler à l'enseignant de ton enfant lors d'une réunion.</div>
+      </div>
+    </div>
+    <div class="dial-play-all">
+      <button class="btn btn-orange" onclick="playDialogueAll('ecole')">▶ Écouter tout</button>
+      <button class="btn btn-ghost" onclick="window.speechSynthesis && window.speechSynthesis.cancel()">⏹ Stop</button>
+    </div>
+    <div class="dial-conv" id="conv-ecole"></div>
+    <div class="dial-vocab" id="vocab-ecole"></div>
+  </div>
+
+  <!-- PHARMACIE -->
+  <div class="dial-scene" id="dial-pharmacie">
+    <div class="dial-header">
+      <div class="dial-header-icon">💊</div>
+      <div>
+        <div class="dial-header-title">À la pharmacie</div>
+        <div class="dial-header-context" id="dial-ctx-pharmacie">Tu arrives avec une ordonnance du médecin.</div>
+      </div>
+    </div>
+    <div class="dial-play-all">
+      <button class="btn btn-orange" onclick="playDialogueAll('pharmacie')">▶ Écouter tout</button>
+      <button class="btn btn-ghost" onclick="window.speechSynthesis && window.speechSynthesis.cancel()">⏹ Stop</button>
+    </div>
+    <div class="dial-conv" id="conv-pharmacie"></div>
+    <div class="dial-vocab" id="vocab-pharmacie"></div>
+  </div>
+
+  <!-- LOGEMENT -->
+  <div class="dial-scene" id="dial-logement">
+    <div class="dial-header">
+      <div class="dial-header-icon">🏠</div>
+      <div>
+        <div class="dial-header-title">Chercher un logement</div>
+        <div class="dial-header-context" id="dial-ctx-logement">Tu appelles pour visiter un appartement.</div>
+      </div>
+    </div>
+    <div class="dial-play-all">
+      <button class="btn btn-orange" onclick="playDialogueAll('logement')">▶ Écouter tout</button>
+      <button class="btn btn-ghost" onclick="window.speechSynthesis && window.speechSynthesis.cancel()">⏹ Stop</button>
+    </div>
+    <div class="dial-conv" id="conv-logement"></div>
+    <div class="dial-vocab" id="vocab-logement"></div>
+  </div>
+
+  <!-- BANQUE -->
+  <div class="dial-scene" id="dial-banque">
+    <div class="dial-header">
+      <div class="dial-header-icon">🏦</div>
+      <div>
+        <div class="dial-header-title">À la banque</div>
+        <div class="dial-header-context" id="dial-ctx-banque">Tu vas ouvrir un compte bancaire.</div>
+      </div>
+    </div>
+    <div class="dial-play-all">
+      <button class="btn btn-orange" onclick="playDialogueAll('banque')">▶ Écouter tout</button>
+      <button class="btn btn-ghost" onclick="window.speechSynthesis && window.speechSynthesis.cancel()">⏹ Stop</button>
+    </div>
+    <div class="dial-conv" id="conv-banque"></div>
+    <div class="dial-vocab" id="vocab-banque"></div>
+  </div>
+
+  <div class="tip" style="margin-top:24px;">
+    <div class="tip-icon">🎯</div>
+    <div class="tip-body" id="m7-tip"><strong>Conseil :</strong> Écoute d'abord tout le dialogue, puis écoute chaque bulle une par une. Essaie de répéter à voix haute après chaque phrase !</div>
+  </div>
+
+  <div class="lesson-nav">
+    <button class="nav-btn" onclick="go('m6')">← Précédent</button>
+    <span class="nav-count">Module 7 / 8</span>
+    <button class="nav-btn primary" onclick="markDone('m7');go('m8')">Suivant →</button>
+  </div>
+</div>
+</section>
+
+<!-- ===== MODULE 8 : FORMULAIRES ===== -->
+<section class="section" id="s-m8">
+<div class="lesson">
+  <div class="module-tag" style="background:var(--teal-soft);color:var(--teal);">📋 MODULE 8 · Formulaires administratifs</div>
+  <h2>Remplir des formulaires</h2>
+  <p class="intro" id="m8-intro">Entraîne-toi à remplir des formulaires officiels. Clique sur un label pour l'entendre. Les explications te disent quoi écrire dans chaque case.</p>
+
+  <div class="form-tabs">
+    <button class="form-tab-btn on" onclick="showFormTab('caf',this)">💶 CAF</button>
+    <button class="form-tab-btn" onclick="showFormTab('ecole',this)">🏫 École</button>
+    <button class="form-tab-btn" onclick="showFormTab('emploi',this)">💼 Emploi</button>
+    <button class="form-tab-btn" onclick="showFormTab('medecin',this)">🏥 Ordonnance</button>
+  </div>
+
+  <!-- CAF -->
+  <div class="form-tab-pane on" id="ftab-caf">
+    <div class="form-simulator">
+      <div class="form-sim-header" style="background:linear-gradient(135deg,#3498DB,#2980B9);">
+        <div class="form-sim-title">CAF — Demande d'Aide au Logement (APL)</div>
+        <div class="form-sim-sub">Caisse d'Allocations Familiales · caf.fr</div>
+      </div>
+      <div class="form-sim-body">
+        <div class="form-section">
+          <div class="form-section-title">Votre identité</div>
+          <div class="form-row">
+            <div class="form-field">
+              <div class="form-label-row" onclick="speak('Nom de famille')"><span class="form-speak-btn">🔊</span><span class="form-label-text">Nom de famille *</span></div>
+              <div class="form-explain">Ton nom de famille, en MAJUSCULES. Exemple : DIADIA</div>
+              <input class="form-input" type="text" placeholder="Ex: DIADIA" oninput="markFilled(this)" onblur="markFilled(this)">
+            </div>
+            <div class="form-field">
+              <div class="form-label-row" onclick="speak('Prénom')"><span class="form-speak-btn">🔊</span><span class="form-label-text">Prénom(s) *</span></div>
+              <div class="form-explain">Ton prénom tel qu'il est sur ta pièce d'identité.</div>
+              <input class="form-input" type="text" placeholder="Ex: Diarama" oninput="markFilled(this)" onblur="markFilled(this)">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-field">
+              <div class="form-label-row" onclick="speak('Date de naissance')"><span class="form-speak-btn">🔊</span><span class="form-label-text">Date de naissance *</span></div>
+              <div class="form-explain">Jour / Mois / Année. Exemple : 15/03/1985</div>
+              <input class="form-input" type="date" oninput="markFilled(this)" onblur="markFilled(this)">
+            </div>
+            <div class="form-field">
+              <div class="form-label-row" onclick="speak('Nationalité')"><span class="form-speak-btn">🔊</span><span class="form-label-text">Nationalité *</span></div>
+              <div class="form-explain">Le pays dont tu as la nationalité.</div>
+              <input class="form-input" type="text" placeholder="Ex: Guinéenne" oninput="markFilled(this)" onblur="markFilled(this)">
+            </div>
+          </div>
+          <div class="form-field">
+            <div class="form-label-row" onclick="speak('Numéro de sécurité sociale')"><span class="form-speak-btn">🔊</span><span class="form-label-text">N° de sécurité sociale (si tu l'as)</span></div>
+            <div class="form-explain">15 chiffres sur ta carte vitale. Laisse vide si tu ne l'as pas encore — c'est possible !</div>
+            <input class="form-input" type="text" placeholder="Ex: 1 85 03 75010 040 19" oninput="markFilled(this)" onblur="markFilled(this)">
+          </div>
+        </div>
+
+        <div class="form-section">
+          <div class="form-section-title">Votre logement</div>
+          <div class="form-field">
+            <div class="form-label-row" onclick="speak('Adresse')"><span class="form-speak-btn">🔊</span><span class="form-label-text">Adresse complète *</span></div>
+            <div class="form-explain">Numéro et nom de la rue. Tu trouves ça sur ton bail ou une facture.</div>
+            <input class="form-input" type="text" placeholder="Ex: 12 rue de la Paix" oninput="markFilled(this)" onblur="markFilled(this)">
+          </div>
+          <div class="form-row">
+            <div class="form-field">
+              <div class="form-label-row" onclick="speak('Code postal')"><span class="form-speak-btn">🔊</span><span class="form-label-text">Code postal *</span></div>
+              <div class="form-explain">5 chiffres. Exemple : 75011 pour Paris 11e.</div>
+              <input class="form-input" type="text" placeholder="Ex: 75011" maxlength="5" oninput="markFilled(this)" onblur="markFilled(this)">
+            </div>
+            <div class="form-field">
+              <div class="form-label-row" onclick="speak('Ville')"><span class="form-speak-btn">🔊</span><span class="form-label-text">Ville *</span></div>
+              <div class="form-explain">La ville où tu habites.</div>
+              <input class="form-input" type="text" placeholder="Ex: Paris" oninput="markFilled(this)" onblur="markFilled(this)">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-field">
+              <div class="form-label-row" onclick="speak('Loyer mensuel')"><span class="form-speak-btn">🔊</span><span class="form-label-text">Loyer mensuel (€) *</span></div>
+              <div class="form-explain">Combien tu paies de loyer chaque mois. Regarde sur ton bail.</div>
+              <input class="form-input" type="number" placeholder="Ex: 650" oninput="markFilled(this)" onblur="markFilled(this)">
+            </div>
+            <div class="form-field">
+              <div class="form-label-row" onclick="speak('Type de logement')"><span class="form-speak-btn">🔊</span><span class="form-label-text">Type de logement *</span></div>
+              <div class="form-explain">Le type de logement où tu vis.</div>
+              <select class="form-select" onchange="markFilled(this)"><option value="">Choisir...</option><option>Appartement</option><option>Maison</option><option>Chambre</option><option>Foyer</option></select>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-section">
+          <div class="form-section-title">Votre situation familiale</div>
+          <div class="form-row">
+            <div class="form-field">
+              <div class="form-label-row" onclick="speak('Situation familiale')"><span class="form-speak-btn">🔊</span><span class="form-label-text">Situation familiale *</span></div>
+              <div class="form-explain">Ta situation de couple.</div>
+              <select class="form-select" onchange="markFilled(this)"><option value="">Choisir...</option><option>Célibataire</option><option>Marié(e)</option><option>Pacsé(e)</option><option>Séparé(e)</option><option>Divorcé(e)</option><option>Veuf / Veuve</option></select>
+            </div>
+            <div class="form-field">
+              <div class="form-label-row" onclick="speak('Nombre d&apos;enfants à charge')"><span class="form-speak-btn">🔊</span><span class="form-label-text">Enfants à charge</span></div>
+              <div class="form-explain">Le nombre d'enfants qui vivent avec toi.</div>
+              <input class="form-input" type="number" placeholder="Ex: 2" min="0" max="15" oninput="markFilled(this)" onblur="markFilled(this)">
+            </div>
+          </div>
+        </div>
+
+        <div class="tip">
+          <div class="tip-icon">💡</div>
+          <div class="tip-body">Les cases avec <strong>*</strong> sont obligatoires. Tu peux aller à la CAF avec un accompagnateur pour t'aider à remplir le vrai formulaire en ligne sur <strong>caf.fr</strong>.</div>
+        </div>
+        <button class="form-submit-btn" onclick="submitForm('caf')">✅ Valider l'exercice</button>
+        <div class="form-success-msg" id="fsuc-caf">
+          <div class="form-success-msg-icon">🎉</div>
+          <div class="form-success-msg-text">Bravo ! Tu sais maintenant remplir une demande CAF.<br><span style="font-size:14px;font-weight:500;color:var(--ink2)">Sur le vrai site, un conseiller CAF peut t'aider.</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ÉCOLE -->
+  <div class="form-tab-pane" id="ftab-ecole">
+    <div class="form-simulator">
+      <div class="form-sim-header" style="background:linear-gradient(135deg,#27AE60,#1e8449);">
+        <div class="form-sim-title">Inscription scolaire</div>
+        <div class="form-sim-sub">Mairie · École primaire publique</div>
+      </div>
+      <div class="form-sim-body">
+        <div class="form-section">
+          <div class="form-section-title">L'enfant</div>
+          <div class="form-row">
+            <div class="form-field">
+              <div class="form-label-row" onclick="speak('Nom de l&apos;enfant')"><span class="form-speak-btn">🔊</span><span class="form-label-text">Nom de l'enfant *</span></div>
+              <div class="form-explain">Le nom de famille de l'enfant, en MAJUSCULES.</div>
+              <input class="form-input" type="text" placeholder="Ex: DIADIA" oninput="markFilled(this)" onblur="markFilled(this)">
+            </div>
+            <div class="form-field">
+              <div class="form-label-row" onclick="speak('Prénom de l&apos;enfant')"><span class="form-speak-btn">🔊</span><span class="form-label-text">Prénom de l'enfant *</span></div>
+              <div class="form-explain">Le prénom de l'enfant.</div>
+              <input class="form-input" type="text" placeholder="Ex: Aminata" oninput="markFilled(this)" onblur="markFilled(this)">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-field">
+              <div class="form-label-row" onclick="speak('Date de naissance de l&apos;enfant')"><span class="form-speak-btn">🔊</span><span class="form-label-text">Date de naissance *</span></div>
+              <div class="form-explain">La date de naissance de l'enfant. Elle est sur son acte de naissance.</div>
+              <input class="form-input" type="date" oninput="markFilled(this)" onblur="markFilled(this)">
+            </div>
+            <div class="form-field">
+              <div class="form-label-row" onclick="speak('Lieu de naissance')"><span class="form-speak-btn">🔊</span><span class="form-label-text">Lieu de naissance *</span></div>
+              <div class="form-explain">La ville et le pays où l'enfant est né.</div>
+              <input class="form-input" type="text" placeholder="Ex: Conakry, Guinée" oninput="markFilled(this)" onblur="markFilled(this)">
+            </div>
+          </div>
+        </div>
+
+        <div class="form-section">
+          <div class="form-section-title">Le ou les responsables légaux</div>
+          <div class="form-field">
+            <div class="form-label-row" onclick="speak('Nom et prénom du parent')"><span class="form-speak-btn">🔊</span><span class="form-label-text">Nom et prénom du parent *</span></div>
+            <div class="form-explain">Ton nom complet. C'est toi le responsable légal.</div>
+            <input class="form-input" type="text" placeholder="Ex: DIADIA Diarama" oninput="markFilled(this)" onblur="markFilled(this)">
+          </div>
+          <div class="form-row">
+            <div class="form-field">
+              <div class="form-label-row" onclick="speak('Téléphone')"><span class="form-speak-btn">🔊</span><span class="form-label-text">Téléphone *</span></div>
+              <div class="form-explain">Ton numéro de portable. L'école t'appellera en cas de problème.</div>
+              <input class="form-input" type="tel" placeholder="Ex: 06 12 34 56 78" oninput="markFilled(this)" onblur="markFilled(this)">
+            </div>
+            <div class="form-field">
+              <div class="form-label-row" onclick="speak('Adresse')"><span class="form-speak-btn">🔊</span><span class="form-label-text">Adresse *</span></div>
+              <div class="form-explain">Ton adresse complète (pour vérifier que tu es dans la zone de l'école).</div>
+              <input class="form-input" type="text" placeholder="Ex: 12 rue de la Paix, 75011 Paris" oninput="markFilled(this)" onblur="markFilled(this)">
+            </div>
+          </div>
+        </div>
+
+        <div class="form-section">
+          <div class="form-section-title">Documents à apporter à la mairie</div>
+          <div class="form-checklist">
+            <div class="form-check-item" onclick="toggleCheck(this)"><div class="form-check-box"></div>Livret de famille ou acte de naissance de l'enfant</div>
+            <div class="form-check-item" onclick="toggleCheck(this)"><div class="form-check-box"></div>Justificatif de domicile de moins de 3 mois (facture EDF, quittance de loyer...)</div>
+            <div class="form-check-item" onclick="toggleCheck(this)"><div class="form-check-box"></div>Carnet de santé de l'enfant (pour voir les vaccins)</div>
+            <div class="form-check-item" onclick="toggleCheck(this)"><div class="form-check-box"></div>Pièce d'identité du parent ou du responsable légal</div>
+            <div class="form-check-item" onclick="toggleCheck(this)"><div class="form-check-box"></div>Attestation d'assurance scolaire (tu peux la demander à la mairie)</div>
+          </div>
+        </div>
+
+        <div class="tip">
+          <div class="tip-icon">📌</div>
+          <div class="tip-body">L'école est <strong>obligatoire et gratuite</strong> en France de 3 à 16 ans. Tu peux demander de l'aide à un interprète ou à une association si tu as du mal à comprendre.</div>
+        </div>
+        <button class="form-submit-btn" onclick="submitForm('ecole')" style="background:var(--green)">✅ Valider l'exercice</button>
+        <div class="form-success-msg" id="fsuc-ecole">
+          <div class="form-success-msg-icon">🏫</div>
+          <div class="form-success-msg-text">Parfait ! Tu connais maintenant les documents pour inscrire ton enfant à l'école.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EMPLOI -->
+  <div class="form-tab-pane" id="ftab-emploi">
+    <div class="form-simulator">
+      <div class="form-sim-header" style="background:linear-gradient(135deg,#E67E22,#CA6F1E);">
+        <div class="form-sim-title">France Travail — Inscription demandeur d'emploi</div>
+        <div class="form-sim-sub">Ex Pôle Emploi · francetravail.fr</div>
+      </div>
+      <div class="form-sim-body">
+        <div class="form-section">
+          <div class="form-section-title">Votre identité</div>
+          <div class="form-row">
+            <div class="form-field">
+              <div class="form-label-row" onclick="speak('Nom')"><span class="form-speak-btn">🔊</span><span class="form-label-text">Nom *</span></div>
+              <div class="form-explain">Ton nom de famille en MAJUSCULES.</div>
+              <input class="form-input" type="text" placeholder="DIADIA" oninput="markFilled(this)" onblur="markFilled(this)">
+            </div>
+            <div class="form-field">
+              <div class="form-label-row" onclick="speak('Prénom')"><span class="form-speak-btn">🔊</span><span class="form-label-text">Prénom *</span></div>
+              <div class="form-explain">Ton prénom.</div>
+              <input class="form-input" type="text" placeholder="Diarama" oninput="markFilled(this)" onblur="markFilled(this)">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-field">
+              <div class="form-label-row" onclick="speak('Date de fin de contrat')"><span class="form-speak-btn">🔊</span><span class="form-label-text">Date de fin de contrat *</span></div>
+              <div class="form-explain">La date à laquelle tu as arrêté de travailler. C'est important pour calculer tes droits.</div>
+              <input class="form-input" type="date" oninput="markFilled(this)" onblur="markFilled(this)">
+            </div>
+            <div class="form-field">
+              <div class="form-label-row" onclick="speak('Motif de fin de contrat')"><span class="form-speak-btn">🔊</span><span class="form-label-text">Motif de fin de contrat *</span></div>
+              <div class="form-explain">Pourquoi tu n'as plus de travail.</div>
+              <select class="form-select" onchange="markFilled(this)"><option value="">Choisir...</option><option>Licenciement</option><option>Fin de CDD</option><option>Rupture conventionnelle</option><option>Démission</option><option>Fin de mission intérim</option><option>Premier emploi recherché</option></select>
+            </div>
+          </div>
+        </div>
+        <div class="form-section">
+          <div class="form-section-title">Votre recherche d'emploi</div>
+          <div class="form-field">
+            <div class="form-label-row" onclick="speak('Métier recherché')"><span class="form-speak-btn">🔊</span><span class="form-label-text">Métier(s) recherché(s) *</span></div>
+            <div class="form-explain">Le type de travail que tu cherches. Sois précis si possible.</div>
+            <input class="form-input" type="text" placeholder="Ex: Agent d'entretien, Aide à domicile, Caissière" oninput="markFilled(this)" onblur="markFilled(this)">
+          </div>
+          <div class="form-row">
+            <div class="form-field">
+              <div class="form-label-row" onclick="speak('Zone de recherche')"><span class="form-speak-btn">🔊</span><span class="form-label-text">Zone de recherche</span></div>
+              <div class="form-explain">Dans quel secteur géographique tu peux travailler.</div>
+              <input class="form-input" type="text" placeholder="Ex: Paris et proche banlieue" oninput="markFilled(this)" onblur="markFilled(this)">
+            </div>
+            <div class="form-field">
+              <div class="form-label-row" onclick="speak('Disponibilité')"><span class="form-speak-btn">🔊</span><span class="form-label-text">Disponibilité *</span></div>
+              <div class="form-explain">Quand tu peux commencer à travailler.</div>
+              <select class="form-select" onchange="markFilled(this)"><option value="">Choisir...</option><option>Immédiatement</option><option>Dans 15 jours</option><option>Dans 1 mois</option><option>À définir</option></select>
+            </div>
+          </div>
+        </div>
+        <div class="form-section">
+          <div class="form-section-title">Mots clés à connaître à France Travail</div>
+          <div class="form-vocab-grid">
+            <div class="form-vocab-card" onclick="speak('allocation chômage')"><div class="fvc-term">Allocation chômage</div><div class="fvc-def">L'argent que France Travail peut te donner pendant ta recherche.</div></div>
+            <div class="form-vocab-card" onclick="speak('conseiller')"><div class="fvc-term">Conseiller</div><div class="fvc-def">La personne qui t'aide dans ta recherche d'emploi.</div></div>
+            <div class="form-vocab-card" onclick="speak('actualisation mensuelle')"><div class="fvc-term">Actualisation mensuelle</div><div class="fvc-def">Chaque mois, tu dois dire si tu as travaillé ou non.</div></div>
+            <div class="form-vocab-card" onclick="speak('offre d emploi')"><div class="fvc-term">Offre d'emploi</div><div class="fvc-def">Une annonce pour un poste de travail disponible.</div></div>
+            <div class="form-vocab-card" onclick="speak('curriculum vitae')"><div class="fvc-term">CV (curriculum vitae)</div><div class="fvc-def">Le document qui résume ton expérience et tes compétences.</div></div>
+            <div class="form-vocab-card" onclick="speak('lettre de motivation')"><div class="fvc-term">Lettre de motivation</div><div class="fvc-def">La lettre où tu expliques pourquoi tu veux ce travail.</div></div>
+          </div>
+        </div>
+        <div class="tip">
+          <div class="tip-icon">📌</div>
+          <div class="tip-body">Tu dois t'inscrire à France Travail dans les <strong>12 mois</strong> après la fin de ton contrat. Une association ou ton conseiller CAF peut t'accompagner.</div>
+        </div>
+        <button class="form-submit-btn" onclick="submitForm('emploi')" style="background:var(--orange)">✅ Valider l'exercice</button>
+        <div class="form-success-msg" id="fsuc-emploi">
+          <div class="form-success-msg-icon">💼</div>
+          <div class="form-success-msg-text">Très bien ! Tu connais maintenant les étapes pour t'inscrire à France Travail.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ORDONNANCE -->
+  <div class="form-tab-pane" id="ftab-medecin">
+    <div class="form-simulator">
+      <div class="form-sim-header" style="background:linear-gradient(135deg,#E74C3C,#C0392B);">
+        <div class="form-sim-title">Lire une ordonnance médicale</div>
+        <div class="form-sim-sub">Comprendre ce que le médecin a écrit</div>
+      </div>
+      <div class="form-sim-body">
+        <div class="form-section">
+          <div class="form-section-title">Sur une ordonnance, tu vas lire...</div>
+          <div class="form-info-item"><div class="form-info-label" onclick="speak('Nom du médecin')">🔊 Nom du médecin</div><div class="form-info-explain">Ex: <strong>Dr MARTIN Antoine</strong> — Le nom du médecin qui a écrit l'ordonnance.</div></div>
+          <div class="form-info-item"><div class="form-info-label" onclick="speak('Date')">🔊 Date</div><div class="form-info-explain">La date du jour de ta consultation. <strong>Une ordonnance est valable 3 mois.</strong></div></div>
+          <div class="form-info-item"><div class="form-info-label" onclick="speak('Votre nom et prénom')">🔊 Votre nom</div><div class="form-info-explain">Ton nom et ton prénom, écrits par le médecin. Vérifie que c'est bien toi !</div></div>
+          <div class="form-info-item"><div class="form-info-label" onclick="speak('Médicament')">🔊 Médicament(s)</div><div class="form-info-explain">Le nom du ou des médicaments à acheter à la pharmacie. Donne l'ordonnance au pharmacien.</div></div>
+          <div class="form-info-item"><div class="form-info-label" onclick="speak('Posologie')">🔊 Posologie</div><div class="form-info-explain">Comment prendre le médicament. Ex: <strong>1 comprimé matin et soir</strong> = une pilule 2 fois par jour.</div></div>
+          <div class="form-info-item"><div class="form-info-label" onclick="speak('Durée du traitement')">🔊 Durée</div><div class="form-info-explain">Pendant combien de temps tu dois prendre le médicament. Ex: <strong>pendant 7 jours</strong>.</div></div>
+          <div class="form-info-item"><div class="form-info-label" onclick="speak('Signature du médecin')">🔊 Signature</div><div class="form-info-explain"><strong>Sans signature, l'ordonnance n'est pas valable</strong> à la pharmacie.</div></div>
+        </div>
+
+        <div class="form-section">
+          <div class="form-section-title">Abréviations fréquentes sur une ordonnance</div>
+          <div class="form-vocab-grid">
+            <div class="form-vocab-card" onclick="speak('un comprimé')"><div class="fvc-term">1 cp = 1 comprimé</div><div class="fvc-def">Une pilule</div></div>
+            <div class="form-vocab-card" onclick="speak('matin, midi et soir')"><div class="fvc-term">matin / midi / soir</div><div class="fvc-def">Le moment de la journée</div></div>
+            <div class="form-vocab-card" onclick="speak('à jeun')"><div class="fvc-term">à jeun</div><div class="fvc-def">Avant de manger (estomac vide)</div></div>
+            <div class="form-vocab-card" onclick="speak('pendant sept jours')"><div class="fvc-term">pdt X jours</div><div class="fvc-def">Pendant X jours</div></div>
+            <div class="form-vocab-card" onclick="speak('en cas de douleur')"><div class="fvc-term">en cas de douleur</div><div class="fvc-def">Seulement quand tu as mal</div></div>
+            <div class="form-vocab-card" onclick="speak('ne pas dépasser')"><div class="fvc-term">ne pas dépasser</div><div class="fvc-def">Ne prends pas plus que la dose indiquée</div></div>
+            <div class="form-vocab-card" onclick="speak('renouveler')"><div class="fvc-term">renouveler</div><div class="fvc-def">Tu peux racheter le médicament</div></div>
+            <div class="form-vocab-card" onclick="speak('voie orale')"><div class="fvc-term">voie orale</div><div class="fvc-def">À avaler (par la bouche)</div></div>
+          </div>
+        </div>
+
+        <div class="form-section">
+          <div class="form-section-title">Mon suivi médical — notes personnelles</div>
+          <div class="form-field">
+            <div class="form-label-row" onclick="speak('Nom de mon médecin traitant')"><span class="form-speak-btn">🔊</span><span class="form-label-text">Mon médecin traitant</span></div>
+            <div class="form-explain">Ton médecin habituel. Si tu n'en as pas, tu peux en choisir un et le déclarer sur ameli.fr.</div>
+            <input class="form-input" type="text" placeholder="Ex: Dr Martin, 12 rue de la Paix, Paris" oninput="markFilled(this)" onblur="markFilled(this)">
+          </div>
+          <div class="form-field">
+            <div class="form-label-row" onclick="speak('Mes allergies')"><span class="form-speak-btn">🔊</span><span class="form-label-text">Mes allergies (important !)</span></div>
+            <div class="form-explain">Note ici tes allergies pour les dire à chaque médecin ou pharmacien.</div>
+            <input class="form-input" type="text" placeholder="Ex: pénicilline, aspirine, noix... ou aucune allergie connue" oninput="markFilled(this)" onblur="markFilled(this)">
+          </div>
+          <div class="form-field">
+            <div class="form-label-row" onclick="speak('Mes médicaments habituels')"><span class="form-speak-btn">🔊</span><span class="form-label-text">Médicaments que je prends régulièrement</span></div>
+            <div class="form-explain">Écris ici pour ne pas oublier. Très important si tu vas aux urgences.</div>
+            <textarea class="form-textarea" placeholder="Ex: Doliprane 1g le matin... ou aucun médicament habituel" oninput="markFilled(this)" onblur="markFilled(this)"></textarea>
+          </div>
+        </div>
+        <div class="tip">
+          <div class="tip-icon">🚨</div>
+          <div class="tip-body">En cas d'urgence, appelle le <strong>15 (SAMU)</strong>, le <strong>18 (Pompiers)</strong> ou le <strong>112</strong>. Ces numéros sont gratuits.</div>
+        </div>
+        <button class="form-submit-btn" onclick="submitForm('medecin')" style="background:var(--red)">✅ Valider l'exercice</button>
+        <div class="form-success-msg" id="fsuc-medecin">
+          <div class="form-success-msg-icon">🏥</div>
+          <div class="form-success-msg-text">Bien ! Tu sais maintenant lire une ordonnance et organiser ton suivi médical.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="lesson-nav">
+    <button class="nav-btn" onclick="go('m7')">← Précédent</button>
+    <span class="nav-count">Module 8 / 8</span>
+    <button class="nav-btn primary" onclick="markDone('m8');finishAll()">🏆 Terminer le parcours !</button>
+  </div>
+</div>
+</section>
+
+</main>
+</div>
+
+<!-- ====== REWARD POPUP ====== -->
+<div class="reward-pop" id="rewardPop">
+  <span class="reward-pop-emoji" id="rewardEmoji">⭐</span>
+  <div class="reward-pop-text" id="rewardText">Bravo !</div>
+  <div class="reward-pop-sub" id="rewardSub"></div>
+</div>
+
+<!-- ====== OVERLAY for sidebar close ====== -->
+<div id="sideOverlay" style="display:none;position:fixed;inset:0;z-index:99;background:rgba(0,0,0,0.3);" onclick="toggleSidebar()"></div>
+
+<script>
+/* ================================================
+   STATE & LOCAL STORAGE
+   ================================================ */
+const STORAGE_KEY = 'apprendre_phase1_v2';
+
+function loadState() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) return JSON.parse(raw);
+  } catch(e) {}
+  return { completed: [], stars: 0, tracedLetters: [], heardWords: [], dictScore: 0, dictTotal: 0, gameScore: 0 };
+}
+function saveState() {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(STATE)); } catch(e) {}
+}
+
+var STATE = loadState();
+
+function resetProgress() {
+  if (!confirm('Effacer toute la progression ?')) return;
+  STATE = { completed: [], stars: 0, tracedLetters: [], heardWords: [], dictScore: 0, dictTotal: 0, gameScore: 0 };
+  saveState();
+  location.reload();
+}
+
+/* ================================================
+   SPEECH SYNTHESIS
+   ================================================ */
+var frenchVoice = null;
+var currentRate = parseFloat(document.getElementById('rateSlider').value);
+var currentVol = parseFloat(document.getElementById('volSlider').value);
+
+function loadVoices() {
+  if (!window.speechSynthesis) return;
+  var voices = window.speechSynthesis.getVoices();
+  for (var i = 0; i < voices.length; i++) {
+    if (voices[i].lang && voices[i].lang.toLowerCase().startsWith('fr')) {
+      frenchVoice = voices[i]; break;
+    }
+  }
+}
+if (window.speechSynthesis) {
+  loadVoices();
+  window.speechSynthesis.onvoiceschanged = loadVoices;
+  setTimeout(loadVoices, 600);
+  setTimeout(loadVoices, 1800);
+}
+
+function speak(text, rate, onEndCb) {
+  if (!window.speechSynthesis) return;
+  window.speechSynthesis.cancel();
+  var u = new SpeechSynthesisUtterance(String(text));
+  u.lang = 'fr-FR';
+  u.rate = rate || currentRate;
+  u.volume = currentVol;
+  u.pitch = 1.0;
+  if (frenchVoice) u.voice = frenchVoice;
+  if (onEndCb) u.onend = onEndCb;
+  window.speechSynthesis.speak(u);
+  return u;
+}
+
+document.getElementById('rateSlider').addEventListener('input', function(e) { currentRate = parseFloat(e.target.value); });
+document.getElementById('volSlider').addEventListener('input', function(e) { currentVol = parseFloat(e.target.value); });
+
+/* ================================================
+   NAVIGATION
+   ================================================ */
+var MODULES = ['m1','m2','m3','m4','m5','m6','m7','m8'];
+var currentSection = 'home';
+
+function go(id) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  var sec = document.getElementById('s-' + id);
+  var ni = document.getElementById('ni-' + id);
+  if (sec) sec.classList.add('active');
+  if (ni) ni.classList.add('active');
+  currentSection = id;
+  window.scrollTo(0, 0);
+  closeSidebar();
+
+  // Lazy init
+  if (id === 'm1' && !window._m1) { window._m1 = true; initAlphabet(); }
+  if (id === 'm2' && !window._m2) { window._m2 = true; initTracing(); }
+  if (id === 'm3' && !window._m3) { window._m3 = true; initSyllables(); }
+  if (id === 'm4' && !window._m4) { window._m4 = true; initVocab(); }
+  if (id === 'm5' && !window._m5) { window._m5 = true; initSentences(); }
+  if (id === 'm6' && !window._m6) { window._m6 = true; initGames(); }
+  if (id === 'm7' && !window._m7) { window._m7 = true; initDialogues(); }
+  if (id === 'm8' && !window._m8) { window._m8 = true; initFormulaires(); }
+}
+
+function markDone(id) {
+  if (STATE.completed.includes(id)) return;
+  STATE.completed.push(id);
+  saveState();
+  updateNav();
+  addStar('Module terminé !', '⭐');
+}
+
+function updateNav() {
+  MODULES.forEach(function(id) {
+    var ni = document.getElementById('ni-' + id);
+    if (!ni) return;
+    ni.classList.remove('done', 'active');
+    if (STATE.completed.includes(id)) ni.classList.add('done');
+    if (id === currentSection) ni.classList.add('active');
+  });
+  updateProgress();
+  updateHomeCards();
+}
+
+function updateProgress() {
+  var pct = Math.round(STATE.completed.length / MODULES.length * 100);
+  document.getElementById('progFill').style.width = pct + '%';
+  document.getElementById('prog-pct').textContent = pct + ' %';
+  var maxStars = 10;
+  var s = '';
+  for (var i = 0; i < maxStars; i++) s += (i < STATE.stars ? '★ ' : '☆ ');
+  document.getElementById('progStars').textContent = s.trim();
+}
+
+function updateHomeCards() {
+  var cards = document.querySelectorAll('.home-card');
+  MODULES.forEach(function(id, idx) {
+    if (cards[idx]) {
+      if (STATE.completed.includes(id)) {
+        cards[idx].classList.add('done-card');
+        if (!cards[idx].querySelector('.home-card-badge')) {
+          var b = document.createElement('div');
+          b.className = 'home-card-badge';
+          b.textContent = '✓ Fait';
+          cards[idx].appendChild(b);
+        }
+      }
+    }
+  });
+}
+
+function addStar(label, emoji) {
+  STATE.stars = Math.min(STATE.stars + 1, 10);
+  saveState();
+  updateProgress();
+  showReward(emoji || '⭐', label || 'Bravo !', 'Tu as ' + STATE.stars + ' étoile' + (STATE.stars > 1 ? 's' : '') + ' !');
+}
+
+function showReward(emoji, text, sub) {
+  document.getElementById('rewardEmoji').textContent = emoji;
+  document.getElementById('rewardText').textContent = text;
+  document.getElementById('rewardSub').textContent = sub || '';
+  var p = document.getElementById('rewardPop');
+  p.classList.add('show');
+  setTimeout(function() { p.classList.remove('show'); }, 2200);
+}
+
+function finishAll() {
+  MODULES.forEach(function(id) { markDone(id); });
+  showReward('🏆', 'Parcours complet !', 'Tu maîtrises la Phase 1. Passe à la Phase 2 !');
+  speak('Félicitations ! Tu as terminé les huit modules de la Phase 1. Tu sais lire des lettres, des mots, des phrases, et tu connais les formulaires administratifs. Bravo !');
+}
+
+function toggleSidebar() {
+  var sb = document.getElementById('sidebar');
+  var ov = document.getElementById('sideOverlay');
+  var isOpen = sb.classList.toggle('open');
+  ov.style.display = isOpen ? 'block' : 'none';
+}
+function closeSidebar() {
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('sideOverlay').style.display = 'none';
+}
+
+/* ================================================
+   QUIZ HELPER
+   ================================================ */
+var answeredQuizzes = new Set();
+var globalScore = STATE.gameScore || 0;
+
+function qAnswer(btn, res, fbId, qid) {
+  var parent = btn.parentElement;
+  parent.querySelectorAll('.qopt').forEach(function(o) { o.disabled = true; });
+  btn.classList.add(res);
+  // Reveal correct answer if wrong
+  if (res === 'ko') {
+    parent.querySelectorAll('.qopt').forEach(function(o) {
+      if (o.getAttribute('onclick') && o.getAttribute('onclick').includes("'ok'")) o.classList.add('ok');
+    });
+  }
+  var fb = document.getElementById(fbId);
+  if (fb) { fb.classList.remove('ok','ko'); fb.classList.add('show', res); }
+  if (qid && !answeredQuizzes.has(qid)) {
+    answeredQuizzes.add(qid);
+    if (res === 'ok') {
+      globalScore += 10;
+      STATE.gameScore = globalScore;
+      saveState();
+      updateGameScore();
+      if (Math.random() > 0.5) addStar('Bonne réponse !', '⭐');
+    }
+  }
+}
+
+function updateGameScore() {
+  var el = document.getElementById('gameScore');
+  if (el) el.textContent = globalScore;
+}
+
+/* ================================================
+   MODULE 1 : ALPHABET
+   ================================================ */
+var ALPHA_LETTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+var ALPHA_SOUNDS = {
+  A:'a', B:'buh', C:'kuh', D:'duh', E:'euh', F:'fuh', G:'guh', H:'', I:'i',
+  J:'ji', K:'kuh', L:'luh', M:'muh', N:'nuh', O:'o', P:'puh', Q:'ku',
+  R:'rr', S:'sss', T:'tuh', U:'u', V:'vuh', W:'veh', X:'ks', Y:'i grec', Z:'zuh'
+};
+var ALPHA_WORDS = {
+  A:'arbre', B:'banane', C:'chat', D:'drapeau', E:'école', F:'fleur',
+  G:'gâteau', H:'hôtel', I:'image', J:'jardin', K:'kiwi', L:'lune',
+  M:'maison', N:'nuit', O:'orange', P:'pomme', Q:'question', R:'rose',
+  S:'soleil', T:'table', U:'usine', V:'voiture', W:'wagon', X:'xylophone',
+  Y:'yaourt', Z:'zèbre'
+};
+var alphaMode = 'name';
+
+function setAlphaMode(mode) {
+  alphaMode = mode;
+  document.getElementById('tb-name').classList.toggle('on', mode === 'name');
+  document.getElementById('tb-sound').classList.toggle('on', mode === 'sound');
+}
+
+function initAlphabet() {
+  var grid = document.getElementById('alphaGrid');
+  var html = '';
+  ALPHA_LETTERS.forEach(function(L) {
+    var l = L.toLowerCase();
+    html += '<div class="alpha-card" onclick="playAlpha(this,\'' + L + '\')">'
+      + '<span class="alpha-upper">' + L + '</span>'
+      + '<span class="alpha-lower">' + l + '</span>'
+      + '<div class="alpha-hint">' + ALPHA_WORDS[L] + '</div>'
+      + '</div>';
+  });
+  grid.innerHTML = html;
+}
+
+function playAlpha(el, letter) {
+  document.querySelectorAll('.alpha-card').forEach(function(c) { c.classList.remove('playing'); });
+  el.classList.add('playing');
+  setTimeout(function() { el.classList.remove('playing'); }, 600);
+  if (alphaMode === 'sound') {
+    speak(ALPHA_SOUNDS[letter] || letter);
+  } else {
+    speak(letter);
+  }
+}
+
+/* ================================================
+   MODULE 2 : LETTER TRACING
+   ================================================ */
+var currentTracingLetter = 'A';
+var isDrawing = false;
+var lastX = 0, lastY = 0;
+var guideCanvas, drawCanvas, guideCtx, drawCtx;
+var CANVAS_SIZE = 360;
+
+function initTracing() {
+  guideCanvas = document.getElementById('guideCanvas');
+  drawCanvas = document.getElementById('drawCanvas');
+  guideCanvas.width = CANVAS_SIZE;
+  guideCanvas.height = CANVAS_SIZE;
+  drawCanvas.width = CANVAS_SIZE;
+  drawCanvas.height = CANVAS_SIZE;
+  guideCtx = guideCanvas.getContext('2d');
+  drawCtx = drawCanvas.getContext('2d');
+
+  // Build letter picker
+  var html = '';
+  ALPHA_LETTERS.forEach(function(L) {
+    var cls = 'lp-btn' + (L === 'A' ? ' active' : '') + (STATE.tracedLetters.includes(L) ? ' traced' : '');
+    html += '<button class="' + cls + '" onclick="selectTracingLetter(\'' + L + '\')">' + L + '</button>';
+  });
+  document.getElementById('letterPicker').innerHTML = html;
+
+  renderGuide('A');
+  updateLettersDoneCount();
+  setupDrawCanvas();
+}
+
+function selectTracingLetter(letter) {
+  currentTracingLetter = letter;
+  document.getElementById('currentLetterLabel').textContent = letter;
+  document.querySelectorAll('.lp-btn').forEach(function(b) { b.classList.remove('active'); });
+  var btns = document.querySelectorAll('.lp-btn');
+  ALPHA_LETTERS.forEach(function(L, i) {
+    if (L === letter) btns[i].classList.add('active');
+  });
+  clearDraw();
+  renderGuide(letter);
+  document.getElementById('traceFeedback').classList.remove('show');
+  document.getElementById('traceHint').textContent = 'Clique sur « Voir le tracé » pour voir comment tracer la lettre, puis trace-la !';
+}
+
+function renderGuide(letter) {
+  if (!guideCtx) return;
+  var W = CANVAS_SIZE, H = CANVAS_SIZE;
+  guideCtx.clearRect(0, 0, W, H);
+  guideCtx.fillStyle = 'white';
+  guideCtx.fillRect(0, 0, W, H);
+  // Large faint letter
+  guideCtx.font = 'bold ' + Math.round(W * 0.65) + 'px Arial, sans-serif';
+  guideCtx.textAlign = 'center';
+  guideCtx.textBaseline = 'middle';
+  guideCtx.fillStyle = 'rgba(200,200,200,0.9)';
+  guideCtx.fillText(letter.toUpperCase(), W / 2, H / 2);
+  // Small lowercase
+  guideCtx.font = 'bold ' + Math.round(W * 0.16) + 'px Arial, sans-serif';
+  guideCtx.fillStyle = 'rgba(180,180,180,0.7)';
+  guideCtx.fillText(letter.toLowerCase(), W / 2, H * 0.88);
+}
+
+function animateLetter() {
+  if (!guideCtx) return;
+  var W = CANVAS_SIZE, H = CANVAS_SIZE;
+  var letter = currentTracingLetter;
+  // Render letter to offscreen canvas for pixel data
+  var off = document.createElement('canvas');
+  off.width = W; off.height = H;
+  var offCtx = off.getContext('2d');
+  offCtx.font = 'bold ' + Math.round(W * 0.65) + 'px Arial, sans-serif';
+  offCtx.textAlign = 'center';
+  offCtx.textBaseline = 'middle';
+  offCtx.fillStyle = '#000';
+  offCtx.fillText(letter.toUpperCase(), W / 2, H / 2);
+
+  var imgData = offCtx.getImageData(0, 0, W, H).data;
+  // Collect letter pixels sorted top→bottom
+  var pixels = [];
+  for (var y = 0; y < H; y++) {
+    for (var x = 0; x < W; x++) {
+      var idx = (y * W + x) * 4;
+      if (imgData[idx + 3] > 60) pixels.push({x: x, y: y});
+    }
+  }
+
+  // Reset guide canvas
+  guideCtx.clearRect(0, 0, W, H);
+  guideCtx.fillStyle = 'white';
+  guideCtx.fillRect(0, 0, W, H);
+
+  var i = 0;
+  var chunkSize = Math.max(1, Math.ceil(pixels.length / 80));
+  guideCtx.fillStyle = 'rgba(245, 144, 56, 0.85)';
+
+  function frame() {
+    var end = Math.min(i + chunkSize * 2, pixels.length);
+    for (var j = i; j < end; j++) {
+      guideCtx.fillRect(pixels[j].x, pixels[j].y, 2, 2);
+    }
+    i = end;
+    if (i < pixels.length) {
+      requestAnimationFrame(frame);
+    } else {
+      setTimeout(function() { renderGuide(letter); }, 1400);
+    }
+  }
+  requestAnimationFrame(frame);
+  speak(letter);
+  document.getElementById('traceHint').textContent = 'Regarde bien le tracé, puis trace la lettre par-dessus la silhouette grise.';
+}
+
+function setupDrawCanvas() {
+  if (!drawCanvas) return;
+  function getPos(e) {
+    var rect = drawCanvas.getBoundingClientRect();
+    var scaleX = CANVAS_SIZE / rect.width;
+    var scaleY = CANVAS_SIZE / rect.height;
+    var clientX = e.touches ? e.touches[0].clientX : e.clientX;
+    var clientY = e.touches ? e.touches[0].clientY : e.clientY;
+    return { x: (clientX - rect.left) * scaleX, y: (clientY - rect.top) * scaleY };
+  }
+
+  function startDraw(e) {
+    e.preventDefault();
+    isDrawing = true;
+    var pos = getPos(e);
+    lastX = pos.x; lastY = pos.y;
+    drawCtx.beginPath();
+    drawCtx.arc(pos.x, pos.y, 9, 0, Math.PI * 2);
+    drawCtx.fillStyle = 'rgba(91,168,217,0.9)';
+    drawCtx.fill();
+  }
+  function doDraw(e) {
+    e.preventDefault();
+    if (!isDrawing) return;
+    var pos = getPos(e);
+    drawCtx.beginPath();
+    drawCtx.moveTo(lastX, lastY);
+    drawCtx.lineTo(pos.x, pos.y);
+    drawCtx.strokeStyle = 'rgba(91,168,217,0.9)';
+    drawCtx.lineWidth = 18;
+    drawCtx.lineCap = 'round';
+    drawCtx.lineJoin = 'round';
+    drawCtx.stroke();
+    lastX = pos.x; lastY = pos.y;
+  }
+  function stopDraw(e) { isDrawing = false; }
+
+  drawCanvas.addEventListener('mousedown', startDraw);
+  drawCanvas.addEventListener('mousemove', doDraw);
+  drawCanvas.addEventListener('mouseup', stopDraw);
+  drawCanvas.addEventListener('mouseleave', stopDraw);
+  drawCanvas.addEventListener('touchstart', startDraw, { passive: false });
+  drawCanvas.addEventListener('touchmove', doDraw, { passive: false });
+  drawCanvas.addEventListener('touchend', stopDraw);
+}
+
+function clearDraw() {
+  if (!drawCtx) return;
+  drawCtx.clearRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
+  document.getElementById('traceFeedback').classList.remove('show');
+}
+
+function validateTrace() {
+  if (!drawCtx) return;
+  var W = CANVAS_SIZE, H = CANVAS_SIZE;
+  // Create expected letter mask
+  var off = document.createElement('canvas');
+  off.width = W; off.height = H;
+  var offCtx = off.getContext('2d');
+  offCtx.font = 'bold ' + Math.round(W * 0.65) + 'px Arial, sans-serif';
+  offCtx.textAlign = 'center';
+  offCtx.textBaseline = 'middle';
+  offCtx.fillStyle = '#000';
+  offCtx.fillText(currentTracingLetter.toUpperCase(), W / 2, H / 2);
+  var expected = offCtx.getImageData(0, 0, W, H).data;
+  var drawn = drawCtx.getImageData(0, 0, W, H).data;
+
+  var totalLetter = 0, covered = 0;
+  for (var i = 0; i < expected.length; i += 4) {
+    if (expected[i + 3] > 60) {
+      totalLetter++;
+      if (drawn[i + 3] > 40) covered++;
+    }
+  }
+  var coverage = totalLetter > 0 ? covered / totalLetter : 0;
+
+  var fb = document.getElementById('traceFeedback');
+  fb.classList.remove('ok','ko','mid');
+  fb.classList.add('show');
+
+  if (coverage >= 0.38) {
+    fb.className = 'trace-feedback show ok';
+    fb.textContent = '✅ Excellent ! Tu as bien tracé la lettre ' + currentTracingLetter + ' !';
+    if (!STATE.tracedLetters.includes(currentTracingLetter)) {
+      STATE.tracedLetters.push(currentTracingLetter);
+      saveState();
+      // Mark picker button as traced
+      var btns = document.querySelectorAll('.lp-btn');
+      ALPHA_LETTERS.forEach(function(L, i) {
+        if (L === currentTracingLetter) btns[i].classList.add('traced');
+      });
+      updateLettersDoneCount();
+      if (STATE.tracedLetters.length % 5 === 0) addStar(STATE.tracedLetters.length + ' lettres tracées !', '✍️');
+    }
+  } else if (coverage >= 0.15) {
+    fb.className = 'trace-feedback show mid';
+    fb.textContent = '👍 Bien essayé ! Clique sur « Voir le tracé » pour t\'aider, puis réessaie.';
+  } else {
+    fb.className = 'trace-feedback show ko';
+    fb.textContent = '✏️ Trace sur la lettre grise. Clique d\'abord sur « Voir le tracé » pour voir comment faire.';
+  }
+}
+
+function updateLettersDoneCount() {
+  var el = document.getElementById('lettersDoneCount');
+  if (el) el.textContent = STATE.tracedLetters.length + ' / 26 lettres tracées';
+}
+
+/* ================================================
+   MODULE 3 : SYLLABES
+   ================================================ */
+var CONSONANTS = ['B','D','F','G','J','K','L','M','N','P','R','S','T','V','Z'];
+var VOWELS = ['A','E','I','O','U'];
+
+function playTile(el, text) {
+  document.querySelectorAll('.syl-tile').forEach(function(t) { t.classList.remove('playing'); });
+  el.classList.add('playing');
+  setTimeout(function() { el.classList.remove('playing'); }, 600);
+  speak(text);
+}
+
+function initSyllables() {
+  var table = document.getElementById('sylTable');
+  // Header row
+  var html = '<thead><tr><th style="min-width:50px;">+</th>';
+  VOWELS.forEach(function(v) { html += '<th>' + v + '</th>'; });
+  html += '</tr></thead><tbody>';
+  CONSONANTS.forEach(function(c) {
+    html += '<tr><td class="syl-row-header">' + c + '</td>';
+    VOWELS.forEach(function(v) {
+      var syl = (c + v).toLowerCase();
+      html += '<td onclick="playSylCell(this,\'' + syl + '\')">' + c + v + '</td>';
+    });
+    html += '</tr>';
+  });
+  html += '</tbody>';
+  table.innerHTML = html;
+}
+
+function playSylCell(el, syl) {
+  document.querySelectorAll('.syl-table td').forEach(function(t) { t.classList.remove('playing'); });
+  el.classList.add('playing');
+  setTimeout(function() { el.classList.remove('playing'); }, 600);
+  speak(syl);
+}
+
+/* ================================================
+   MODULE 4 : VOCABULAIRE
+   ================================================ */
+var VOCAB = {
+  famille: [
+    {w:'papa',e:'👨'},{w:'maman',e:'👩'},{w:'bébé',e:'👶'},
+    {w:'garçon',e:'👦'},{w:'fille',e:'👧'},{w:'frère',e:'🧑'},
+    {w:'sœur',e:'👱‍♀️'},{w:'grand-père',e:'👴'},{w:'grand-mère',e:'👵'},
+    {w:'famille',e:'👨‍👩‍👧‍👦'},{w:'ami',e:'🤝'},{w:'enfant',e:'🧒'}
+  ],
+  maison: [
+    {w:'maison',e:'🏠'},{w:'porte',e:'🚪'},{w:'fenêtre',e:'🪟'},
+    {w:'lit',e:'🛏️'},{w:'table',e:'🍽️'},{w:'chaise',e:'🪑'},
+    {w:'cuisine',e:'🍳'},{w:'clé',e:'🔑'},{w:'lampe',e:'💡'},
+    {w:'livre',e:'📖'},{w:'téléphone',e:'📱'},{w:'télévision',e:'📺'},
+    {w:'jardin',e:'🌿'},{w:'chambre',e:'🛋️'},{w:'salle de bain',e:'🛁'}
+  ],
+  animaux: [
+    {w:'chat',e:'🐱'},{w:'chien',e:'🐶'},{w:'lapin',e:'🐰'},
+    {w:'vache',e:'🐄'},{w:'cheval',e:'🐴'},{w:'mouton',e:'🐑'},
+    {w:'poule',e:'🐔'},{w:'cochon',e:'🐷'},{w:'oiseau',e:'🐦'},
+    {w:'poisson',e:'🐟'},{w:'lion',e:'🦁'},{w:'éléphant',e:'🐘'},
+    {w:'singe',e:'🐵'},{w:'tortue',e:'🐢'},{w:'serpent',e:'🐍'}
+  ],
+  nourriture: [
+    {w:'pain',e:'🍞'},{w:'eau',e:'💧'},{w:'lait',e:'🥛'},
+    {w:'pomme',e:'🍎'},{w:'banane',e:'🍌'},{w:'orange',e:'🍊'},
+    {w:'tomate',e:'🍅'},{w:'carotte',e:'🥕'},{w:'riz',e:'🍚'},
+    {w:'poulet',e:'🍗'},{w:'œuf',e:'🥚'},{w:'fromage',e:'🧀'},
+    {w:'café',e:'☕'},{w:'thé',e:'🍵'},{w:'jus',e:'🥤'},
+    {w:'gâteau',e:'🎂'},{w:'chocolat',e:'🍫'},{w:'beurre',e:'🧈'},
+    {w:'sucre',e:'🍬'},{w:'sel',e:'🧂'}
+  ],
+  vetements: [
+    {w:'chemise',e:'👔'},{w:'pantalon',e:'👖'},{w:'robe',e:'👗'},
+    {w:'chaussures',e:'👟'},{w:'chaussettes',e:'🧦'},{w:'manteau',e:'🧥'},
+    {w:'chapeau',e:'🎩'},{w:'sac',e:'👜'},{w:'lunettes',e:'👓'},
+    {w:'écharpe',e:'🧣'},{w:'gants',e:'🧤'},{w:'bonnet',e:'🧢'}
+  ],
+  couleurs: [
+    {w:'rouge',e:'🔴'},{w:'bleu',e:'🔵'},{w:'vert',e:'🟢'},
+    {w:'jaune',e:'🟡'},{w:'orange',e:'🟠'},{w:'noir',e:'⚫'},
+    {w:'blanc',e:'⚪'},{w:'rose',e:'🌸'},{w:'violet',e:'🟣'},
+    {w:'marron',e:'🟤'}
+  ],
+  corps: [
+    {w:'tête',e:'🗣️'},{w:'main',e:'✋'},{w:'pied',e:'🦶'},
+    {w:'œil',e:'👁️'},{w:'nez',e:'👃'},{w:'bouche',e:'👄'},
+    {w:'oreille',e:'👂'},{w:'bras',e:'💪'},{w:'jambe',e:'🦵'},
+    {w:'dos',e:'🔙'},{w:'ventre',e:'🫃'},{w:'cœur',e:'❤️'}
+  ],
+  ville: [
+    {w:'rue',e:'🛣️'},{w:'école',e:'🏫'},{w:'hôpital',e:'🏥'},
+    {w:'supermarché',e:'🏪'},{w:'banque',e:'🏦'},{w:'bus',e:'🚌'},
+    {w:'voiture',e:'🚗'},{w:'vélo',e:'🚲'},{w:'train',e:'🚂'},
+    {w:'avion',e:'✈️'},{w:'taxi',e:'🚕'},{w:'métro',e:'🚇'},
+    {w:'parc',e:'🌳'},{w:'marché',e:'🛒'},{w:'mairie',e:'🏛️'}
+  ]
+};
+
+var THEME_LABELS = {
+  famille:'👪 Famille', maison:'🏠 Maison', animaux:'🐱 Animaux',
+  nourriture:'🍎 Nourriture', vetements:'👔 Vêtements', couleurs:'🎨 Couleurs',
+  corps:'💪 Corps', ville:'🏙️ Ville'
+};
+var currentTheme = 'famille';
+
+function initVocab() {
+  var tabs = document.getElementById('themeTabs');
+  var html = '';
+  Object.keys(VOCAB).forEach(function(key) {
+    html += '<button class="theme-tab' + (key === currentTheme ? ' on' : '') + '" onclick="setTheme(\'' + key + '\')">' + THEME_LABELS[key] + '</button>';
+  });
+  tabs.innerHTML = html;
+  renderWords(currentTheme);
+  updateVocabStats();
+}
+
+function setTheme(theme) {
+  currentTheme = theme;
+  document.querySelectorAll('.theme-tab').forEach(function(t) { t.classList.remove('on'); });
+  var tabs = document.querySelectorAll('.theme-tab');
+  Object.keys(VOCAB).forEach(function(key, i) {
+    if (key === theme) tabs[i].classList.add('on');
+  });
+  renderWords(theme);
+}
+
+function renderWords(theme) {
+  var grid = document.getElementById('wordGrid');
+  var words = VOCAB[theme] || [];
+  var html = '';
+  words.forEach(function(item) {
+    var heard = STATE.heardWords.includes(item.w);
+    html += '<div class="word-card" onclick="playWord(this,\'' + item.w.replace(/'/g, "\\'") + '\')" title="' + item.w + '">'
+      + '<span class="word-emoji">' + item.e + '</span>'
+      + '<div class="word-text">' + item.w + '</div>'
+      + (heard ? '<div style="font-size:11px;color:var(--green);margin-top:3px;font-weight:700;">✓ écouté</div>' : '')
+      + '</div>';
+  });
+  grid.innerHTML = html;
+}
+
+function playWord(el, word) {
+  document.querySelectorAll('.word-card').forEach(function(c) { c.classList.remove('playing'); });
+  el.classList.add('playing');
+  setTimeout(function() { el.classList.remove('playing'); }, 700);
+  speak(word);
+  if (!STATE.heardWords.includes(word)) {
+    STATE.heardWords.push(word);
+    saveState();
+    updateVocabStats();
+    if (STATE.heardWords.length % 20 === 0) addStar(STATE.heardWords.length + ' mots écoutés !', '🍎');
+  }
+}
+
+function updateVocabStats() {
+  var total = Object.values(VOCAB).reduce(function(a, v) { return a + v.length; }, 0);
+  var el = document.getElementById('vocabStats');
+  if (el) el.textContent = STATE.heardWords.length + ' / ' + total + ' mots écoutés';
+}
+
+/* ================================================
+   MODULE 5 : SENTENCES (KARAOKE)
+   ================================================ */
+var SENTENCES = [
+  {emoji:'🌅', text:"Bonjour, je m'appelle Marie."},
+  {emoji:'🏠', text:"J'habite dans une maison."},
+  {emoji:'👨‍👩‍👧', text:"Ma famille est grande."},
+  {emoji:'🚌', text:"Je prends le bus chaque matin."},
+  {emoji:'🏫', text:"Les enfants vont à l'école."},
+  {emoji:'🍞', text:"Maman achète du pain au marché."},
+  {emoji:'🐱', text:"Le chat boit du lait."},
+  {emoji:'☀️', text:"Le soleil brille dans le ciel bleu."},
+  {emoji:'📖', text:"Papa lit un livre le soir."},
+  {emoji:'🌙', text:"La nuit, les étoiles brillent."},
+  {emoji:'🍽️', text:"Nous mangeons ensemble à table."},
+  {emoji:'🚶', text:"Je marche jusqu'à la boulangerie."},
+  {emoji:'🏥', text:"Le médecin est à l'hôpital."},
+  {emoji:'🌸', text:"Les fleurs sont rouges et belles."},
+  {emoji:'🎒', text:"L'enfant porte un grand sac bleu."}
+];
+
+function initSentences() {
+  var container = document.getElementById('sentencesContainer');
+  var html = '';
+  SENTENCES.forEach(function(s, idx) {
+    var safeText = s.text.replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+    // Build karaoke spans with char positions
+    var words = [];
+    var charIdx = 0;
+    s.text.split(' ').forEach(function(token) {
+      words.push({ token: token, start: charIdx, end: charIdx + token.length });
+      charIdx += token.length + 1;
+    });
+
+    var wordsHTML = words.map(function(w) {
+      var clean = w.token.replace(/[.,!?;:]/g, '');
+      var safeClean = clean.replace(/'/g, "\\'");
+      return '<span class="k-word" data-start="' + w.start + '" data-end="' + w.end + '" onclick="event.stopPropagation();speak(\'' + safeClean + '\')">' + w.token + '</span>';
+    }).join(' ');
+
+    html += '<div class="sentence-block">'
+      + '<div class="sentence-img">' + s.emoji + '</div>'
+      + '<div class="sentence-text" id="st-' + idx + '">' + wordsHTML + '</div>'
+      + '<div class="sentence-btns">'
+      + '<button class="btn btn-orange" onclick="playKaraoke(' + idx + ')">▶ Écouter</button>'
+      + '<button class="btn btn-blue" onclick="playKaraoke(' + idx + ', 0.6)">🐢 Lentement</button>'
+      + '<button class="btn btn-violet" onclick="repeatSentence(' + idx + ')">🔁 Répéter</button>'
+      + '</div>'
+      + '</div>';
+  });
+  container.innerHTML = html;
+}
+
+var karaokeTimers = [];
+
+function clearKaraokeTimers() {
+  karaokeTimers.forEach(function(t) { clearTimeout(t); });
+  karaokeTimers = [];
+  document.querySelectorAll('.k-word').forEach(function(w) { w.classList.remove('k-playing'); });
+}
+
+function playKaraoke(idx, rate) {
+  clearKaraokeTimers();
+  var s = SENTENCES[idx];
+  var sentenceEl = document.getElementById('st-' + idx);
+  if (!sentenceEl) return;
+  var wordSpans = sentenceEl.querySelectorAll('.k-word');
+
+  var u = speak(s.text, rate || currentRate);
+  if (!u) return;
+
+  var usedBoundary = false;
+
+  u.onboundary = function(ev) {
+    if (ev.name !== 'word') return;
+    usedBoundary = true;
+    wordSpans.forEach(function(sp) { sp.classList.remove('k-playing'); });
+    wordSpans.forEach(function(sp) {
+      var start = parseInt(sp.getAttribute('data-start'));
+      var end = parseInt(sp.getAttribute('data-end'));
+      if (ev.charIndex >= start && ev.charIndex < end) sp.classList.add('k-playing');
+    });
+  };
+
+  // Fallback timeout-based karaoke for Firefox
+  var startTime = Date.now();
+  var totalMs = (s.text.length / (rate || currentRate)) * 70;
+  var wordCount = wordSpans.length;
+  wordSpans.forEach(function(sp, i) {
+    var t = setTimeout(function() {
+      if (!usedBoundary) {
+        wordSpans.forEach(function(w) { w.classList.remove('k-playing'); });
+        sp.classList.add('k-playing');
+      }
+    }, (i / wordCount) * totalMs + 100);
+    karaokeTimers.push(t);
+  });
+
+  u.onend = function() { clearKaraokeTimers(); };
+}
+
+function repeatSentence(idx) {
+  playKaraoke(idx);
+  var s = SENTENCES[idx];
+  setTimeout(function() { playKaraoke(idx); }, (s.text.length / currentRate) * 80 + 600);
+}
+
+/* ================================================
+   MODULE 6 : GAMES
+   ================================================ */
+
+/* --- DICTATION --- */
+var DICT_WORDS = [
+  'maison','chat','chien','pain','eau','soleil','lune','école',
+  'famille','ami','voiture','table','livre','fleur','arbre',
+  'maman','papa','bus','rue','bleu','rouge','vert','blanc',
+  'bonjour','merci','oui','non','enfant','lit','porte'
+];
+var dictCurrentWord = null;
+var dictScoreLocal = STATE.dictScore || 0;
+var dictTotalLocal = STATE.dictTotal || 0;
+
+function normalize(str) {
+  return str.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').trim();
+}
+
+function dictPlay() {
+  dictCurrentWord = DICT_WORDS[Math.floor(Math.random() * DICT_WORDS.length)];
+  speak(dictCurrentWord);
+  document.getElementById('dictInput').value = '';
+  document.getElementById('dictFeedback').textContent = '';
+  document.getElementById('dictInput').focus();
+}
+
+function dictCheck() {
+  if (!dictCurrentWord) { dictPlay(); return; }
+  var answer = document.getElementById('dictInput').value;
+  dictTotalLocal++;
+  STATE.dictTotal = dictTotalLocal;
+  var fb = document.getElementById('dictFeedback');
+  if (normalize(answer) === normalize(dictCurrentWord)) {
+    dictScoreLocal++;
+    STATE.dictScore = dictScoreLocal;
+    globalScore += 15;
+    STATE.gameScore = globalScore;
+    saveState();
+    updateGameScore();
+    fb.textContent = '✅ Bravo ! « ' + dictCurrentWord + ' » est correct !';
+    fb.style.color = 'var(--green)';
+    if (Math.random() > 0.4) addStar('Dictée réussie !', '🎙️');
+  } else {
+    saveState();
+    fb.textContent = '❌ Le mot était : « ' + dictCurrentWord + ' ». Essaie encore !';
+    fb.style.color = 'var(--red)';
+  }
+  document.getElementById('dictScore').textContent = dictScoreLocal;
+  document.getElementById('dictTotal').textContent = dictTotalLocal;
+  dictCurrentWord = null;
+}
+
+function dictSkip() {
+  dictCurrentWord = null;
+  document.getElementById('dictInput').value = '';
+  document.getElementById('dictFeedback').textContent = '';
+  dictPlay();
+}
+
+/* --- MEMORY GAME --- */
+var MEM_PAIRS = [
+  {e:'🐱',w:'chat'},{e:'🍎',w:'pomme'},{e:'🏠',w:'maison'},
+  {e:'☀️',w:'soleil'},{e:'📖',w:'livre'},{e:'🚌',w:'bus'},
+  {e:'💧',w:'eau'},{e:'🌙',w:'lune'}
+];
+var memFlipped = [];
+var memMatched = 0;
+var memLocked = false;
+
+function initMemory() {
+  memFlipped = [];
+  memMatched = 0;
+  memLocked = false;
+  document.getElementById('memStatus').textContent = '';
+
+  // Build deck: 8 emoji cards + 8 word cards, shuffled
+  var deck = [];
+  MEM_PAIRS.forEach(function(pair, i) {
+    deck.push({type:'emoji', val:pair.e, pairId:i});
+    deck.push({type:'word', val:pair.w, pairId:i});
+  });
+  // Shuffle
+  for (var i = deck.length - 1; i > 0; i--) {
+    var j = Math.floor(Math.random() * (i + 1));
+    var tmp = deck[i]; deck[i] = deck[j]; deck[j] = tmp;
+  }
+
+  var board = document.getElementById('memBoard');
+  var html = '';
+  deck.forEach(function(card, i) {
+    html += '<div class="mem-card' + (card.type === 'word' ? ' word-type' : '') + '" data-pair="' + card.pairId + '" data-idx="' + i + '" onclick="memFlip(this)">?</div>';
+  });
+  board.innerHTML = html;
+
+  // Store deck data on cards
+  board.querySelectorAll('.mem-card').forEach(function(el, i) {
+    el._card = deck[i];
+  });
+}
+
+function memFlip(el) {
+  if (memLocked || el.classList.contains('matched') || el.classList.contains('flipped')) return;
+  if (memFlipped.length >= 2) return;
+
+  el.classList.add('flipped');
+  el.textContent = el._card.val;
+  if (el._card.type === 'word') {
+    speak(el._card.val);
+  } else {
+    // Play word for emoji too
+    var pair = MEM_PAIRS[el._card.pairId];
+    if (pair) speak(pair.w);
+  }
+  memFlipped.push(el);
+
+  if (memFlipped.length === 2) {
+    memLocked = true;
+    var a = memFlipped[0], b = memFlipped[1];
+    if (a._card.pairId === b._card.pairId && a !== b) {
+      // Match!
+      setTimeout(function() {
+        a.classList.add('matched'); b.classList.add('matched');
+        memFlipped = []; memLocked = false;
+        memMatched++;
+        document.getElementById('memStatus').textContent = memMatched + ' / 8 paires trouvées';
+        if (memMatched === MEM_PAIRS.length) {
+          globalScore += 30;
+          STATE.gameScore = globalScore;
+          saveState();
+          updateGameScore();
+          addStar('Toutes les paires trouvées !', '🃏');
+          document.getElementById('memStatus').textContent = '🎉 Gagné !';
+        }
+      }, 400);
+    } else {
+      // No match
+      setTimeout(function() {
+        a.classList.remove('flipped'); a.textContent = '?';
+        b.classList.remove('flipped'); b.textContent = '?';
+        memFlipped = []; memLocked = false;
+      }, 1000);
+    }
+  }
+}
+
+/* --- LETTER QUIZ --- */
+var lqCurrentLetter = '';
+var lqAnswered = false;
+
+function letterQuizPlay() {
+  nextLetterQuiz();
+}
+
+function nextLetterQuiz() {
+  // Pick a random letter
+  var letters = ALPHA_LETTERS;
+  lqCurrentLetter = letters[Math.floor(Math.random() * letters.length)];
+  speak(lqCurrentLetter);
+
+  // Build 4 options (1 correct + 3 wrong)
+  var opts = [lqCurrentLetter];
+  while (opts.length < 4) {
+    var rnd = letters[Math.floor(Math.random() * letters.length)];
+    if (!opts.includes(rnd)) opts.push(rnd);
+  }
+  opts.sort(function() { return Math.random() - 0.5; });
+
+  lqAnswered = false;
+  var container = document.getElementById('letterQuizOpts');
+  container.innerHTML = '';
+  opts.forEach(function(letter) {
+    var btn = document.createElement('button');
+    btn.className = 'qopt';
+    btn.textContent = letter;
+    btn.onclick = function() {
+      if (lqAnswered) return;
+      lqAnswered = true;
+      container.querySelectorAll('.qopt').forEach(function(b) { b.disabled = true; });
+      var fb = document.getElementById('letterQuizFb');
+      if (letter === lqCurrentLetter) {
+        btn.classList.add('ok');
+        fb.className = 'quiz-feedback show ok';
+        fb.textContent = '✅ Bravo ! C\'était la lettre ' + lqCurrentLetter;
+        globalScore += 10;
+        STATE.gameScore = globalScore;
+        saveState();
+        updateGameScore();
+        if (Math.random() > 0.5) addStar('Lettre trouvée !', '🔤');
+      } else {
+        btn.classList.add('ko');
+        // Highlight correct
+        container.querySelectorAll('.qopt').forEach(function(b) {
+          if (b.textContent === lqCurrentLetter) b.classList.add('ok');
+        });
+        fb.className = 'quiz-feedback show ko';
+        fb.textContent = '❌ C\'était la lettre ' + lqCurrentLetter + '. Écoute encore !';
+      }
+    };
+    container.appendChild(btn);
+  });
+  document.getElementById('letterQuizFb').className = 'quiz-feedback';
+  document.getElementById('letterQuizFb').textContent = '';
+}
+
+function initGames() {
+  updateGameScore();
+  document.getElementById('dictScore').textContent = dictScoreLocal;
+  document.getElementById('dictTotal').textContent = dictTotalLocal;
+  initMemory();
+  nextLetterQuiz();
+}
+
+/* ================================================
+   MODULE 7 : DIALOGUES SITUATIONS RÉELLES
+   ================================================ */
+var DIAL_DATA = {
+  medecin: {
+    lines: [
+      {who:'them', name:'Médecin', text:"Bonjour, asseyez-vous. Qu'est-ce qui ne va pas ?"},
+      {who:'me',   name:'Moi',     text:"Bonjour docteur. J'ai mal au ventre depuis deux jours."},
+      {who:'them', name:'Médecin', text:"Avez-vous de la fièvre ?"},
+      {who:'me',   name:'Moi',     text:"Je ne sais pas. J'ai chaud et je suis très fatigué."},
+      {who:'them', name:'Médecin', text:"Ouvrez la bouche et dites « Aaah »."},
+      {who:'me',   name:'Moi',     text:"Aaah..."},
+      {who:'them', name:'Médecin', text:"Je vais vous donner une ordonnance. Prenez ce médicament trois fois par jour."},
+      {who:'me',   name:'Moi',     text:"Merci docteur. Est-ce que c'est grave ?"},
+      {who:'them', name:'Médecin', text:"Non, c'est une infection. Vous serez mieux dans quelques jours. Revenez si ça ne passe pas."}
+    ],
+    vocab: [
+      {w:"j'ai mal à / au / aux", d:"I have pain in — أتألم في"},
+      {w:"la fièvre", d:"fever — الحمى"},
+      {w:"une ordonnance", d:"a prescription — وصفة طبية"},
+      {w:"trois fois par jour", d:"three times a day — ثلاث مرات يوميًا"},
+      {w:"c'est grave ?", d:"is it serious? — هل هو خطير؟"},
+      {w:"revenez si...", d:"come back if... — ارجع إذا..."}
+    ]
+  },
+  mairie: {
+    lines: [
+      {who:'them', name:'Agent',   text:"Bonjour, c'est pour quoi ?"},
+      {who:'me',   name:'Moi',     text:"Bonjour madame. Je voudrais un acte de naissance pour mon enfant."},
+      {who:'them', name:'Agent',   text:"Vous avez une pièce d'identité ?"},
+      {who:'me',   name:'Moi',     text:"Oui, voilà mon titre de séjour."},
+      {who:'them', name:'Agent',   text:"Votre nom et votre prénom, s'il vous plaît ?"},
+      {who:'me',   name:'Moi',     text:"Je m'appelle Diarama Diadia. D-I-A-R-A-M-A."},
+      {who:'them', name:'Agent',   text:"Très bien. Revenez dans une semaine, le document sera prêt."},
+      {who:'me',   name:'Moi',     text:"C'est gratuit ?"},
+      {who:'them', name:'Agent',   text:"Oui, c'est gratuit. Voici votre numéro de dossier : B-235."}
+    ],
+    vocab: [
+      {w:"une pièce d'identité", d:"an ID document — وثيقة هوية"},
+      {w:"un titre de séjour", d:"a residence permit — تصريح إقامة"},
+      {w:"un acte de naissance", d:"a birth certificate — شهادة ميلاد"},
+      {w:"un dossier", d:"a file / case number — ملف"},
+      {w:"gratuit", d:"free of charge — مجاني"},
+      {w:"revenez dans...", d:"come back in... — عد خلال..."}
+    ]
+  },
+  ecole: {
+    lines: [
+      {who:'me',   name:'Moi',        text:"Bonjour, je suis la maman de Fatou, en CE1."},
+      {who:'them', name:'Enseignant', text:"Ah bonjour madame ! Asseyez-vous, je vous en prie."},
+      {who:'them', name:'Enseignant', text:"Fatou fait de bons progrès en lecture. Elle travaille bien."},
+      {who:'me',   name:'Moi',        text:"Est-ce qu'elle a des difficultés dans certaines matières ?"},
+      {who:'them', name:'Enseignant', text:"Elle est un peu timide à l'oral. En mathématiques, elle peut encore progresser."},
+      {who:'me',   name:'Moi',        text:"Qu'est-ce que je peux faire à la maison pour l'aider ?"},
+      {who:'them', name:'Enseignant', text:"Lisez avec elle chaque soir. Dix minutes suffisent. Et encouragez-la !"},
+      {who:'me',   name:'Moi',        text:"Merci beaucoup monsieur. Au revoir."},
+      {who:'them', name:'Enseignant', text:"Au revoir madame. N'hésitez pas à revenir."}
+    ],
+    vocab: [
+      {w:"des progrès", d:"progress — تقدم"},
+      {w:"des difficultés", d:"difficulties — صعوبات"},
+      {w:"la lecture / les mathématiques", d:"reading / maths — القراءة / الرياضيات"},
+      {w:"timide à l'oral", d:"shy when speaking — خجول عند الكلام"},
+      {w:"encourager", d:"to encourage — تشجيع"},
+      {w:"n'hésitez pas à...", d:"don't hesitate to... — لا تترددوا في..."}
+    ]
+  },
+  pharmacie: {
+    lines: [
+      {who:'me',   name:'Moi',         text:"Bonjour. J'ai une ordonnance du médecin."},
+      {who:'them', name:'Pharmacien', text:"Bonjour ! Donnez-moi votre ordonnance et votre carte vitale."},
+      {who:'me',   name:'Moi',         text:"Je n'ai pas encore de carte vitale. Je suis en attente."},
+      {who:'them', name:'Pharmacien', text:"D'accord. Dans ce cas, vous payez et vous gardez bien le reçu."},
+      {who:'me',   name:'Moi',         text:"Combien ça coûte ?"},
+      {who:'them', name:'Pharmacien', text:"Cinq euros quatre-vingts."},
+      {who:'me',   name:'Moi',         text:"Je dois prendre le médicament quand ?"},
+      {who:'them', name:'Pharmacien', text:"Matin, midi et soir, avec un grand verre d'eau. Pendant sept jours."}
+    ],
+    vocab: [
+      {w:"une ordonnance", d:"prescription — وصفة طبية"},
+      {w:"la carte vitale", d:"French health card — البطاقة الصحية"},
+      {w:"un reçu", d:"a receipt — إيصال"},
+      {w:"en attente", d:"waiting / pending — في الانتظار"},
+      {w:"combien ça coûte ?", d:"how much is it? — كم يكلف؟"},
+      {w:"matin / midi / soir", d:"morning / noon / evening — صباحًا / ظهرًا / مساءً"}
+    ]
+  },
+  logement: {
+    lines: [
+      {who:'me',   name:'Moi',        text:"Bonjour, je vous appelle pour l'annonce de l'appartement."},
+      {who:'them', name:'Propriétaire', text:"Bonjour ! Oui, l'appartement est disponible. Vous êtes en quelle situation ?"},
+      {who:'me',   name:'Moi',        text:"Je travaille en CDI depuis six mois. J'ai aussi une attestation CAF."},
+      {who:'them', name:'Propriétaire', text:"Très bien. Vous pouvez venir le visiter samedi à quatorze heures ?"},
+      {who:'me',   name:'Moi',        text:"Oui, samedi à quatorze heures, c'est parfait."},
+      {who:'them', name:'Propriétaire', text:"Apportez une pièce d'identité et vos trois derniers bulletins de salaire."},
+      {who:'me',   name:'Moi',        text:"D'accord. Le loyer est de combien ?"},
+      {who:'them', name:'Propriétaire', text:"Huit cents euros par mois, charges comprises."}
+    ],
+    vocab: [
+      {w:"une annonce", d:"an ad / listing — إعلان"},
+      {w:"disponible", d:"available — متاح"},
+      {w:"CDI", d:"permanent contract — عقد دائم"},
+      {w:"un bulletin de salaire", d:"a payslip — بطاقة الراتب"},
+      {w:"charges comprises", d:"bills included — بما في ذلك الرسوم"},
+      {w:"un bail", d:"a lease contract — عقد الإيجار"}
+    ]
+  },
+  banque: {
+    lines: [
+      {who:'me',   name:'Moi',    text:"Bonjour, je voudrais ouvrir un compte bancaire."},
+      {who:'them', name:'Conseiller', text:"Bien sûr. Vous avez vos pièces justificatives ?"},
+      {who:'me',   name:'Moi',    text:"J'ai mon passeport, mon titre de séjour et un justificatif de domicile."},
+      {who:'them', name:'Conseiller', text:"Parfait. Est-ce que vous avez un travail en ce moment ?"},
+      {who:'me',   name:'Moi',    text:"Je cherche du travail. Est-ce que je peux quand même ouvrir un compte ?"},
+      {who:'them', name:'Conseiller', text:"Oui, bien sûr. Vous avez le droit à un compte bancaire. C'est la loi."},
+      {who:'me',   name:'Moi',    text:"Est-ce qu'il y a des frais ?"},
+      {who:'them', name:'Conseiller', text:"Le compte de base est gratuit. Voici les documents à remplir."}
+    ],
+    vocab: [
+      {w:"ouvrir un compte", d:"to open an account — فتح حساب"},
+      {w:"une pièce justificative", d:"a supporting document — وثيقة إثبات"},
+      {w:"un justificatif de domicile", d:"proof of address — إثبات العنوان"},
+      {w:"des frais", d:"fees / charges — رسوم"},
+      {w:"le compte de base", d:"basic bank account — الحساب الأساسي"},
+      {w:"c'est la loi", d:"it's the law — إنه القانون"}
+    ]
+  }
+};
+
+var dialPlayTimers = [];
+
+function initDialogues() {
+  Object.keys(DIAL_DATA).forEach(function(key) {
+    renderDialogue(key);
+  });
+}
+
+function renderDialogue(key) {
+  var data = DIAL_DATA[key];
+  var convEl = document.getElementById('conv-' + key);
+  var vocabEl = document.getElementById('vocab-' + key);
+  if (!convEl || !vocabEl) return;
+
+  var convHtml = '';
+  data.lines.forEach(function(line, i) {
+    var safeText = line.text.replace(/'/g, "\\'");
+    convHtml += '<div class="dial-line ' + line.who + '">';
+    if (line.who === 'them') {
+      convHtml += '<div style="font-size:22px;flex-shrink:0;">👤</div>';
+    }
+    convHtml += '<div>';
+    convHtml += '<div class="dial-who">' + line.name + '</div>';
+    convHtml += '<div class="dial-bubble" id="db-' + key + '-' + i + '" onclick="playDialLine(\'' + key + '\',' + i + ')">' + line.text + '</div>';
+    convHtml += '</div>';
+    if (line.who === 'me') {
+      convHtml += '<div style="font-size:22px;flex-shrink:0;">🙋</div>';
+    }
+    convHtml += '</div>';
+  });
+  convEl.innerHTML = convHtml;
+
+  var vocabHtml = '<div class="dial-vocab-title">📖 Vocabulaire clé</div>';
+  data.vocab.forEach(function(v) {
+    var safeW = v.w.replace(/'/g, "\\'");
+    vocabHtml += '<div class="dial-vocab-item" onclick="speak(\'' + safeW + '\')">';
+    vocabHtml += '<span class="dvw">🔊 ' + v.w + '</span>';
+    vocabHtml += '<span class="dvd">' + v.d + '</span>';
+    vocabHtml += '</div>';
+  });
+  vocabEl.innerHTML = vocabHtml;
+}
+
+function playDialLine(key, idx) {
+  var data = DIAL_DATA[key];
+  if (!data || !data.lines[idx]) return;
+  document.querySelectorAll('.dial-bubble').forEach(function(b) { b.classList.remove('playing'); });
+  var el = document.getElementById('db-' + key + '-' + idx);
+  if (el) el.classList.add('playing');
+  speak(data.lines[idx].text, null, function() {
+    if (el) el.classList.remove('playing');
+  });
+}
+
+function playDialogueAll(key) {
+  var data = DIAL_DATA[key];
+  if (!data) return;
+  dialPlayTimers.forEach(function(t) { clearTimeout(t); });
+  dialPlayTimers = [];
+  window.speechSynthesis && window.speechSynthesis.cancel();
+
+  var delay = 0;
+  data.lines.forEach(function(line, i) {
+    var ms = delay;
+    var t = setTimeout(function() { playDialLine(key, i); }, ms);
+    dialPlayTimers.push(t);
+    delay += (line.text.length / currentRate) * 80 + 900;
+  });
+}
+
+function showDial(key, btn) {
+  document.querySelectorAll('.dial-scene').forEach(function(s) { s.classList.remove('on'); });
+  document.querySelectorAll('.dial-tab').forEach(function(b) { b.classList.remove('on'); });
+  var scene = document.getElementById('dial-' + key);
+  if (scene) scene.classList.add('on');
+  if (btn) btn.classList.add('on');
+  window.speechSynthesis && window.speechSynthesis.cancel();
+}
+
+/* ================================================
+   MODULE 8 : FORMULAIRES — HELPERS
+   ================================================ */
+function initFormulaires() { /* HTML already built, nothing to init dynamically */ }
+
+function showFormTab(tab, btn) {
+  document.querySelectorAll('.form-tab-pane').forEach(function(p) { p.classList.remove('on'); });
+  document.querySelectorAll('.form-tab-btn').forEach(function(b) { b.classList.remove('on'); });
+  var pane = document.getElementById('ftab-' + tab);
+  if (pane) pane.classList.add('on');
+  if (btn) btn.classList.add('on');
+}
+
+function markFilled(el) {
+  if (el.value && el.value.trim() !== '' && el.value !== '') {
+    el.classList.add('filled');
+  } else {
+    el.classList.remove('filled');
+  }
+}
+
+function toggleCheck(el) {
+  el.classList.toggle('checked');
+  var box = el.querySelector('.form-check-box');
+  if (box) box.textContent = el.classList.contains('checked') ? '✓' : '';
+}
+
+function submitForm(id) {
+  var suc = document.getElementById('fsuc-' + id);
+  if (suc) {
+    suc.classList.add('show');
+    suc.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    speak('Bravo ! Tu as terminé cet exercice.');
+    addStar('Formulaire complété !', '📋');
+  }
+}
+
+/* ================================================
+   MULTI-LANGUE — TRADUCTIONS DES CONSIGNES
+   ================================================ */
+var LANG_DATA = {
+  fr: {
+    'm7-intro': "Voici des conversations que tu peux avoir chaque jour. Clique sur chaque bulle pour entendre la phrase. Écoute, lis, et répète !",
+    'm7-tip': "Conseil : Écoute d'abord tout le dialogue, puis écoute chaque bulle une par une. Essaie de répéter à voix haute après chaque phrase !",
+    'm8-intro': "Entraîne-toi à remplir des formulaires officiels. Clique sur un label pour l'entendre. Les explications te disent quoi écrire dans chaque case.",
+    'dial-ctx-medecin': "Tu as mal au ventre depuis deux jours. Tu vas voir le médecin.",
+    'dial-ctx-mairie': "Tu vas à la mairie pour un acte de naissance et des démarches administratives.",
+    'dial-ctx-ecole': "Tu vas parler à l'enseignant de ton enfant lors d'une réunion.",
+    'dial-ctx-pharmacie': "Tu arrives avec une ordonnance du médecin.",
+    'dial-ctx-logement': "Tu appelles pour visiter un appartement.",
+    'dial-ctx-banque': "Tu vas ouvrir un compte bancaire."
+  },
+  ar: {
+    'm7-intro': "هذه محادثات يمكنك إجراؤها كل يوم. انقر على كل فقاعة لسماع الجملة. استمع، اقرأ، وكرر!",
+    'm7-tip': "نصيحة: استمع أولاً إلى الحوار كاملاً، ثم استمع إلى كل جملة على حدة. حاول التكرار بصوت عالٍ!",
+    'm8-intro': "تدرب على ملء الاستمارات الرسمية. انقر على كل تسمية لسماعها. التفسيرات تخبرك ماذا تكتب في كل خانة.",
+    'dial-ctx-medecin': "لديك ألم في البطن منذ يومين. تذهب لرؤية الطبيب.",
+    'dial-ctx-mairie': "تذهب إلى البلدية للحصول على شهادة الميلاد.",
+    'dial-ctx-ecole': "ستتحدث إلى معلم طفلك في اجتماع.",
+    'dial-ctx-pharmacie': "تصل مع وصفة طبية من الطبيب.",
+    'dial-ctx-logement': "تتصل لزيارة شقة.",
+    'dial-ctx-banque': "ستفتح حساباً بنكياً."
+  },
+  wolof: {
+    'm7-intro': "Dañu am wax ak wax yii ci bés bés. Dawal ci mbind bi ngir dëgël dëkk bi. Dëgël, jàng, garap!",
+    'm7-tip': "Tëwël: Dëgël jëf jëf bi ci kanam, ci kaw dawal mbind bu nekk. Jëfël sa dem ngir wax.",
+    'm8-intro': "Jëfandikool ci bind papier yii bu officiel. Dawal ci turu ci kanam ngir dëgël ko.",
+    'dial-ctx-medecin': "Sa biir dafa xaw fii ci fukki fan. Dem na fi doktoor.",
+    'dial-ctx-mairie': "Dem na mairie bi ngir acte de naissance.",
+    'dial-ctx-ecole': "Dem na wax ak jangalekat ji ci xew bi.",
+    'dial-ctx-pharmacie': "Jóge nga ak ordonnance bi doktoor bi.",
+    'dial-ctx-logement': "Telfonël nga ngir gis appartement bi.",
+    'dial-ctx-banque': "Dem na wëñ compte bancaire."
+  },
+  bambara: {
+    'm7-intro': "Nin ye kumakan minnu bɛ se ka kɛ don kelen kelen. Sunburuyako digi ka ko mɛn. Mɛn, kalan, sɔsɔ!",
+    'm7-tip': "Lasɛli: Kumakan bɛɛ mɛn fɔlɔ, o kɔ sunburuyako kelen kelen mɛn. Fɔ ni i ka kɛnɛ!",
+    'm8-intro': "Dɔn ka fɔrm kɛ. Sɛbɛn kɔnɔ digi ka ko mɛn. Ɲεfɔliw bɛ i ladɛgɛ min sɛbɛn fɛ.",
+    'dial-ctx-medecin': "I kɔnɔ bɛ na tile fila ye. Taa doktoro fɛ.",
+    'dial-ctx-mairie': "Taa mairie la acte de naissance ɲini.",
+    'dial-ctx-ecole': "Taa kuma kalanso kɔnɔ i denmisɛn ka kalanba fɛ.",
+    'dial-ctx-pharmacie': "Nana ne ni ordonnance doktoro ma.",
+    'dial-ctx-logement': "Wili ni ka apartema ye.",
+    'dial-ctx-banque': "Taa compte bancaire da."
+  },
+  en: {
+    'm7-intro': "These are conversations you can have every day. Click each bubble to hear the sentence. Listen, read, and repeat!",
+    'm7-tip': "Tip: Listen to the whole dialogue first, then listen to each bubble one by one. Try to repeat aloud after each sentence!",
+    'm8-intro': "Practice filling in official forms. Click a label to hear it. The explanations tell you what to write in each box.",
+    'dial-ctx-medecin': "You have had a stomach ache for two days. You go to see the doctor.",
+    'dial-ctx-mairie': "You go to the town hall for a birth certificate and administrative procedures.",
+    'dial-ctx-ecole': "You go to talk to your child's teacher at a meeting.",
+    'dial-ctx-pharmacie': "You arrive with a prescription from the doctor.",
+    'dial-ctx-logement': "You call to visit an apartment.",
+    'dial-ctx-banque': "You are going to open a bank account."
+  }
+};
+
+function setLang(lang) {
+  var data = LANG_DATA[lang] || LANG_DATA['fr'];
+  Object.keys(data).forEach(function(id) {
+    var el = document.getElementById(id);
+    if (el) el.textContent = data[id];
+  });
+}
+
+/* ================================================
+   BOOT
+   ================================================ */
+updateNav();
+go('home');
+
+// Pre-load voices
+setTimeout(loadVoices, 400);
+setTimeout(loadVoices, 1200);
+</script>
+<footer style="text-align:center;padding:18px 0 24px;color:var(--muted,#aaa);font-size:13px;letter-spacing:.03em;">
+  Created by <strong style="color:var(--violet)">@S.B</strong> from T.
+</footer>
+</body>
+</html>

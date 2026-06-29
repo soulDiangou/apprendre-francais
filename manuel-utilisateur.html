@@ -1,0 +1,1295 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Manuel d'utilisation — J'apprends le Français</title>
+<style>
+/* ===== DESIGN SYSTEM (identique à l'app) ===== */
+:root {
+  --bg: #FFF8F0;
+  --bg2: #FBEFE0;
+  --card: #FFFFFF;
+  --ink: #2D2A26;
+  --ink2: #5F5852;
+  --muted: #9A8F87;
+  --border: #F0E3D2;
+  --orange: #F59038;
+  --orange-soft: #FFD9B5;
+  --blue: #5BA8D9;
+  --blue-soft: #D5EAF7;
+  --green: #6BBE5C;
+  --green-soft: #DCEFD2;
+  --pink: #E97D9C;
+  --pink-soft: #F9DDE5;
+  --violet: #9888D1;
+  --violet-soft: #E3DFF3;
+  --yellow: #F4C95D;
+  --yellow-soft: #FBEFC8;
+  --red: #E26A6A;
+  --teal: #38B2AC;
+  --teal-soft: #E6FFFA;
+  --shadow: 0 4px 16px rgba(180,140,90,0.13);
+  --shadow-lg: 0 8px 32px rgba(180,140,90,0.2);
+  --r: 16px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+  font-size: 16px;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ===== LAYOUT ===== */
+.shell { display: flex; min-height: 100vh; }
+
+.sidebar {
+  width: 260px;
+  background: var(--card);
+  border-right: 2px solid var(--border);
+  padding: 20px 14px 40px;
+  position: fixed;
+  top: 0; bottom: 0; left: 0;
+  overflow-y: auto;
+  z-index: 100;
+  transition: transform 0.3s;
+}
+
+.main {
+  margin-left: 260px;
+  flex: 1;
+  padding: 40px 44px 100px;
+  max-width: 980px;
+}
+
+/* ===== SIDEBAR ===== */
+.logo {
+  display: flex; align-items: center; gap: 10px;
+  padding: 4px 0 16px;
+  border-bottom: 2px solid var(--border);
+  margin-bottom: 16px;
+}
+.logo-icon { font-size: 30px; }
+.logo-text { font-size: 16px; font-weight: 800; color: var(--orange); line-height: 1.1; }
+.logo-sub { font-size: 11px; color: var(--muted); }
+
+.back-btn {
+  display: flex; align-items: center; gap: 8px;
+  padding: 10px 14px; border-radius: 12px;
+  background: var(--orange-soft); color: var(--orange);
+  font-size: 13px; font-weight: 700;
+  text-decoration: none; transition: all 0.2s;
+  margin-bottom: 16px;
+}
+.back-btn:hover { background: var(--orange); color: white; }
+
+.toc-label {
+  font-size: 10px; color: var(--muted); font-weight: 700;
+  text-transform: uppercase; letter-spacing: 1.5px;
+  padding: 4px 0 6px;
+}
+
+.toc-item {
+  display: flex; align-items: center; gap: 9px;
+  padding: 9px 12px; border-radius: 11px;
+  font-size: 13px; font-weight: 600; color: var(--ink2);
+  text-decoration: none; transition: all 0.15s;
+  width: 100%; text-align: left; border: none; background: none; cursor: pointer;
+}
+.toc-item:hover { background: var(--bg2); color: var(--ink); }
+.toc-item.active { background: var(--orange); color: white; }
+.toc-icon { font-size: 17px; flex-shrink: 0; }
+
+.toc-divider { height: 1px; background: var(--border); margin: 8px 0; }
+
+/* ===== BURGER ===== */
+.menu-btn {
+  display: none; position: fixed; top: 12px; right: 12px; z-index: 200;
+  background: var(--orange); color: white; width: 46px; height: 46px;
+  border-radius: 12px; font-size: 20px; border: none; cursor: pointer;
+  box-shadow: var(--shadow); align-items: center; justify-content: center;
+}
+.overlay {
+  display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.35);
+  z-index: 99;
+}
+.overlay.show { display: block; }
+
+/* ===== HERO ===== */
+.hero {
+  background: linear-gradient(135deg, var(--orange-soft) 0%, var(--yellow-soft) 100%);
+  border-radius: 24px; padding: 44px 40px; text-align: center;
+  margin-bottom: 40px;
+  position: relative; overflow: hidden;
+}
+.hero::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23F59038' fill-opacity='0.06'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  pointer-events: none;
+}
+.hero-emoji { font-size: 70px; display: block; margin-bottom: 14px; position: relative; }
+.hero h1 { font-size: 34px; font-weight: 900; color: var(--ink); line-height: 1.2; position: relative; }
+.hero p { font-size: 16px; color: var(--ink2); margin-top: 10px; max-width: 540px; margin-left: auto; margin-right: auto; position: relative; }
+.hero-badges { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-top: 20px; position: relative; }
+.hero-badge {
+  background: white; border: 2px solid var(--border); border-radius: 20px;
+  padding: 6px 14px; font-size: 13px; font-weight: 700; color: var(--ink2);
+  display: flex; align-items: center; gap: 6px;
+}
+
+/* ===== SECTIONS ===== */
+section {
+  margin-bottom: 56px;
+  scroll-margin-top: 24px;
+}
+
+.section-tag {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 6px 16px; border-radius: 20px;
+  font-size: 12px; font-weight: 800; letter-spacing: 0.5px;
+  margin-bottom: 12px;
+}
+.tag-orange { background: var(--orange-soft); color: var(--orange); }
+.tag-blue { background: var(--blue-soft); color: var(--blue); }
+.tag-green { background: var(--green-soft); color: var(--green); }
+.tag-violet { background: var(--violet-soft); color: var(--violet); }
+.tag-teal { background: var(--teal-soft); color: var(--teal); }
+
+h2 { font-size: 28px; font-weight: 800; margin-bottom: 6px; color: var(--ink); }
+h3 { font-size: 18px; font-weight: 800; margin: 28px 0 12px; color: var(--ink); display: flex; align-items: center; gap: 8px; }
+.intro { font-size: 15px; color: var(--ink2); margin-bottom: 24px; max-width: 680px; }
+
+/* ===== DIVIDER ===== */
+.divider { height: 2px; background: var(--border); border-radius: 2px; margin: 48px 0; }
+
+/* ===== CARDS ===== */
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 14px; margin: 16px 0;
+}
+.card-grid-2 {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 14px; margin: 16px 0;
+}
+
+.card {
+  background: var(--card);
+  border: 2px solid var(--border);
+  border-radius: 20px;
+  padding: 20px;
+  transition: all 0.2s;
+}
+.card:hover { border-color: var(--orange); box-shadow: var(--shadow); transform: translateY(-2px); }
+.card-icon { font-size: 36px; margin-bottom: 10px; display: block; }
+.card-title { font-size: 16px; font-weight: 800; color: var(--ink); margin-bottom: 4px; }
+.card-desc { font-size: 14px; color: var(--ink2); line-height: 1.55; }
+
+/* ===== MODULE CARD ===== */
+.module-card {
+  background: var(--card);
+  border: 2px solid var(--border);
+  border-radius: 22px;
+  padding: 22px 24px;
+  margin: 14px 0;
+  display: flex; gap: 18px; align-items: flex-start;
+}
+.module-card:hover { border-color: var(--orange); box-shadow: var(--shadow); }
+.mc-icon { font-size: 42px; flex-shrink: 0; width: 56px; height: 56px; background: var(--bg2); border-radius: 14px; display: flex; align-items: center; justify-content: center; }
+.mc-body {}
+.mc-tag { font-size: 11px; font-weight: 800; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; }
+.mc-title { font-size: 17px; font-weight: 800; color: var(--ink); margin: 4px 0; }
+.mc-desc { font-size: 14px; color: var(--ink2); line-height: 1.55; }
+.mc-steps { margin-top: 10px; display: flex; flex-direction: column; gap: 6px; }
+.mc-step {
+  display: flex; align-items: flex-start; gap: 10px;
+  font-size: 13px; color: var(--ink2);
+}
+.mc-step-num {
+  width: 22px; height: 22px; border-radius: 50%; background: var(--orange); color: white;
+  font-size: 11px; font-weight: 800; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center; margin-top: 1px;
+}
+
+/* ===== TIPS ===== */
+.tip {
+  background: var(--yellow-soft);
+  border-left: 4px solid var(--yellow);
+  padding: 14px 18px; border-radius: 10px;
+  margin: 18px 0; display: flex; gap: 12px; align-items: flex-start;
+}
+.tip-icon { font-size: 22px; flex-shrink: 0; }
+.tip-body { font-size: 14px; color: var(--ink2); line-height: 1.6; }
+.tip-body strong { color: var(--ink); }
+
+.info-box {
+  background: var(--blue-soft);
+  border-left: 4px solid var(--blue);
+  padding: 14px 18px; border-radius: 10px;
+  margin: 18px 0; display: flex; gap: 12px; align-items: flex-start;
+  font-size: 14px; color: var(--ink2);
+}
+.info-box strong { color: var(--ink); }
+
+.success-box {
+  background: var(--green-soft);
+  border-left: 4px solid var(--green);
+  padding: 14px 18px; border-radius: 10px;
+  margin: 18px 0; display: flex; gap: 12px; align-items: flex-start;
+  font-size: 14px; color: var(--ink2);
+}
+
+/* ===== STEPS ===== */
+.steps { margin: 20px 0; display: flex; flex-direction: column; gap: 12px; }
+.step {
+  display: flex; gap: 16px; align-items: flex-start;
+  background: var(--card); border: 2px solid var(--border);
+  border-radius: 16px; padding: 16px 18px;
+}
+.step-num {
+  width: 36px; height: 36px; border-radius: 50%;
+  background: var(--orange); color: white;
+  font-size: 16px; font-weight: 900; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+}
+.step-body { flex: 1; }
+.step-title { font-size: 15px; font-weight: 800; color: var(--ink); margin-bottom: 4px; }
+.step-desc { font-size: 14px; color: var(--ink2); }
+
+/* ===== FEATURE ROW ===== */
+.feature-row {
+  display: flex; gap: 14px; align-items: flex-start;
+  padding: 14px 18px; background: var(--card);
+  border: 2px solid var(--border); border-radius: 14px; margin: 10px 0;
+}
+.feature-row:hover { border-color: var(--orange-soft); }
+.fr-icon { font-size: 28px; flex-shrink: 0; }
+.fr-body {}
+.fr-title { font-size: 14px; font-weight: 800; color: var(--ink); margin-bottom: 2px; }
+.fr-desc { font-size: 13px; color: var(--ink2); }
+
+/* ===== MOCK UI ===== */
+.mock {
+  background: var(--card); border: 2px solid var(--border);
+  border-radius: 18px; overflow: hidden; margin: 16px 0;
+  box-shadow: var(--shadow);
+}
+.mock-header {
+  padding: 12px 16px;
+  background: var(--orange); color: white;
+  font-size: 13px; font-weight: 700;
+  display: flex; align-items: center; gap: 8px;
+}
+.mock-body { padding: 16px; }
+
+/* ===== BADGE ===== */
+.badge {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 4px 10px; border-radius: 20px;
+  font-size: 12px; font-weight: 700;
+}
+.badge-orange { background: var(--orange-soft); color: var(--orange); }
+.badge-green { background: var(--green-soft); color: var(--green); }
+.badge-blue { background: var(--blue-soft); color: var(--blue); }
+.badge-violet { background: var(--violet-soft); color: var(--violet); }
+
+/* ===== FAQ ===== */
+.faq-item { margin: 10px 0; }
+.faq-q {
+  background: var(--card); border: 2px solid var(--border);
+  border-radius: 14px; padding: 14px 18px; cursor: pointer;
+  display: flex; justify-content: space-between; align-items: center;
+  font-size: 14px; font-weight: 700; color: var(--ink);
+  transition: all 0.2s; user-select: none;
+}
+.faq-q:hover { border-color: var(--orange); }
+.faq-q.open { border-color: var(--orange); background: var(--orange-soft); border-bottom-left-radius: 0; border-bottom-right-radius: 0; }
+.faq-a {
+  display: none;
+  background: var(--card); border: 2px solid var(--orange);
+  border-top: none; border-bottom-left-radius: 14px; border-bottom-right-radius: 14px;
+  padding: 14px 18px; font-size: 14px; color: var(--ink2); line-height: 1.6;
+}
+.faq-a.open { display: block; }
+.faq-chevron { transition: transform 0.2s; font-size: 12px; }
+.faq-q.open .faq-chevron { transform: rotate(180deg); }
+
+/* ===== PHASE COMPARISON ===== */
+.compare-grid {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 14px; margin: 16px 0;
+}
+.phase-block {
+  background: var(--card); border: 3px solid var(--border);
+  border-radius: 20px; padding: 20px;
+}
+.phase-block.p1 { border-color: var(--orange-soft); }
+.phase-block.p2 { border-color: var(--blue-soft); }
+.phase-title { font-size: 16px; font-weight: 800; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+.phase-list { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+.phase-list li { font-size: 13px; color: var(--ink2); display: flex; align-items: flex-start; gap: 8px; }
+.phase-list li::before { content: "→"; color: var(--orange); font-weight: 700; flex-shrink: 0; }
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 900px) {
+  .sidebar {
+    transform: translateX(-100%);
+    box-shadow: var(--shadow-lg);
+  }
+  .sidebar.open { transform: translateX(0); }
+  .main { margin-left: 0; padding: 24px 18px 80px; }
+  .menu-btn { display: flex; }
+  .hero { padding: 32px 22px; }
+  .hero h1 { font-size: 26px; }
+  .compare-grid { grid-template-columns: 1fr; }
+  .card-grid { grid-template-columns: 1fr; }
+  h2 { font-size: 24px; }
+}
+@media (max-width: 500px) {
+  .hero h1 { font-size: 22px; }
+  .hero-emoji { font-size: 52px; }
+  .module-card { flex-direction: column; }
+  .mc-icon { width: 48px; height: 48px; }
+}
+
+/* ===== PRINT ===== */
+@media print {
+  .sidebar, .menu-btn { display: none; }
+  .main { margin-left: 0; }
+}
+</style>
+</head>
+<body>
+
+<button class="menu-btn" id="menuBtn" onclick="toggleSidebar()">☰</button>
+<div class="overlay" id="overlay" onclick="closeSidebar()"></div>
+
+<div class="shell">
+
+<!-- ====== SIDEBAR ====== -->
+<nav class="sidebar" id="sidebar">
+  <div class="logo">
+    <span class="logo-icon">📚</span>
+    <div>
+      <div class="logo-text">J'apprends</div>
+      <div class="logo-sub">Manuel d'utilisation</div>
+    </div>
+  </div>
+
+  <a href="apprendre-phase1.html" class="back-btn">← Retour à l'application</a>
+
+  <div class="toc-label">Sommaire</div>
+
+  <a href="#bienvenue" class="toc-item" onclick="closeSidebar()"><span class="toc-icon">👋</span> Bienvenue</a>
+  <a href="#commencer" class="toc-item" onclick="closeSidebar()"><span class="toc-icon">🚀</span> Pour commencer</a>
+  <a href="#ecran" class="toc-item" onclick="closeSidebar()"><span class="toc-icon">🖥️</span> L'écran principal</a>
+
+  <div class="toc-divider"></div>
+  <div class="toc-label">Phase 1 — Bases</div>
+  <a href="#m1" class="toc-item" onclick="closeSidebar()"><span class="toc-icon">🔤</span> L'Alphabet</a>
+  <a href="#m2" class="toc-item" onclick="closeSidebar()"><span class="toc-icon">✍️</span> Je Trace</a>
+  <a href="#m3" class="toc-item" onclick="closeSidebar()"><span class="toc-icon">🎵</span> Les Syllabes</a>
+  <a href="#m4" class="toc-item" onclick="closeSidebar()"><span class="toc-icon">🍎</span> Mes Mots</a>
+  <a href="#m5" class="toc-item" onclick="closeSidebar()"><span class="toc-icon">📖</span> Je Lis</a>
+  <a href="#m6" class="toc-item" onclick="closeSidebar()"><span class="toc-icon">🎯</span> Jeux & Dictée</a>
+  <a href="#m7" class="toc-item" onclick="closeSidebar()"><span class="toc-icon">💬</span> Situations réelles</a>
+  <a href="#m8" class="toc-item" onclick="closeSidebar()"><span class="toc-icon">📋</span> Formulaires</a>
+
+  <div class="toc-divider"></div>
+  <div class="toc-label">Phase 2 — A1</div>
+  <a href="#phase2" class="toc-item" onclick="closeSidebar()"><span class="toc-icon">📘</span> Phase 2</a>
+
+  <div class="toc-divider"></div>
+  <a href="#reglages" class="toc-item" onclick="closeSidebar()"><span class="toc-icon">⚙️</span> Réglages</a>
+  <a href="#faq" class="toc-item" onclick="closeSidebar()"><span class="toc-icon">❓</span> Questions fréquentes</a>
+</nav>
+
+<!-- ====== MAIN ====== -->
+<main class="main">
+
+<!-- ===== HERO ===== -->
+<section id="bienvenue">
+  <div class="hero">
+    <span class="hero-emoji">📚</span>
+    <h1>Manuel d'utilisation</h1>
+    <p>Ce guide t'explique comment utiliser l'application <strong>J'apprends le Français</strong>, étape par étape.</p>
+    <div class="hero-badges">
+      <span class="hero-badge">👶 Pour débutants</span>
+      <span class="hero-badge">🔊 Audio inclus</span>
+      <span class="hero-badge">📱 Téléphone & ordinateur</span>
+      <span class="hero-badge">🆓 Gratuit</span>
+    </div>
+  </div>
+
+  <h3>🌟 Qu'est-ce que cette application ?</h3>
+  <p class="intro">C'est une application pour apprendre le français depuis le début. Elle est faite pour les personnes qui ne connaissent pas encore le français, ou qui veulent revoir les bases.</p>
+
+  <div class="card-grid">
+    <div class="card">
+      <span class="card-icon">🔊</span>
+      <div class="card-title">Tout est cliquable</div>
+      <div class="card-desc">Clique sur n'importe quelle lettre, mot ou phrase pour l'entendre. La voix parle le français pour toi.</div>
+    </div>
+    <div class="card">
+      <span class="card-icon">⭐</span>
+      <div class="card-title">Gagne des étoiles</div>
+      <div class="card-desc">Chaque module terminé te donne des étoiles. Ton progrès est sauvegardé automatiquement.</div>
+    </div>
+    <div class="card">
+      <span class="card-icon">📱</span>
+      <div class="card-title">Fonctionne partout</div>
+      <div class="card-desc">Sur ton téléphone, tablette ou ordinateur. Pas besoin d'installer quoi que ce soit.</div>
+    </div>
+    <div class="card">
+      <span class="card-icon">🌍</span>
+      <div class="card-title">En ta langue</div>
+      <div class="card-desc">Les explications sont disponibles en français, arabe, wolof, bambara et anglais.</div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ===== POUR COMMENCER ===== -->
+<section id="commencer">
+  <div class="section-tag tag-orange">🚀 Démarrage</div>
+  <h2>Pour commencer</h2>
+  <p class="intro">Suis ces étapes simples pour ouvrir et utiliser l'application.</p>
+
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <div class="step-title">Ouvre le fichier</div>
+        <div class="step-desc">Clique deux fois sur le fichier <strong>apprendre-phase1.html</strong>. Il s'ouvre dans ton navigateur internet (Chrome, Firefox, Safari…).</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <div class="step-title">Choisis ta langue</div>
+        <div class="step-desc">Dans le menu à gauche, cherche <strong>"Langue des consignes"</strong>. Choisis ta langue dans la liste : français, arabe, wolof, bambara ou anglais.</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-body">
+        <div class="step-title">Teste la voix</div>
+        <div class="step-desc">Clique sur le bouton <strong>"▶ Tester la voix"</strong> en bas du menu. Si tu entends une voix, tout fonctionne bien !</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="step-body">
+        <div class="step-title">Commence par le Module 1</div>
+        <div class="step-desc">Clique sur <strong>"1. L'Alphabet"</strong> dans le menu ou sur la carte en page d'accueil. Commence toujours par le début !</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="tip">
+    <div class="tip-icon">💡</div>
+    <div class="tip-body"><strong>Conseil :</strong> Fais les modules dans l'ordre, du module 1 au module 8. Chaque module prépare le suivant.</div>
+  </div>
+
+  <div class="tip" style="background: var(--pink-soft); border-color: var(--pink);">
+    <div class="tip-icon">🔇</div>
+    <div class="tip-body"><strong>Pas de son ?</strong> Vérifie que le volume de ton appareil est allumé. Sur téléphone, monte le volume avec les boutons sur le côté. Sur ordinateur, clique sur l'icône son en bas à droite.</div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ===== L'ÉCRAN PRINCIPAL ===== -->
+<section id="ecran">
+  <div class="section-tag tag-blue">🖥️ Interface</div>
+  <h2>L'écran principal</h2>
+  <p class="intro">Voici comment l'application est organisée.</p>
+
+  <div class="mock">
+    <div class="mock-header">📚 J'apprends le Français — Vue générale</div>
+    <div class="mock-body">
+      <div style="display:grid;grid-template-columns:180px 1fr;gap:12px;">
+        <div style="background:var(--bg2);border-radius:12px;padding:14px;font-size:12px;color:var(--ink2);">
+          <div style="font-weight:800;color:var(--orange);margin-bottom:8px;">📚 J'apprends</div>
+          <div style="background:var(--bg);border-radius:8px;padding:8px;margin-bottom:8px;font-size:11px;">
+            <div style="font-weight:700;">Ma progression</div>
+            <div style="height:6px;background:var(--border);border-radius:4px;margin:4px 0;overflow:hidden;"><div style="width:45%;height:100%;background:var(--orange);border-radius:4px;"></div></div>
+            <div style="color:var(--yellow);">⭐ ⭐ ⭐ ☆ ☆</div>
+          </div>
+          <div style="font-weight:700;color:var(--muted);font-size:10px;text-transform:uppercase;letter-spacing:1px;margin:6px 0 4px;">Modules</div>
+          <div style="background:var(--orange);color:white;border-radius:8px;padding:6px 8px;font-size:11px;font-weight:700;margin-bottom:3px;">🏠 Accueil</div>
+          <div style="padding:5px 8px;font-size:11px;color:var(--ink2);">🔤 1. L'Alphabet</div>
+          <div style="padding:5px 8px;font-size:11px;color:var(--ink2);">✍️ 2. Je Trace</div>
+          <div style="padding:5px 8px;font-size:11px;color:var(--ink2);">🎵 3. Les Syllabes</div>
+          <div style="padding:5px 8px;font-size:11px;color:var(--muted);">...</div>
+          <div style="margin-top:8px;background:var(--blue-soft);border-radius:8px;padding:8px;font-size:10px;color:var(--ink2);">
+            <div style="font-weight:700;margin-bottom:4px;">🔊 Voix</div>
+            <div>Vitesse ░░░░▓</div>
+            <div>Volume ░░░▓▓</div>
+            <div style="margin-top:4px;background:var(--blue);color:white;border-radius:5px;padding:3px 6px;text-align:center;font-weight:700;">▶ Tester</div>
+          </div>
+        </div>
+        <div style="background:var(--bg);border-radius:12px;padding:16px;font-size:12px;">
+          <div style="background:linear-gradient(135deg,var(--orange-soft),var(--yellow-soft));border-radius:14px;padding:20px;text-align:center;margin-bottom:12px;">
+            <div style="font-size:30px;margin-bottom:4px;">🌟</div>
+            <div style="font-size:16px;font-weight:800;color:var(--ink);">Bienvenue !</div>
+            <div style="font-size:11px;color:var(--ink2);">Clique sur un module pour commencer</div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+            <div style="background:white;border:2px solid var(--border);border-radius:12px;padding:10px;cursor:pointer;">
+              <div style="font-size:22px;">🔤</div>
+              <div style="font-size:12px;font-weight:700;">1. L'Alphabet</div>
+              <div style="font-size:10px;color:var(--muted);">Les 26 lettres</div>
+            </div>
+            <div style="background:white;border:2px solid var(--border);border-radius:12px;padding:10px;cursor:pointer;">
+              <div style="font-size:22px;">✍️</div>
+              <div style="font-size:12px;font-weight:700;">2. Je Trace</div>
+              <div style="font-size:10px;color:var(--muted);">Écrire les lettres</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <h3>📍 Les zones de l'écran</h3>
+
+  <div class="feature-row">
+    <span class="fr-icon">◀</span>
+    <div class="fr-body">
+      <div class="fr-title">Le menu à gauche (la barre latérale)</div>
+      <div class="fr-desc">C'est là que tu vois tous les modules. Clique sur un module pour y aller. Tu vois aussi ta progression et les réglages de la voix.</div>
+    </div>
+  </div>
+  <div class="feature-row">
+    <span class="fr-icon">▶</span>
+    <div class="fr-body">
+      <div class="fr-title">La zone principale (à droite)</div>
+      <div class="fr-desc">C'est ici que le contenu de chaque module s'affiche. Tu lis, écoutes et fais les exercices dans cette zone.</div>
+    </div>
+  </div>
+  <div class="feature-row">
+    <span class="fr-icon">☰</span>
+    <div class="fr-body">
+      <div class="fr-title">Le bouton ☰ (sur téléphone)</div>
+      <div class="fr-desc">Sur téléphone, le menu est caché. Appuie sur le bouton orange ☰ en haut à droite pour ouvrir le menu.</div>
+    </div>
+  </div>
+
+  <h3>📊 La barre de progression</h3>
+  <div class="info-box">
+    <span style="font-size:22px;flex-shrink:0;">⭐</span>
+    <div>La barre de progression montre <strong>combien de modules tu as terminés</strong>. Quand tu cliques sur "Suivant →" à la fin d'un module, le module est marqué comme terminé et tu gagnes une étoile. La barre avance automatiquement !</div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ===== MODULE 1 ===== -->
+<section id="m1">
+  <div class="section-tag tag-orange">🔤 Module 1</div>
+  <h2>L'Alphabet</h2>
+  <p class="intro">Dans ce module, tu apprends les 26 lettres de l'alphabet français avec leur nom et leur son.</p>
+
+  <div class="module-card">
+    <div class="mc-icon">🔤</div>
+    <div class="mc-body">
+      <div class="mc-tag">Module 1 · L'Alphabet</div>
+      <div class="mc-title">Comment utiliser ce module</div>
+      <div class="mc-steps">
+        <div class="mc-step">
+          <div class="mc-step-num">1</div>
+          <span>Clique sur une lettre dans la grille pour entendre son <strong>nom</strong> (ex: « A » se dit « ah »).</span>
+        </div>
+        <div class="mc-step">
+          <div class="mc-step-num">2</div>
+          <span>Clique sur le bouton <strong>"🔊 Son dans un mot"</strong> pour entendre la lettre dans un vrai mot.</span>
+        </div>
+        <div class="mc-step">
+          <div class="mc-step-num">3</div>
+          <span>Regarde la section <strong>"Les voyelles"</strong> : A, E, I, O, U, Y sont les lettres les plus importantes.</span>
+        </div>
+        <div class="mc-step">
+          <div class="mc-step-num">4</div>
+          <span>Fais le <strong>Quiz</strong> : écoute et clique sur la bonne lettre. Tu peux réessayer autant de fois que tu veux.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="tip">
+    <div class="tip-icon">🎯</div>
+    <div class="tip-body"><strong>Astuce :</strong> Clique plusieurs fois sur la même lettre pour bien mémoriser son son. Répète à voix haute après chaque clic !</div>
+  </div>
+
+  <div class="feature-row">
+    <span class="fr-icon">🔤</span>
+    <div class="fr-body">
+      <div class="fr-title">Mode "Nom de la lettre"</div>
+      <div class="fr-desc">Tu entends le nom officiel de la lettre. Par exemple, la lettre <strong>M</strong> se dit « emm ».</div>
+    </div>
+  </div>
+  <div class="feature-row">
+    <span class="fr-icon">🔊</span>
+    <div class="fr-body">
+      <div class="fr-title">Mode "Son dans un mot"</div>
+      <div class="fr-desc">Tu entends comment la lettre est prononcée dans un vrai mot français. Très utile pour lire !</div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ===== MODULE 2 ===== -->
+<section id="m2">
+  <div class="section-tag tag-blue">✍️ Module 2</div>
+  <h2>Je Trace</h2>
+  <p class="intro">Entraîne-toi à écrire les lettres avec ton doigt ou ta souris.</p>
+
+  <div class="module-card">
+    <div class="mc-icon">✍️</div>
+    <div class="mc-body">
+      <div class="mc-tag">Module 2 · Je Trace</div>
+      <div class="mc-title">Comment utiliser ce module</div>
+      <div class="mc-steps">
+        <div class="mc-step">
+          <div class="mc-step-num">1</div>
+          <span>Choisis une <strong>lettre</strong> dans la liste à gauche (ou en haut sur téléphone).</span>
+        </div>
+        <div class="mc-step">
+          <div class="mc-step-num">2</div>
+          <span>Clique sur <strong>"👁️ Voir le tracé"</strong> pour regarder l'animation. Elle te montre comment écrire la lettre correctement.</span>
+        </div>
+        <div class="mc-step">
+          <div class="mc-step-num">3</div>
+          <span>Trace la lettre par-dessus avec ton <strong>doigt</strong> (téléphone) ou ta <strong>souris</strong> (ordinateur).</span>
+        </div>
+        <div class="mc-step">
+          <div class="mc-step-num">4</div>
+          <span>Clique sur <strong>"✅ Vérifier"</strong> pour savoir si tu as bien tracé.</span>
+        </div>
+        <div class="mc-step">
+          <div class="mc-step-num">5</div>
+          <span>Si tu veux recommencer, clique sur <strong>"🗑️ Effacer"</strong>.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <h3>📱 Sur téléphone / tablette</h3>
+  <div class="info-box">
+    <span style="font-size:22px;flex-shrink:0;">✋</span>
+    <div>Pose ton doigt sur l'écran et <strong>trace sans lever le doigt</strong>. Appuie doucement et fais des gestes lents pour de meilleurs résultats.</div>
+  </div>
+
+  <h3>💻 Sur ordinateur</h3>
+  <div class="info-box">
+    <span style="font-size:22px;flex-shrink:0;">🖱️</span>
+    <div><strong>Maintiens le clic gauche</strong> enfoncé et déplace la souris pour tracer. Relâche le bouton quand tu as fini.</div>
+  </div>
+
+  <div class="tip">
+    <div class="tip-icon">🏆</div>
+    <div class="tip-body">Les lettres que tu as déjà tracées apparaissent en <span style="color:var(--green);font-weight:800;">vert</span>. Essaie de toutes les compléter !</div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ===== MODULE 3 ===== -->
+<section id="m3">
+  <div class="section-tag tag-orange">🎵 Module 3</div>
+  <h2>Les Syllabes</h2>
+  <p class="intro">Une syllabe, c'est quand tu combines une consonne et une voyelle pour faire un son. C'est la base de la lecture !</p>
+
+  <div class="module-card">
+    <div class="mc-icon">🎵</div>
+    <div class="mc-body">
+      <div class="mc-tag">Module 3 · Les Syllabes</div>
+      <div class="mc-title">Comment utiliser ce module</div>
+      <div class="mc-steps">
+        <div class="mc-step">
+          <div class="mc-step-num">1</div>
+          <span>Dans la <strong>démonstration</strong>, clique sur chaque partie : la consonne (en bleu), la voyelle (en rose), puis le résultat (en vert).</span>
+        </div>
+        <div class="mc-step">
+          <div class="mc-step-num">2</div>
+          <span>Explore le <strong>grand tableau</strong> en bas. Clique sur n'importe quelle syllabe pour l'entendre.</span>
+        </div>
+        <div class="mc-step">
+          <div class="mc-step-num">3</div>
+          <span>Fais le <strong>Quiz</strong> : écoute et choisis la bonne syllabe parmi 4 choix.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card-grid">
+    <div class="card" style="border-color: var(--blue-soft);">
+      <span class="card-icon" style="color:var(--blue);">B</span>
+      <div class="card-title" style="color:var(--blue);">Consonnes (en bleu)</div>
+      <div class="card-desc">Les lettres B, C, D, F, G... Ce sont les "bruits" du français.</div>
+    </div>
+    <div class="card" style="border-color: var(--pink-soft);">
+      <span class="card-icon" style="color:var(--pink);">A</span>
+      <div class="card-title" style="color:var(--pink);">Voyelles (en rose)</div>
+      <div class="card-desc">Les lettres A, E, I, O, U. Elles "chantent" dans les mots.</div>
+    </div>
+    <div class="card" style="border-color: var(--green-soft);">
+      <span class="card-icon" style="color:var(--green);">BA</span>
+      <div class="card-title" style="color:var(--green);">Syllabe (en vert)</div>
+      <div class="card-desc">Consonne + Voyelle = une syllabe. Ex: B + A = BA</div>
+    </div>
+  </div>
+
+  <div class="tip">
+    <div class="tip-icon">💡</div>
+    <div class="tip-body"><strong>Exemple :</strong> Le mot <strong>MA-MAN</strong> a 2 syllabes : MA + MAN. Le mot <strong>BA-NA-NE</strong> a 3 syllabes : BA + NA + NE. Quand tu sais lire les syllabes, tu peux lire n'importe quel mot !</div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ===== MODULE 4 ===== -->
+<section id="m4">
+  <div class="section-tag tag-green">🍎 Module 4</div>
+  <h2>Mes Mots</h2>
+  <p class="intro">Découvre 150 mots utiles en français, organisés par catégories, avec des images et le son.</p>
+
+  <div class="module-card">
+    <div class="mc-icon">🍎</div>
+    <div class="mc-body">
+      <div class="mc-tag">Module 4 · Mes Mots</div>
+      <div class="mc-title">Comment utiliser ce module</div>
+      <div class="mc-steps">
+        <div class="mc-step">
+          <div class="mc-step-num">1</div>
+          <span>Clique sur un <strong>onglet de catégorie</strong> (Famille, Corps, Chiffres, Couleurs…) pour voir les mots.</span>
+        </div>
+        <div class="mc-step">
+          <div class="mc-step-num">2</div>
+          <span>Clique sur une <strong>carte</strong> pour entendre le mot. L'image t'aide à comprendre le sens.</span>
+        </div>
+        <div class="mc-step">
+          <div class="mc-step-num">3</div>
+          <span>Répète le mot à voix haute après l'avoir entendu.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <h3>📂 Les catégories disponibles</h3>
+  <div class="card-grid">
+    <div class="card"><span class="card-icon">👨‍👩‍👧</span><div class="card-title">Famille</div><div class="card-desc">Maman, Papa, Enfant, Frère…</div></div>
+    <div class="card"><span class="card-icon">🤸</span><div class="card-title">Corps</div><div class="card-desc">Tête, Main, Pied, Œil…</div></div>
+    <div class="card"><span class="card-icon">🔢</span><div class="card-title">Chiffres</div><div class="card-desc">Un, Deux, Trois… jusqu'à vingt.</div></div>
+    <div class="card"><span class="card-icon">🎨</span><div class="card-title">Couleurs</div><div class="card-desc">Rouge, Bleu, Vert, Jaune…</div></div>
+    <div class="card"><span class="card-icon">🍎</span><div class="card-title">Nourriture</div><div class="card-desc">Pain, Eau, Lait, Pomme…</div></div>
+    <div class="card"><span class="card-icon">📅</span><div class="card-title">Jours</div><div class="card-desc">Lundi, Mardi, Mercredi…</div></div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ===== MODULE 5 ===== -->
+<section id="m5">
+  <div class="section-tag tag-orange">📖 Module 5</div>
+  <h2>Je Lis</h2>
+  <p class="intro">Lis des phrases simples. Chaque mot s'illumine en orange quand il est prononcé, comme un karaoké !</p>
+
+  <div class="module-card">
+    <div class="mc-icon">📖</div>
+    <div class="mc-body">
+      <div class="mc-tag">Module 5 · Je Lis</div>
+      <div class="mc-title">Comment utiliser ce module</div>
+      <div class="mc-steps">
+        <div class="mc-step">
+          <div class="mc-step-num">1</div>
+          <span>Regarde la phrase. <strong>Essaie de la lire</strong> avant d'écouter.</span>
+        </div>
+        <div class="mc-step">
+          <div class="mc-step-num">2</div>
+          <span>Clique sur <strong>"▶ Écouter"</strong> pour entendre toute la phrase. Les mots s'illuminent en orange un par un.</span>
+        </div>
+        <div class="mc-step">
+          <div class="mc-step-num">3</div>
+          <span>Tu peux cliquer sur <strong>un seul mot</strong> pour l'entendre séparément.</span>
+        </div>
+        <div class="mc-step">
+          <div class="mc-step-num">4</div>
+          <span>Clique sur <strong>"🐢 Lent"</strong> si la voix va trop vite. Elle parlera plus doucement.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="tip">
+    <div class="tip-icon">🏆</div>
+    <div class="tip-body"><strong>Challenge :</strong> Essaie de lire la phrase <em>à voix haute</em> avant de cliquer sur Écouter. Si tu reconnais des mots, c'est que tu progresses vraiment !</div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ===== MODULE 6 ===== -->
+<section id="m6">
+  <div class="section-tag tag-violet">🎯 Module 6</div>
+  <h2>Jeux &amp; Dictée</h2>
+  <p class="intro">Trois jeux pour tester ce que tu as appris et gagner des points !</p>
+
+  <div class="module-card">
+    <div class="mc-icon">🎙️</div>
+    <div class="mc-body">
+      <div class="mc-tag">Jeu 1 · Dictée</div>
+      <div class="mc-title">Écoute et écris le mot</div>
+      <div class="mc-steps">
+        <div class="mc-step">
+          <div class="mc-step-num">1</div>
+          <span>Clique sur <strong>"▶ Écouter le mot"</strong> pour entendre un mot.</span>
+        </div>
+        <div class="mc-step">
+          <div class="mc-step-num">2</div>
+          <span><strong>Écris le mot</strong> dans la case blanche.</span>
+        </div>
+        <div class="mc-step">
+          <div class="mc-step-num">3</div>
+          <span>Clique sur <strong>"✅ Vérifier"</strong> ou appuie sur <strong>Entrée</strong>.</span>
+        </div>
+        <div class="mc-step">
+          <div class="mc-step-num">4</div>
+          <span>Si tu ne sais pas, clique sur <strong>"⏭️ Passer"</strong> pour un autre mot.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="tip">
+    <div class="tip-icon">💡</div>
+    <div class="tip-body">Les accents ne sont <strong>pas obligatoires</strong>. Si le mot est « école », tu peux écrire « ecole » et ce sera accepté !</div>
+  </div>
+
+  <div class="module-card" style="margin-top:16px;">
+    <div class="mc-icon">🃏</div>
+    <div class="mc-body">
+      <div class="mc-tag">Jeu 2 · Mémoire</div>
+      <div class="mc-title">Trouve les paires image + mot</div>
+      <div class="mc-steps">
+        <div class="mc-step">
+          <div class="mc-step-num">1</div>
+          <span>Il y a 16 cartes retournées face cachée.</span>
+        </div>
+        <div class="mc-step">
+          <div class="mc-step-num">2</div>
+          <span>Clique sur une carte pour la retourner et voir l'image ou le mot.</span>
+        </div>
+        <div class="mc-step">
+          <div class="mc-step-num">3</div>
+          <span>Clique sur une deuxième carte. Si elles forment une paire, elles restent visibles !</span>
+        </div>
+        <div class="mc-step">
+          <div class="mc-step-num">4</div>
+          <span>Trouve toutes les paires. Clique sur <strong>"🔄 Nouvelle partie"</strong> pour rejouer.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="module-card" style="margin-top:16px;">
+    <div class="mc-icon">🔤</div>
+    <div class="mc-body">
+      <div class="mc-tag">Jeu 3 · Reconnais la lettre</div>
+      <div class="mc-title">Écoute et trouve la lettre</div>
+      <div class="mc-steps">
+        <div class="mc-step">
+          <div class="mc-step-num">1</div>
+          <span>Clique sur <strong>"▶ Écouter la lettre"</strong>.</span>
+        </div>
+        <div class="mc-step">
+          <div class="mc-step-num">2</div>
+          <span>Parmi 4 lettres, clique sur <strong>la bonne lettre</strong>.</span>
+        </div>
+        <div class="mc-step">
+          <div class="mc-step-num">3</div>
+          <span>Clique sur <strong>"Suivant ▶"</strong> pour passer à la lettre suivante.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ===== MODULE 7 ===== -->
+<section id="m7">
+  <div class="section-tag tag-blue">💬 Module 7</div>
+  <h2>Situations réelles</h2>
+  <p class="intro">Des vraies conversations que tu peux avoir dans ta vie quotidienne en France.</p>
+
+  <div class="module-card">
+    <div class="mc-icon">💬</div>
+    <div class="mc-body">
+      <div class="mc-tag">Module 7 · Situations réelles</div>
+      <div class="mc-title">Comment utiliser ce module</div>
+      <div class="mc-steps">
+        <div class="mc-step">
+          <div class="mc-step-num">1</div>
+          <span>Choisis une <strong>situation</strong> dans les onglets : Médecin, Mairie, École, Pharmacie, Logement, Banque.</span>
+        </div>
+        <div class="mc-step">
+          <div class="mc-step-num">2</div>
+          <span>Clique sur <strong>"▶ Écouter tout"</strong> pour entendre le dialogue complet.</span>
+        </div>
+        <div class="mc-step">
+          <div class="mc-step-num">3</div>
+          <span>Clique sur <strong>chaque bulle</strong> séparément pour l'entendre. Les bulles bleues, c'est toi. Les bulles grises, c'est l'autre personne.</span>
+        </div>
+        <div class="mc-step">
+          <div class="mc-step-num">4</div>
+          <span>Regarde le <strong>vocabulaire utile</strong> en bas pour apprendre les mots importants.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <h3>🗺️ Les 6 situations</h3>
+  <div class="card-grid">
+    <div class="card"><span class="card-icon">🏥</span><div class="card-title">Chez le médecin</div><div class="card-desc">Comment expliquer tes symptômes et comprendre le médecin.</div></div>
+    <div class="card"><span class="card-icon">🏛️</span><div class="card-title">À la mairie</div><div class="card-desc">Demander des documents officiels, faire des démarches.</div></div>
+    <div class="card"><span class="card-icon">🏫</span><div class="card-title">À l'école</div><div class="card-desc">Parler à l'enseignant de ton enfant lors d'une réunion.</div></div>
+    <div class="card"><span class="card-icon">💊</span><div class="card-title">À la pharmacie</div><div class="card-desc">Récupérer une ordonnance, demander un médicament.</div></div>
+    <div class="card"><span class="card-icon">🏠</span><div class="card-title">Chercher un logement</div><div class="card-desc">Appeler pour visiter un appartement.</div></div>
+    <div class="card"><span class="card-icon">🏦</span><div class="card-title">À la banque</div><div class="card-desc">Ouvrir un compte bancaire.</div></div>
+  </div>
+
+  <div class="tip">
+    <div class="tip-icon">🎯</div>
+    <div class="tip-body"><strong>Conseil :</strong> Écoute d'abord tout le dialogue d'un coup, puis reviens écouter chaque bulle une par une. Enfin, essaie de <strong>répéter à voix haute</strong> après chaque phrase !</div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ===== MODULE 8 ===== -->
+<section id="m8">
+  <div class="section-tag tag-teal">📋 Module 8</div>
+  <h2>Formulaires administratifs</h2>
+  <p class="intro">Entraîne-toi à remplir les formulaires officiels qu'on utilise en France.</p>
+
+  <div class="module-card">
+    <div class="mc-icon">📋</div>
+    <div class="mc-body">
+      <div class="mc-tag">Module 8 · Formulaires</div>
+      <div class="mc-title">Comment utiliser ce module</div>
+      <div class="mc-steps">
+        <div class="mc-step">
+          <div class="mc-step-num">1</div>
+          <span>Choisis un formulaire dans les onglets : <strong>CAF, École, Emploi, Ordonnance</strong>.</span>
+        </div>
+        <div class="mc-step">
+          <div class="mc-step-num">2</div>
+          <span>Clique sur le <strong>🔊 petit haut-parleur</strong> à côté d'un champ pour entendre son nom.</span>
+        </div>
+        <div class="mc-step">
+          <div class="mc-step-num">3</div>
+          <span>Lis la <strong>petite explication en gris</strong> sous chaque case. Elle te dit quoi écrire.</span>
+        </div>
+        <div class="mc-step">
+          <div class="mc-step-num">4</div>
+          <span>Remplis les cases avec tes informations (ou des informations d'exemple).</span>
+        </div>
+        <div class="mc-step">
+          <div class="mc-step-num">5</div>
+          <span>Clique sur <strong>"✅ Valider l'exercice"</strong> pour terminer l'entraînement.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <h3>📄 Les formulaires disponibles</h3>
+  <div class="card-grid">
+    <div class="card"><span class="card-icon">💶</span><div class="card-title">CAF — Aide au logement</div><div class="card-desc">La Caisse d'Allocations Familiales. Pour demander une aide pour payer ton loyer (APL).</div></div>
+    <div class="card"><span class="card-icon">🏫</span><div class="card-title">Inscription à l'école</div><div class="card-desc">Pour inscrire ton enfant à l'école.</div></div>
+    <div class="card"><span class="card-icon">💼</span><div class="card-title">Pôle Emploi</div><div class="card-desc">Pour s'inscrire et chercher du travail.</div></div>
+    <div class="card"><span class="card-icon">💊</span><div class="card-title">Ordonnance médicale</div><div class="card-desc">Comprendre ce que le médecin a écrit.</div></div>
+  </div>
+
+  <div class="info-box">
+    <span style="font-size:22px;flex-shrink:0;">ℹ️</span>
+    <div>C'est un <strong>exercice d'entraînement</strong>. Les informations que tu écris ne sont pas envoyées. Pour faire les vrais formulaires, va sur les sites officiels ou demande de l'aide à un conseiller.</div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ===== PHASE 2 ===== -->
+<section id="phase2">
+  <div class="section-tag tag-blue">📘 Phase 2</div>
+  <h2>Phase 2 — Niveau A1</h2>
+  <p class="intro">Quand tu as terminé tous les modules de la Phase 1, tu peux passer à la Phase 2 pour continuer ton apprentissage au niveau A1.</p>
+
+  <div class="compare-grid">
+    <div class="phase-block p1">
+      <div class="phase-title"><span>📙</span> Phase 1 — Les Bases</div>
+      <ul class="phase-list">
+        <li>L'alphabet et les lettres</li>
+        <li>Tracer les lettres à la main</li>
+        <li>Les syllabes de base</li>
+        <li>150 mots essentiels</li>
+        <li>Phrases simples</li>
+        <li>Jeux et dictée</li>
+        <li>Conversations de la vie courante</li>
+        <li>Formulaires administratifs</li>
+      </ul>
+    </div>
+    <div class="phase-block p2">
+      <div class="phase-title" style="color:var(--blue)"><span>📘</span> Phase 2 — Niveau A1</div>
+      <ul class="phase-list">
+        <li>Grammaire : masculin / féminin</li>
+        <li>Les articles (le, la, les, un, une)</li>
+        <li>Les verbes être et avoir</li>
+        <li>Se présenter</li>
+        <li>Les chiffres jusqu'à 100</li>
+        <li>L'heure et les dates</li>
+        <li>Et beaucoup plus !</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <div class="step-title">Comment accéder à la Phase 2</div>
+        <div class="step-desc">Dans le menu à gauche de la Phase 1, clique sur <strong>"📘 Phase 2 — Niveau A1 →"</strong>. Ou ouvre directement le fichier <strong>apprendre-phase2.html</strong>.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="success-box">
+    <span style="font-size:22px;flex-shrink:0;">🎓</span>
+    <div>La Phase 2 fonctionne exactement comme la Phase 1. Tu retrouves la même interface, les mêmes boutons, et le même système d'étoiles et de progression.</div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ===== RÉGLAGES ===== -->
+<section id="reglages">
+  <div class="section-tag tag-orange">⚙️ Réglages</div>
+  <h2>Réglages et options</h2>
+  <p class="intro">Tu peux personnaliser l'application selon tes besoins depuis le menu à gauche.</p>
+
+  <div class="feature-row">
+    <span class="fr-icon">🌍</span>
+    <div class="fr-body">
+      <div class="fr-title">Changer la langue des consignes</div>
+      <div class="fr-desc">En bas du menu, cherche <strong>"Langue des consignes"</strong>. Tu peux choisir : Français 🇫🇷, Arabe 🇸🇦, Wolof 🌍, Bambara 🌍, ou Anglais 🇬🇧. Les instructions changent dans ta langue.</div>
+    </div>
+  </div>
+
+  <div class="feature-row">
+    <span class="fr-icon">🐢</span>
+    <div class="fr-body">
+      <div class="fr-title">Régler la vitesse de la voix</div>
+      <div class="fr-desc">Dans la boîte <strong>"🔊 Voix"</strong> en bas du menu, utilise le curseur <strong>"Vitesse"</strong>. Déplace-le vers la gauche pour parler plus lentement, vers la droite pour plus vite.</div>
+    </div>
+  </div>
+
+  <div class="feature-row">
+    <span class="fr-icon">🔊</span>
+    <div class="fr-body">
+      <div class="fr-title">Régler le volume de la voix</div>
+      <div class="fr-desc">Utilise le curseur <strong>"Volume"</strong> dans la boîte Voix. Monte-le si tu entends mal.</div>
+    </div>
+  </div>
+
+  <div class="feature-row">
+    <span class="fr-icon">▶</span>
+    <div class="fr-body">
+      <div class="fr-title">Tester la voix</div>
+      <div class="fr-desc">Clique sur <strong>"▶ Tester la voix"</strong> pour vérifier que le son fonctionne bien sur ton appareil.</div>
+    </div>
+  </div>
+
+  <div class="feature-row" style="border-color: var(--pink-soft);">
+    <span class="fr-icon">🔄</span>
+    <div class="fr-body">
+      <div class="fr-title">Réinitialiser la progression</div>
+      <div class="fr-desc">Le bouton <strong>"🔄 Réinitialiser la progression"</strong> efface toutes tes étoiles et remet les modules à zéro. <span style="color:var(--red);font-weight:700;">Attention : cette action ne peut pas être annulée.</span></div>
+    </div>
+  </div>
+
+  <div class="tip" style="background:var(--pink-soft);border-color:var(--pink);">
+    <div class="tip-icon">⚠️</div>
+    <div class="tip-body"><strong>Important :</strong> La progression est sauvegardée dans ton navigateur. Si tu changes de navigateur ou effaces l'historique, ta progression peut être perdue. Essaie de toujours utiliser le même navigateur.</div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ===== FAQ ===== -->
+<section id="faq">
+  <div class="section-tag tag-violet">❓ Aide</div>
+  <h2>Questions fréquentes</h2>
+  <p class="intro">Les réponses aux questions que tu pourrais avoir.</p>
+
+  <div class="faq-item">
+    <div class="faq-q" onclick="toggleFaq(this)">
+      Je n'entends pas la voix. Que faire ?
+      <span class="faq-chevron">▼</span>
+    </div>
+    <div class="faq-a">
+      <strong>1.</strong> Vérifie que le volume de ton téléphone ou ordinateur est allumé.<br>
+      <strong>2.</strong> Clique sur le bouton <strong>"▶ Tester la voix"</strong> dans le menu à gauche.<br>
+      <strong>3.</strong> Si tu utilises Chrome, essaie d'abord de cliquer quelque part sur la page (les navigateurs bloquent parfois le son au départ).<br>
+      <strong>4.</strong> Essaie avec un autre navigateur (Chrome ou Firefox fonctionnent le mieux).
+    </div>
+  </div>
+
+  <div class="faq-item">
+    <div class="faq-q" onclick="toggleFaq(this)">
+      Ma progression a disparu. Pourquoi ?
+      <span class="faq-chevron">▼</span>
+    </div>
+    <div class="faq-a">
+      La progression est sauvegardée dans la mémoire de ton navigateur. Elle peut disparaître si :<br>
+      • Tu as effacé l'historique ou les données de ton navigateur.<br>
+      • Tu utilises un autre navigateur ou un autre appareil.<br>
+      • Tu as ouvert le fichier depuis un endroit différent (clé USB, autre dossier).<br><br>
+      <strong>Conseil :</strong> Utilise toujours le même navigateur et le même appareil.
+    </div>
+  </div>
+
+  <div class="faq-item">
+    <div class="faq-q" onclick="toggleFaq(this)">
+      Dois-je faire les modules dans l'ordre ?
+      <span class="faq-chevron">▼</span>
+    </div>
+    <div class="faq-a">
+      <strong>Oui, c'est fortement conseillé.</strong> Chaque module est construit sur ce que tu as appris dans le module précédent. Par exemple, pour le module 3 (Syllabes), il faut connaître les lettres du module 1. Commence toujours par le module 1 et avance un module après l'autre.
+    </div>
+  </div>
+
+  <div class="faq-item">
+    <div class="faq-q" onclick="toggleFaq(this)">
+      Puis-je refaire un module que j'ai déjà terminé ?
+      <span class="faq-chevron">▼</span>
+    </div>
+    <div class="faq-a">
+      <strong>Oui, bien sûr !</strong> Tu peux revenir sur n'importe quel module autant de fois que tu veux en cliquant dessus dans le menu à gauche. C'est même recommandé de réviser régulièrement.
+    </div>
+  </div>
+
+  <div class="faq-item">
+    <div class="faq-q" onclick="toggleFaq(this)">
+      Le tracé des lettres ne fonctionne pas bien sur mon téléphone.
+      <span class="faq-chevron">▼</span>
+    </div>
+    <div class="faq-a">
+      Quelques conseils pour mieux tracer :<br>
+      • Utilise <strong>un seul doigt</strong> pour tracer.<br>
+      • Trace <strong>lentement</strong> et avec un geste fluide.<br>
+      • Appuie <strong>doucement</strong> sur l'écran.<br>
+      • Regarde d'abord l'animation avec "👁️ Voir le tracé" pour savoir dans quelle direction aller.<br>
+      • Sur tablette, c'est plus facile qu'un petit téléphone.
+    </div>
+  </div>
+
+  <div class="faq-item">
+    <div class="faq-q" onclick="toggleFaq(this)">
+      La voix parle trop vite. Comment ralentir ?
+      <span class="faq-chevron">▼</span>
+    </div>
+    <div class="faq-a">
+      Dans le menu à gauche, en bas, cherche la boîte <strong>"🔊 Voix"</strong>. Déplace le curseur <strong>"Vitesse"</strong> vers la <strong>gauche</strong> pour ralentir la voix. La position la plus lente te donnera le plus de temps pour comprendre chaque mot.
+    </div>
+  </div>
+
+  <div class="faq-item">
+    <div class="faq-q" onclick="toggleFaq(this)">
+      Est-ce que l'application fonctionne sans internet ?
+      <span class="faq-chevron">▼</span>
+    </div>
+    <div class="faq-a">
+      <strong>Oui !</strong> L'application fonctionne complètement sans internet. Tout le contenu (textes, images, exercices) est dans le fichier HTML. La voix utilise la synthèse vocale de ton appareil, qui est aussi disponible hors connexion.
+    </div>
+  </div>
+
+  <div class="faq-item">
+    <div class="faq-q" onclick="toggleFaq(this)">
+      Combien de temps faut-il pour finir la Phase 1 ?
+      <span class="faq-chevron">▼</span>
+    </div>
+    <div class="faq-a">
+      Cela dépend de toi ! Si tu travailles <strong>15 à 20 minutes par jour</strong>, tu peux finir la Phase 1 en 2 à 4 semaines. L'important n'est pas d'aller vite, mais de bien mémoriser. Reviens souvent revoir les modules précédents.
+    </div>
+  </div>
+
+  <div class="tip">
+    <div class="tip-icon">🌟</div>
+    <div class="tip-body"><strong>Rappel :</strong> Cette application est conçue pour les débutants complets. Il n'y a pas de mauvaise question. Explore à ton rythme et n'hésite pas à tout réécouter autant de fois que tu en as besoin !</div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ===== FOOTER ===== -->
+<div style="text-align:center;padding:24px 0;color:var(--muted);font-size:13px;">
+  <div style="font-size:36px;margin-bottom:8px;">📚</div>
+  <div style="font-weight:800;color:var(--ink2);margin-bottom:4px;">J'apprends le Français</div>
+  <div>Bonne chance dans ton apprentissage ! 🌟</div>
+  <div style="margin-top:16px;">
+    <a href="apprendre-phase1.html" style="display:inline-block;background:var(--orange);color:white;padding:12px 24px;border-radius:14px;font-weight:700;text-decoration:none;font-size:14px;box-shadow:var(--shadow);">← Retour à l'application</a>
+  </div>
+</div>
+
+</main>
+</div>
+
+<script>
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('overlay').classList.toggle('show');
+}
+function closeSidebar() {
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('overlay').classList.remove('show');
+}
+
+function toggleFaq(el) {
+  const answer = el.nextElementSibling;
+  const isOpen = el.classList.contains('open');
+  // Close all
+  document.querySelectorAll('.faq-q').forEach(q => q.classList.remove('open'));
+  document.querySelectorAll('.faq-a').forEach(a => a.classList.remove('open'));
+  // Open clicked if it was closed
+  if (!isOpen) {
+    el.classList.add('open');
+    answer.classList.add('open');
+  }
+}
+
+// Highlight active TOC item on scroll
+const sections = document.querySelectorAll('section[id]');
+const tocItems = document.querySelectorAll('.toc-item');
+window.addEventListener('scroll', () => {
+  let current = '';
+  sections.forEach(s => {
+    if (window.scrollY >= s.offsetTop - 80) current = s.id;
+  });
+  tocItems.forEach(item => {
+    item.classList.remove('active');
+    if (item.getAttribute('href') === '#' + current) item.classList.add('active');
+  });
+}, { passive: true });
+</script>
+</body>
+</html>
